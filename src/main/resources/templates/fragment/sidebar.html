@@ -1,5 +1,4 @@
-<aside id="sidebar" class="sidebar" th:fragment ="sidebar">
-
+<aside id="sidebar" class="sidebar" th:fragment="sidebar" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item">
@@ -15,15 +14,47 @@
                 <span>Trang cá nhân</span>
             </a>
         </li><!-- End User Nav -->
-
-        <li class="nav-item">
+        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
             <a class="nav-link collapsed" data-bs-target="#employee-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-journal-text"></i><span>Quản lý nhân viên</span><i class="bi bi-chevron-down ms-auto"></i>
+                <i class="bx bx-group"></i><span>Quản lý nhân viên</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="employee-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
                     <a href="forms-elements.html">
-                        <i class="bx bx-group"></i><span>Xem danh sách nhân viên</span>
+                        <i class="bi bi-circle"></i><span>Xem danh sách nhân viên</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="forms-layouts.html">
+                        <i class="bi bi-circle"></i><span>Thêm nhân viên</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="forms-layouts.html">
+                        <i class="bi bi-circle"></i><span>Chỉnh sửa nhân viên</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="forms-layouts.html">
+                        <i class="bi bi-circle"></i><span>Xóa nhân viên</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="forms-layouts.html">
+                        <i class="bi bi-circle"></i><span>Tìm kiếm</span>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End Employee Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#receipt-nav" data-bs-toggle="collapse" href="#">
+                <i class="bx bx-receipt"></i><span>Quản lý bán hàng</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="receipt-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="forms-elements.html">
+                        <i class="bi bi-circle"></i><span>Xem danh sách bàn</span>
                     </a>
                 </li>
                 <li>
@@ -72,16 +103,17 @@
                     </a>
                 </li>
             </ul>
-        </li><!-- End Employee Nav -->
+        </li><!-- End Sale Nav -->
 
-        <li class="nav-item">
+
+        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
             <a class="nav-link collapsed" data-bs-target="#device-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-layout-text-window-reverse"></i><span>Quản lý trang thiết bị</span><i class="bi bi-chevron-down ms-auto"></i>
+                <i class="bx bx-devices"></i><span>Quản lý trang thiết bị</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="device-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
                     <a href="tables-general.html">
-                        <i class="bx bx-devices"></i><span>Xem danh sách thiết bị</span>
+                        <i class="bi bi-circle"></i><span>Xem danh sách thiết bị</span>
                     </a>
                 </li>
                 <li>
@@ -101,9 +133,9 @@
                 </li>
 
             </ul>
-        </li><!-- End Device Nav -->
+        </li><!-- End Sale Nav -->
 
-        <li class="nav-item">
+        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
             <a class="nav-link collapsed" data-bs-target="#goods-nav" data-bs-toggle="collapse" href="#">
                 <i class="bx bx-building-house"></i><span>Quản lý kho hàng</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
@@ -141,7 +173,7 @@
             </ul>
         </li><!-- End Goods Nav -->
 
-        <li class="nav-item">
+        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
             <a class="nav-link collapsed" data-bs-target="#menu-nav" data-bs-toggle="collapse" href="#">
                 <i class="bx bx-food-menu"></i><span>Quản lý thực đơn</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
@@ -174,7 +206,7 @@
             </ul>
         </li><!-- End Menu Nav -->
 
-        <li class="nav-item">
+        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
             <a class="nav-link collapsed" data-bs-target="#marketing-nav" data-bs-toggle="collapse" href="#">
                 <i class="bx bxs-discount"></i><span>Quản lý Marketing</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
@@ -195,14 +227,14 @@
                     </a>
                 </li>
                 <li>
-                    <a href="icons-boxicons.html">
+                    <a href="icons-boxicons.html" >
                         <i class="bi bi-circle"></i><span>Xóa khuyến mãi</span>
                     </a>
                 </li>
             </ul>
         </li><!-- End Marketing Nav -->
 
-        <li class="nav-item">
+        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
             <a class="nav-link collapsed" data-bs-target="#budget-nav" data-bs-toggle="collapse" href="#">
                 <i class="bx bx-receipt"></i><span>Quản lý ngân sách</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
@@ -220,7 +252,7 @@
             </ul>
         </li><!-- End Budget Nav -->
 
-        <li class="nav-item">
+        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
             <a class="nav-link collapsed" data-bs-target="#data-nav" data-bs-toggle="collapse" href="#">
                 <i class="bx bx-data"></i><span>Quản lý dữ liệu</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
@@ -238,7 +270,7 @@
             </ul>
         </li><!-- End Data Nav -->
 
-        <li class="nav-item">
+        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
             <a class="nav-link" href="admin/employee">
                 <i class="bx bx-news"></i>
                 <span>Thống kê, báo cáo</span>

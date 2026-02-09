@@ -1,6 +1,6 @@
 package com.example.coffeemanagement.security;
 
-import com.example.coffeemanagement.security.utils.SecurityUtils;
+import com.example.coffeemanagement.util.SecurityUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import java.io.IOException;
-import java.util.List;
 
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
@@ -21,7 +20,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             if (response.isCommitted()) {
                 logger.error("Can't redirect");
             }
-            logger.info("Login username: {}, Role: {}", SecurityUtils.getPrincipal().getUsername(), SecurityUtils.getPrincipal().getAuthorities());
+            logger.info("Login username: {}, Role: {}", SecurityUtils.getPrincipal().getUsername(), SecurityUtils.getAuthorities());
             response.sendRedirect("/");
         } catch (Exception e) {
             logger.error(e.getMessage());

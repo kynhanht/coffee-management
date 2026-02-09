@@ -1,6 +1,6 @@
 package com.example.coffeemanagement.security;
 
-import com.example.coffeemanagement.security.utils.SecurityUtils;
+import com.example.coffeemanagement.util.SecurityUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

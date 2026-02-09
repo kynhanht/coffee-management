@@ -2,32 +2,26 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragment/head :: head}"></head>
+<head th:replace="~{fragments/head :: head}"></head>
 
 <body>
 <!-- ======= Header ======= -->
-<header th:replace="~{fragment/header :: header}"></header>
+<header th:replace="~{fragments/header :: header}"></header>
 <!-- ======= Sidebar ======= -->
-<div th:replace="~{fragment/sidebar :: sidebar}"></div>
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
 <main id="main" class="main">
-
     <div class="pagetitle">
-        <h1>Dashboard</h1>
+        <h1 th:text="${title}">Trang chủ</h1>
     </div><!-- End Page Title -->
-
-    <section class="section dashboard">
-    </section>
-
+    <div th:replace="~{${content}}"></div>
 </main><!-- End #main -->
 
-<!-- ======= Footer ======= -->
-<footer th:replace="~{fragment/footer :: footer}"></footer>
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
 <!-- ======= Script ======= -->
-<div th:replace="~{fragment/script :: script}"></div>
+<div th:replace="~{fragments/script :: script}"></div>
 
 </body>
 

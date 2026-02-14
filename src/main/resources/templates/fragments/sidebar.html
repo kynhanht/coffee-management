@@ -1,282 +1,153 @@
-<aside id="sidebar" class="sidebar" th:fragment="sidebar" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-    <ul class="sidebar-nav" id="sidebar-nav">
+<aside class="sidebar" th:fragment="sidebar" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar-nav">
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/}">
+                    <span class="nav-icon"><i class="ph-light ph-house"></i></span>
+                    <span class="nav-text">Trang chủ</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/}">
+                    <span class="nav-icon"><i class="ph-light ph-user"></i></span>
+                    <span class="nav-text">Trang cá nhân</span>
+                </a>
+            </li>
+            <li class="nav-item has-submenu ">
+                <a class="nav-link" href="#" aria-expanded="false">
+                    <span class="nav-icon"><i class="ph-light ph-users-three"></i></span>
+                    <span class="nav-text">Quản lý nhân viên</span>
+                    <span class="nav-arrow"><i class="bi bi-chevron-right"></i></span>
+                </a>
+                <ul class="nav-submenu ">
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xem danh sách nhân viên</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Thêm nhân viên</a>
+                    </li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Chỉnh sửa nhân viên</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xóa nhân viên</a>
+                    </li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Tìm kiếm</a>
+                    </li>
+                </ul>
+            </li>
 
-        <li class="nav-item">
-            <a class="nav-link" th:href="@{/}">
-                <i class="bx bx-home"></i>
-                <span>Trang chủ</span>
-            </a>
-        </li><!-- End Home Nav -->
+            <!-- Users -->
+            <li class="nav-item has-submenu ">
+                <a class="nav-link" href="#" aria-expanded="false">
+                    <span class="nav-icon"><i class="ph-light ph-shopping-bag"></i></span>
+                    <span class="nav-text">Quản lý bán hàng</span>
+                    <span class="nav-arrow"><i class="bi bi-chevron-right"></i></span>
+                </a>
+                <ul class="nav-submenu ">
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xem danh sách bán hàng</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xem bàn</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Chuyển bàn</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Gộp bàn</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Tách bàn</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Hủy bàn</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Đặt bàn</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Chọn thực đơn</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Thanh toán</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>In ấn</a></li>
+                </ul>
+            </li>
 
-        <li class="nav-item">
-            <a class="nav-link" th:href="@{/}">
-                <i class="bx bx-user"></i>
-                <span>Trang cá nhân</span>
-            </a>
-        </li><!-- End User Nav -->
-        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
-            <a class="nav-link collapsed" data-bs-target="#employee-nav" data-bs-toggle="collapse" href="#">
-                <i class="bx bx-group"></i><span>Quản lý nhân viên</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="employee-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="forms-elements.html">
-                        <i class="bi bi-circle"></i><span>Xem danh sách nhân viên</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="forms-layouts.html">
-                        <i class="bi bi-circle"></i><span>Thêm nhân viên</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="forms-layouts.html">
-                        <i class="bi bi-circle"></i><span>Chỉnh sửa nhân viên</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="forms-layouts.html">
-                        <i class="bi bi-circle"></i><span>Xóa nhân viên</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="forms-layouts.html">
-                        <i class="bi bi-circle"></i><span>Tìm kiếm</span>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Employee Nav -->
+            <li class="nav-item has-submenu ">
+                <a class="nav-link" href="#" aria-expanded="false">
+                    <span class="nav-icon"><i class="ph-light ph-devices"></i></span>
+                    <span class="nav-text">Quản lý trang thiết bị</span>
+                    <span class="nav-arrow"><i class="bi bi-chevron-right"></i></span>
+                </a>
+                <ul class="nav-submenu ">
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xem danh sách thiết bị</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Thêm thiết</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Chỉnh sửa thiết bị</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xóa thiết bị</a></li>
+                </ul>
+            </li>
 
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#receipt-nav" data-bs-toggle="collapse" href="#">
-                <i class="bx bx-receipt"></i><span>Quản lý bán hàng</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="receipt-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="forms-elements.html">
-                        <i class="bi bi-circle"></i><span>Xem danh sách bàn</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="forms-layouts.html">
-                        <i class="bi bi-circle"></i><span>Xem bàn</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="forms-editors.html">
-                        <i class="bi bi-circle"></i><span>Chuyển bàn</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="forms-validation.html">
-                        <i class="bi bi-circle"></i><span>Gộp bàn</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="forms-validation.html">
-                        <i class="bi bi-circle"></i><span>Tách bàn</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="forms-validation.html">
-                        <i class="bi bi-circle"></i><span>Hủy bàn</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="forms-validation.html">
-                        <i class="bi bi-circle"></i><span>Đặt bàn</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="forms-validation.html">
-                        <i class="bi bi-circle"></i><span>Chọn thực đơn</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="forms-validation.html">
-                        <i class="bi bi-circle"></i><span>Thanh toán</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="forms-validation.html">
-                        <i class="bi bi-circle"></i><span>In ấn</span>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Sale Nav -->
+            <li class="nav-item has-submenu ">
+                <a class="nav-link" href="#" aria-expanded="false">
+                    <span class="nav-icon"><i class="ph-light ph-storefront"></i></span>
+                    <span class="nav-text">Xem danh sách hàng hóa</span>
+                    <span class="nav-arrow"><i class="bi bi-chevron-right"></i></span>
+                </a>
+                <ul class="nav-submenu ">
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Nhập danh sách hàng hóa</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Nhập hàng hóa</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xuất hàng hóa</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Chỉnh sửa hàng hóa</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xóa hàng hóa</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Tìm kiếm hàng hóa</a></li>
+                </ul>
+            </li>
 
+            <li class="nav-item has-submenu ">
+                <a class="nav-link" href="#" aria-expanded="false">
+                    <span class="nav-icon"><i class="ph-light ph-hamburger"></i></span>
+                    <span class="nav-text">Quản lý thực đơn</span>
+                    <span class="nav-arrow"><i class="bi bi-chevron-right"></i></span>
+                </a>
+                <ul class="nav-submenu ">
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xem danh sách thực đơn</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Thêm danh mục</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Chỉnh sửa danh mục</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xóa danh mục</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Tìm kiếm danh mục</a></li>
+                </ul>
+            </li>
 
-        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
-            <a class="nav-link collapsed" data-bs-target="#device-nav" data-bs-toggle="collapse" href="#">
-                <i class="bx bx-devices"></i><span>Quản lý trang thiết bị</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="device-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="tables-general.html">
-                        <i class="bi bi-circle"></i><span>Xem danh sách thiết bị</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="tables-general.html">
-                        <i class="bi bi-circle"></i><span>Thêm thiết bị</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="tables-general.html">
-                        <i class="bi bi-circle"></i><span>Chỉnh sửa thiết bị</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="tables-general.html">
-                        <i class="bi bi-circle"></i><span>Xóa thiết bị</span>
-                    </a>
-                </li>
+            <li class="nav-item has-submenu ">
+                <a class="nav-link" href="#" aria-expanded="false">
+                    <span class="nav-icon"><i class="ph-light ph-seal-percent"></i></span>
+                    <span class="nav-text">Quản lý Marketing</span>
+                    <span class="nav-arrow"><i class="bi bi-chevron-right"></i></span>
+                </a>
+                <ul class="nav-submenu ">
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xem các mã khuyến mãi</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Thêm khuyến mãi</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Chỉnh sửa khuyến mãi</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xóa khuyến mãi</a></li>
+                </ul>
+            </li>
 
-            </ul>
-        </li><!-- End Sale Nav -->
+            <li class="nav-item has-submenu ">
+                <a class="nav-link" href="#" aria-expanded="false">
+                    <span class="nav-icon"><i class="ph-light ph-money"></i></span>
+                    <span class="nav-text">Quản lý ngân sách</span>
+                    <span class="nav-arrow"><i class="bi bi-chevron-right"></i></span>
+                </a>
+                <ul class="nav-submenu ">
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xem thu chi</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Thêm thu chi</a></li>
+                </ul>
+            </li>
 
-        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
-            <a class="nav-link collapsed" data-bs-target="#goods-nav" data-bs-toggle="collapse" href="#">
-                <i class="bx bx-building-house"></i><span>Quản lý kho hàng</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="goods-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="charts-chartjs.html">
-                        <i class="bi bi-circle"></i><span>Xem danh sách hàng hóa</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="charts-apexcharts.html">
-                        <i class="bi bi-circle"></i><span>Nhập hàng hóa</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="charts-echarts.html">
-                        <i class="bi bi-circle"></i><span>Xuất hàng hóa</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="charts-echarts.html">
-                        <i class="bi bi-circle"></i><span>Chỉnh sửa hàng hóa</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="charts-echarts.html">
-                        <i class="bi bi-circle"></i><span>Xóa hàng hóa</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="charts-echarts.html">
-                        <i class="bi bi-circle"></i><span>Tìm kiếm hàng hóa</span>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Goods Nav -->
+            <li class="nav-item has-submenu ">
+                <a class="nav-link" href="#" aria-expanded="false">
+                    <span class="nav-icon"><i class="ph-light ph-database"></i></span>
+                    <span class="nav-text">Quản lý dữ liệu</span>
+                    <span class="nav-arrow"><i class="bi bi-chevron-right"></i></span>
+                </a>
+                <ul class="nav-submenu ">
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Sao lưu dữ liệu</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Phục hồi dữ liệu</a></li>
+                </ul>
+            </li>
 
-        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
-            <a class="nav-link collapsed" data-bs-target="#menu-nav" data-bs-toggle="collapse" href="#">
-                <i class="bx bx-food-menu"></i><span>Quản lý thực đơn</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="menu-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="icons-bootstrap.html">
-                        <i class="bi bi-circle"></i><span>Xem danh sách thực đơn</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="icons-remix.html">
-                        <i class="bi bi-circle"></i><span>Thêm danh mục</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="icons-boxicons.html">
-                        <i class="bi bi-circle"></i><span>Chỉnh sửa danh mục</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="icons-boxicons.html">
-                        <i class="bi bi-circle"></i><span>Xóa danh mục</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="icons-boxicons.html">
-                        <i class="bi bi-circle"></i><span>Tìm kiếm danh mục</span>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Menu Nav -->
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/}">
+                    <span class="nav-icon"><i class="ph-light ph-chart-bar"></i></span>
+                    <span class="nav-text">Thống kê báo cáo</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 
-        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
-            <a class="nav-link collapsed" data-bs-target="#marketing-nav" data-bs-toggle="collapse" href="#">
-                <i class="bx bxs-discount"></i><span>Quản lý Marketing</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="marketing-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="icons-bootstrap.html">
-                        <i class="bi bi-circle"></i><span>Xem các khuyến mãi</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="icons-remix.html">
-                        <i class="bi bi-circle"></i><span>Thêm khuyến mãi</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="icons-boxicons.html">
-                        <i class="bi bi-circle"></i><span>Sửa khuyến mãi</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="icons-boxicons.html" >
-                        <i class="bi bi-circle"></i><span>Xóa khuyến mãi</span>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Marketing Nav -->
-
-        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
-            <a class="nav-link collapsed" data-bs-target="#budget-nav" data-bs-toggle="collapse" href="#">
-                <i class="bx bx-receipt"></i><span>Quản lý ngân sách</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="budget-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="icons-bootstrap.html">
-                        <i class="bi bi-circle"></i><span>Xem thu chi</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="icons-remix.html">
-                        <i class="bi bi-circle"></i><span>Thêm chi tiêu</span>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Budget Nav -->
-
-        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
-            <a class="nav-link collapsed" data-bs-target="#data-nav" data-bs-toggle="collapse" href="#">
-                <i class="bx bx-data"></i><span>Quản lý dữ liệu</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="data-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="icons-bootstrap.html">
-                        <i class="bi bi-circle"></i><span>Sao lưu dữ liệu</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="icons-remix.html">
-                        <i class="bi bi-circle"></i><span>Phục hồi dữ liệu</span>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Data Nav -->
-
-        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
-            <a class="nav-link" href="admin/employee">
-                <i class="bx bx-news"></i>
-                <span>Thống kê, báo cáo</span>
-            </a>
-        </li><!-- End Report Nav -->
-
-    </ul>
-
-</aside><!-- End Sidebar-->
+    <div class="sidebar-footer">
+        <div class="d-grid gap-2">
+            <button class="btn btn-outline-secondary" type="button">Giới thiệu</button>
+        </div>
+    </div>
+</aside>

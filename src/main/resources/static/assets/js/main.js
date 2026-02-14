@@ -1,320 +1,416 @@
 /**
-* Template Name: NiceAdmin - v2.3.1
-* Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
+ * =======================================================
+ * Template Name: FlexAdmin - Bootstrap Admin Template
+ * Template URL: https://bootstrapmade.com/flex-admin-bootstrap-template/
+ * Updated: Feb 11, 2026
+ * Author: BootstrapMade.com
+ * License: https://bootstrapmade.com/license/
+ * =======================================================
+ */
+/**
+ * Main JavaScript - Core functionality
+ * Handles sidebar, mobile menu, search, scroll to top, etc.
+ */
+
 (function() {
-  "use strict";
+  'use strict';
 
-  /**
-   * Easy selector helper function
-   */
-  const select = (el, all = false) => {
-    el = el.trim()
-    if (all) {
-      return [...document.querySelectorAll(el)]
-    } else {
-      return document.querySelector(el)
-    }
-  }
-
-  /**
-   * Easy event listener function
-   */
-  const on = (type, el, listener, all = false) => {
-    if (all) {
-      select(el, all).forEach(e => e.addEventListener(type, listener))
-    } else {
-      select(el, all).addEventListener(type, listener)
-    }
-  }
-
-  /**
-   * Easy on scroll event listener 
-   */
-  const onscroll = (el, listener) => {
-    el.addEventListener('scroll', listener)
-  }
-
-  /**
-   * Sidebar toggle
-   */
-  if (select('.toggle-sidebar-btn')) {
-    on('click', '.toggle-sidebar-btn', function(e) {
-      select('body').classList.toggle('toggle-sidebar')
-    })
-  }
-
-  /**
-   * Search bar toggle
-   */
-  if (select('.search-bar-toggle')) {
-    on('click', '.search-bar-toggle', function(e) {
-      select('.search-bar').classList.toggle('search-bar-show')
-    })
-  }
-
-  /**
-   * Navbar links active state on scroll
-   */
-  let navbarlinks = select('#navbar .scrollto', true)
-  const navbarlinksActive = () => {
-    let position = window.scrollY + 200
-    navbarlinks.forEach(navbarlink => {
-      if (!navbarlink.hash) return
-      let section = select(navbarlink.hash)
-      if (!section) return
-      if (position >= section.offsetTop && position <= (section.offsetTop + section.offsetHeight)) {
-        navbarlink.classList.add('active')
-      } else {
-        navbarlink.classList.remove('active')
-      }
-    })
-  }
-  window.addEventListener('load', navbarlinksActive)
-  onscroll(document, navbarlinksActive)
-
-  /**
-   * Toggle .header-scrolled class to #header when page is scrolled
-   */
-  let selectHeader = select('#header')
-  if (selectHeader) {
-    const headerScrolled = () => {
-      if (window.scrollY > 100) {
-        selectHeader.classList.add('header-scrolled')
-      } else {
-        selectHeader.classList.remove('header-scrolled')
-      }
-    }
-    window.addEventListener('load', headerScrolled)
-    onscroll(document, headerScrolled)
-  }
-
-  /**
-   * Back to top button
-   */
-  let backtotop = select('.back-to-top')
-  if (backtotop) {
-    const toggleBacktotop = () => {
-      if (window.scrollY > 100) {
-        backtotop.classList.add('active')
-      } else {
-        backtotop.classList.remove('active')
-      }
-    }
-    window.addEventListener('load', toggleBacktotop)
-    onscroll(document, toggleBacktotop)
-  }
-
-  /**
-   * Initiate tooltips
-   */
-  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-  var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl)
-  })
-
-  /**
-   * Initiate quill editors
-   */
-  if (select('.quill-editor-default')) {
-    new Quill('.quill-editor-default', {
-      theme: 'snow'
-    });
-  }
-
-  if (select('.quill-editor-bubble')) {
-    new Quill('.quill-editor-bubble', {
-      theme: 'bubble'
-    });
-  }
-
-  if (select('.quill-editor-full')) {
-    new Quill(".quill-editor-full", {
-      modules: {
-        toolbar: [
-          [{
-            font: []
-          }, {
-            size: []
-          }],
-          ["bold", "italic", "underline", "strike"],
-          [{
-              color: []
-            },
-            {
-              background: []
-            }
-          ],
-          [{
-              script: "super"
-            },
-            {
-              script: "sub"
-            }
-          ],
-          [{
-              list: "ordered"
-            },
-            {
-              list: "bullet"
-            },
-            {
-              indent: "-1"
-            },
-            {
-              indent: "+1"
-            }
-          ],
-          ["direction", {
-            align: []
-          }],
-          ["link", "image", "video"],
-          ["clean"]
-        ]
-      },
-      theme: "snow"
-    });
-  }
-
-  /**
-   * Initiate TinyMCE Editor
-   */
-  const useDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const isSmallScreen = window.matchMedia('(max-width: 1023.5px)').matches;
-
-  tinymce.init({
-    selector: 'textarea.tinymce-editor',
-    plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
-    editimage_cors_hosts: ['picsum.photos'],
-    menubar: 'file edit view insert format tools table help',
-    toolbar: 'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',
-    toolbar_sticky: true,
-    toolbar_sticky_offset: isSmallScreen ? 102 : 108,
-    autosave_ask_before_unload: true,
-    autosave_interval: '30s',
-    autosave_prefix: '{path}{query}-{id}-',
-    autosave_restore_when_empty: false,
-    autosave_retention: '2m',
-    image_advtab: true,
-    link_list: [{
-        title: 'My page 1',
-        value: 'https://www.tiny.cloud'
-      },
-      {
-        title: 'My page 2',
-        value: 'http://www.moxiecode.com'
-      }
-    ],
-    image_list: [{
-        title: 'My page 1',
-        value: 'https://www.tiny.cloud'
-      },
-      {
-        title: 'My page 2',
-        value: 'http://www.moxiecode.com'
-      }
-    ],
-    image_class_list: [{
-        title: 'None',
-        value: ''
-      },
-      {
-        title: 'Some class',
-        value: 'class-name'
-      }
-    ],
-    importcss_append: true,
-    file_picker_callback: (callback, value, meta) => {
-      /* Provide file and text for the link dialog */
-      if (meta.filetype === 'file') {
-        callback('https://www.google.com/logos/google.jpg', {
-          text: 'My text'
-        });
-      }
-
-      /* Provide image and alt text for the image dialog */
-      if (meta.filetype === 'image') {
-        callback('https://www.google.com/logos/google.jpg', {
-          alt: 'My alt text'
-        });
-      }
-
-      /* Provide alternative source and posted for the media dialog */
-      if (meta.filetype === 'media') {
-        callback('movie.mp4', {
-          source2: 'alt.ogg',
-          poster: 'https://www.google.com/logos/google.jpg'
-        });
-      }
-    },
-    templates: [{
-        title: 'New Table',
-        description: 'creates a new table',
-        content: '<div class="mceTmpl"><table width="98%%"  border="0" cellspacing="0" cellpadding="0"><tr><th scope="col"> </th><th scope="col"> </th></tr><tr><td> </td><td> </td></tr></table></div>'
-      },
-      {
-        title: 'Starting my story',
-        description: 'A cure for writers block',
-        content: 'Once upon a time...'
-      },
-      {
-        title: 'New list with dates',
-        description: 'New List with dates',
-        content: '<div class="mceTmpl"><span class="cdate">cdate</span><br><span class="mdate">mdate</span><h2>My List</h2><ul><li></li><li></li></ul></div>'
-      }
-    ],
-    template_cdate_format: '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
-    template_mdate_format: '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
-    height: 600,
-    image_caption: true,
-    quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
-    noneditable_class: 'mceNonEditable',
-    toolbar_mode: 'sliding',
-    contextmenu: 'link image table',
-    skin: useDarkMode ? 'oxide-dark' : 'oxide',
-    content_css: useDarkMode ? 'dark' : 'default',
-    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+  // DOM Ready
+  document.addEventListener('DOMContentLoaded', function() {
+    initSidebar();
+    initSearch();
+    initBackToTop();
+    initDropdowns();
+    initTooltips();
   });
 
   /**
-   * Initiate Bootstrap validation check
+   * Sidebar Toggle
    */
-  var needsValidation = document.querySelectorAll('.needs-validation')
+  function initSidebar() {
+    const body = document.body;
+    const sidebarToggle = document.querySelector('.sidebar-toggle');
+    const sidebarClose = document.querySelector('.sidebar-close');
+    const sidebarOverlay = document.querySelector('.sidebar-overlay');
 
-  Array.prototype.slice.call(needsValidation)
-    .forEach(function(form) {
-      form.addEventListener('submit', function(event) {
-        if (!form.checkValidity()) {
-          event.preventDefault()
-          event.stopPropagation()
+    // Toggle sidebar on desktop (show/hide)
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        if (window.innerWidth >= 1200) {
+          // Desktop: Toggle fully hidden state
+          body.classList.toggle('sidebar-hidden');
+        } else {
+          // Mobile: Toggle open state
+          body.classList.toggle('sidebar-open');
+        }
+      });
+    }
+
+    // Close sidebar on mobile
+    if (sidebarClose) {
+      sidebarClose.addEventListener('click', function(e) {
+        e.preventDefault();
+        body.classList.remove('sidebar-open');
+      });
+    }
+
+    // Close sidebar when clicking overlay
+    if (sidebarOverlay) {
+      sidebarOverlay.addEventListener('click', function() {
+        body.classList.remove('sidebar-open');
+      });
+    }
+
+    // Desktop starts with full sidebar width by default
+    if (window.innerWidth >= 1200) {
+      body.classList.remove('sidebar-hidden');
+    }
+
+    // Handle window resize
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function() {
+        if (window.innerWidth >= 1200) {
+          body.classList.remove('sidebar-open');
+        }
+      }, 250);
+    });
+
+    // Initialize sidebar navigation
+    initSidebarNav();
+  }
+
+  /**
+   * Sidebar Navigation - Handle submenus
+   */
+  function initSidebarNav() {
+    // Handle both top-level (.nav-item.has-submenu) and nested (.has-submenu) submenus
+    const navLinks = document.querySelectorAll('.has-submenu > .nav-link');
+
+    navLinks.forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        const parent = this.parentElement;
+        const submenu = parent.querySelector(':scope > .nav-submenu');
+
+        // Toggle this submenu
+        const isOpen = parent.classList.contains('open');
+
+        // Close other open submenus at the same level
+        const siblings = parent.parentElement.querySelectorAll(':scope > .has-submenu.open');
+        siblings.forEach(function(sibling) {
+          if (sibling !== parent) {
+            closeSubmenu(sibling);
+          }
+        });
+
+        // Toggle current submenu
+        if (isOpen) {
+          closeSubmenu(parent);
+        } else {
+          openSubmenu(parent);
+        }
+      });
+    });
+
+    // Auto-expand active submenu on page load
+    const activeItems = document.querySelectorAll('.nav-submenu .nav-link.active');
+    activeItems.forEach(function(activeItem) {
+      let parent = activeItem.closest('.has-submenu');
+      while (parent) {
+        openSubmenu(parent, false);
+        parent = parent.parentElement.closest('.has-submenu');
+      }
+    });
+
+    // Auto-scroll to active nav item if not visible
+    scrollToActiveNavItem();
+  }
+
+  /**
+   * Scroll sidebar to center the active nav item if not visible
+   */
+  function scrollToActiveNavItem() {
+    const sidebarNav = document.querySelector('.sidebar-nav');
+    const activeLink = document.querySelector('.sidebar-nav .nav-link.active');
+
+    if (!sidebarNav || !activeLink) return;
+
+    // Use requestAnimationFrame to ensure DOM has been updated
+    // (especially after submenus have been expanded)
+    requestAnimationFrame(function() {
+      const navRect = sidebarNav.getBoundingClientRect();
+      const linkRect = activeLink.getBoundingClientRect();
+
+      // Calculate the link's position relative to the sidebar nav container
+      const linkTop = linkRect.top - navRect.top + sidebarNav.scrollTop;
+      const linkBottom = linkTop + linkRect.height;
+
+      // Check if the active link is within the visible area
+      const visibleTop = sidebarNav.scrollTop;
+      const visibleBottom = visibleTop + sidebarNav.clientHeight;
+
+      // If the link is not fully visible, scroll to center it
+      if (linkTop < visibleTop || linkBottom > visibleBottom) {
+        // Calculate scroll position to center the active item
+        const scrollTarget = linkTop - (sidebarNav.clientHeight / 2) + (linkRect.height / 2);
+
+        sidebarNav.scrollTo({
+          top: Math.max(0, scrollTarget),
+          behavior: 'smooth'
+        });
+      }
+    });
+  }
+
+  /**
+   * Open a submenu
+   */
+  function openSubmenu(item, animate = true) {
+    const link = item.querySelector(':scope > .nav-link');
+    const submenu = item.querySelector(':scope > .nav-submenu');
+
+    if (!submenu) return;
+
+    // Remove Jinja-set .show class so JS controls maxHeight exclusively
+    submenu.classList.remove('show');
+
+    item.classList.add('open');
+    if (link) {
+      link.setAttribute('aria-expanded', 'true');
+    }
+
+    if (animate) {
+      submenu.style.maxHeight = submenu.scrollHeight + 'px';
+      // Update parent submenu height after child has expanded
+      requestAnimationFrame(function() {
+        updateParentHeight(item);
+      });
+    } else {
+      submenu.style.maxHeight = 'none';
+      updateParentHeight(item);
+    }
+  }
+
+  /**
+   * Close a submenu and its children
+   */
+  function closeSubmenu(item) {
+    const link = item.querySelector(':scope > .nav-link');
+    const submenu = item.querySelector(':scope > .nav-submenu');
+
+    if (!submenu) return;
+
+    item.classList.remove('open');
+    if (link) {
+      link.setAttribute('aria-expanded', 'false');
+    }
+    submenu.style.maxHeight = null;
+
+    // Also close any nested open submenus
+    const nestedOpen = item.querySelectorAll('.has-submenu.open');
+    nestedOpen.forEach(function(nested) {
+      nested.classList.remove('open');
+      const nestedLink = nested.querySelector(':scope > .nav-link');
+      const nestedSubmenu = nested.querySelector(':scope > .nav-submenu');
+      if (nestedLink) {
+        nestedLink.setAttribute('aria-expanded', 'false');
+      }
+      if (nestedSubmenu) {
+        nestedSubmenu.style.maxHeight = null;
+      }
+    });
+  }
+
+  /**
+   * Update parent submenu heights when nested submenu opens
+   */
+  function updateParentHeight(item) {
+    let parent = item.parentElement.closest('.has-submenu.open');
+    while (parent) {
+      const parentSubmenu = parent.querySelector(':scope > .nav-submenu');
+      if (parentSubmenu) {
+        // Calculate total height including all nested open submenus
+        let totalHeight = 0;
+        const children = parentSubmenu.children;
+        for (let i = 0; i < children.length; i++) {
+          totalHeight += children[i].offsetHeight;
+        }
+        parentSubmenu.style.maxHeight = totalHeight + 'px';
+      }
+      parent = parent.parentElement.closest('.has-submenu.open');
+    }
+  }
+
+  /**
+   * Search Bar Toggle (Mobile)
+   */
+  function initSearch() {
+    const searchToggle = document.querySelector('.search-toggle');
+    const mobileSearch = document.querySelector('.mobile-search');
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    const mobileHeaderMenu = document.querySelector('.mobile-header-menu');
+    const searchInput = mobileSearch ? mobileSearch.querySelector('input') : null;
+
+    // Search toggle
+    if (searchToggle && mobileSearch) {
+      searchToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // Close mobile menu if open
+        if (mobileHeaderMenu && mobileHeaderMenu.classList.contains('active')) {
+          mobileHeaderMenu.classList.remove('active');
         }
 
-        form.classList.add('was-validated')
-      }, false)
-    })
+        mobileSearch.classList.toggle('active');
+        if (mobileSearch.classList.contains('active') && searchInput) {
+          searchInput.focus();
+        }
+      });
+    }
 
-  /**
-   * Initiate Datatables
-   */
-  const datatables = select('.datatable', true)
-  datatables.forEach(datatable => {
-    new simpleDatatables.DataTable(datatable);
-  })
+    // Mobile menu toggle (three dots)
+    if (mobileMenuToggle && mobileHeaderMenu) {
+      mobileMenuToggle.addEventListener('click', function(e) {
+        e.preventDefault();
 
-  /**
-   * Autoresize echart charts
-   */
-  const mainContainer = select('#main');
-  if (mainContainer) {
-    setTimeout(() => {
-      new ResizeObserver(function() {
-        select('.echart', true).forEach(getEchart => {
-          echarts.getInstanceByDom(getEchart).resize();
-        })
-      }).observe(mainContainer);
-    }, 200);
+        // Close search if open
+        if (mobileSearch && mobileSearch.classList.contains('active')) {
+          mobileSearch.classList.remove('active');
+        }
+
+        mobileHeaderMenu.classList.toggle('active');
+      });
+    }
+
+    // Close on click outside
+    document.addEventListener('click', function(e) {
+      // Close mobile search
+      if (mobileSearch && !mobileSearch.contains(e.target) && !searchToggle.contains(e.target)) {
+        mobileSearch.classList.remove('active');
+      }
+
+      // Close mobile header menu
+      if (mobileHeaderMenu && mobileMenuToggle &&
+        !mobileHeaderMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+        mobileHeaderMenu.classList.remove('active');
+      }
+    });
+
+    // Close menus on window resize to desktop
+    window.addEventListener('resize', function() {
+      if (window.innerWidth >= 768) {
+        if (mobileSearch) mobileSearch.classList.remove('active');
+        if (mobileHeaderMenu) mobileHeaderMenu.classList.remove('active');
+      }
+    });
   }
+
+  /**
+   * Back to Top Button
+   */
+  function initBackToTop() {
+    const backToTop = document.querySelector('.back-to-top');
+
+    if (backToTop) {
+      // Show/hide based on scroll position
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 100) {
+          backToTop.classList.add('visible');
+        } else {
+          backToTop.classList.remove('visible');
+        }
+      });
+
+      // Scroll to top on click
+      backToTop.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    }
+  }
+
+  /**
+   * Initialize Dropdowns (if not using Bootstrap JS)
+   */
+  function initDropdowns() {
+    // Only initialize if Bootstrap's dropdown isn't available
+    if (typeof bootstrap !== 'undefined' && bootstrap.Dropdown) {
+      return;
+    }
+
+    const dropdownToggles = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+
+    dropdownToggles.forEach(function(toggle) {
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const parent = this.parentElement;
+        const menu = parent.querySelector('.dropdown-menu');
+
+        // Close other dropdowns
+        document.querySelectorAll('.dropdown-menu.show').forEach(function(openMenu) {
+          if (openMenu !== menu) {
+            openMenu.classList.remove('show');
+          }
+        });
+
+        // Toggle this dropdown
+        menu.classList.toggle('show');
+      });
+    });
+
+    // Close dropdowns on click outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.dropdown')) {
+        document.querySelectorAll('.dropdown-menu.show').forEach(function(menu) {
+          menu.classList.remove('show');
+        });
+      }
+    });
+  }
+
+  /**
+   * Initialize Tooltips
+   */
+  function initTooltips() {
+    // Only initialize if Bootstrap's tooltip is available
+    if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+    }
+  }
+
+  /**
+   * Fullscreen Toggle
+   */
+  window.toggleFullscreen = function() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+      document.body.classList.add('fullscreen-active');
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+        document.body.classList.remove('fullscreen-active');
+      }
+    }
+  };
+
+  // Listen for fullscreen change
+  document.addEventListener('fullscreenchange', function() {
+    if (!document.fullscreenElement) {
+      document.body.classList.remove('fullscreen-active');
+    }
+  });
 
 })();

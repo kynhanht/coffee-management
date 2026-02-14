@@ -5,22 +5,30 @@
 <head th:replace="~{fragments/head :: head}"></head>
 
 <body>
-<!-- ======= Header ======= -->
-<header th:replace="~{fragments/header :: header}"></header>
-<!-- ======= Sidebar ======= -->
+<!-- Header -->
+<div th:replace="~{fragments/header :: header}"></div>
+
+<!-- Sidebar -->
 <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<main id="main" class="main">
-    <div class="pagetitle">
-        <h1 th:text="${title}">Trang chủ</h1>
-    </div><!-- End Page Title -->
-    <div th:replace="~{${content}}"></div>
-</main><!-- End #main -->
+<!-- Sidebar Overlay (Mobile) -->
+<div class="sidebar-overlay"></div>
+
+<!-- Main Content -->
+<main class="main">
+    <div class="main-content">
+        <div th:replace="~{${content}}"></div>
+    </div>
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</main>
 
 
-<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-<!-- ======= Script ======= -->
+<a href="#" class="back-to-top">
+    <i class="bi bi-arrow-up"></i>
+</a>
+
 <div th:replace="~{fragments/script :: script}"></div>
 
 </body>

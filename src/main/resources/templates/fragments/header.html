@@ -1,10 +1,16 @@
-<header id="header" class="header fixed-top d-flex align-items-center" th:fragment="header">
-  <a th:href="@{/}" class="logo d-flex align-items-center">
-    <span class="d-none d-lg-block">Quản lý quán coffee</span>
-  </a>
-  <div class="d-flex align-items-center justify-content-between">
-    <i class="bi bi-list toggle-sidebar-btn"></i>
-  </div><!-- End Logo -->
-
-</header><!-- End Header -->
-
+<header class="header" th:fragment>
+    <div class="header-left">
+        <a th:href="@{/}" class="header-logo">
+            <img th:src="@{/assets/img/logo.webp}" alt="FlexAdmin">
+            <span>FlexAdmin</span>
+        </a>
+    </div>
+    <button class="sidebar-toggle" title="Toggle Sidebar">
+        <i class="bi bi-layout-sidebar-inset"></i>
+    </button>
+    <div class="header-right w-100 justify-content-center">
+        <div class="page-title">
+            Phần mềm quản lý quán coffee version 1.0
+        </div>
+    </div>
+</header>

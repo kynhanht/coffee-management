@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<div th:replace="~{fragments/head :: head}"></div>
+
+<body>
+<div class="fx-error-page fx-error-403">
+    <div class="fx-error-bg-shape shape-a"></div>
+    <div class="fx-error-bg-shape shape-b"></div>
+
+    <div class="fx-error-card">
+        <a th:href="@{/}" class="fx-error-logo"><img th:src="@{assets/img/logo.webp}" alt="FlexAdmin"></a>
+        <span class="fx-error-kicker">Error 403</span>
+        <span class="fx-error-icon warning"><i class="bi bi-shield-lock"></i></span>
+        <h2 class="fx-error-title">Access restricted</h2>
+        <p class="fx-error-text">Your account does not have permission to view this resource. Sign in with a different role or contact your administrator.</p>
+        <div class="fx-error-actions">
+            <a th:href="@{/login}" class="btn btn-primary"><i class="bi bi-box-arrow-in-right me-1"></i> Sign In</a>
+            <a th:href="@{/}" class="btn btn-outline-secondary"><i class="bi bi-house me-1"></i> Workspace</a>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/script :: script}"></div>
+
+</body>
+
+</html>

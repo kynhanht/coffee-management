@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<div th:replace="~{fragments/head :: head}"></div>
+
+<body>
+<div class="fx-error-page fx-error-404">
+    <div class="fx-error-bg-shape shape-a"></div>
+    <div class="fx-error-bg-shape shape-b"></div>
+
+    <div class="fx-error-card">
+        <a th:href="@{/}" class="fx-error-logo"><img th:src="@{assets/img/logo.webp}" alt="FlexAdmin"></a>
+        <span class="fx-error-kicker">Error 404</span>
+        <h1 class="fx-error-code">404</h1>
+        <h2 class="fx-error-title">We couldn't find that page</h2>
+        <p class="fx-error-text">The link may be outdated or the page may have moved. Try navigating from your workspace
+            home.</p>
+        <div class="fx-error-actions">
+            <a th:href="@{/}" class="btn btn-primary"><i class="bi bi-house me-1"></i> Back Home</a>
+            <a href="#" class="btn btn-outline-secondary" onclick="history.back(); return false;"><i
+                    class="bi bi-arrow-left me-1"></i> Go Back</a>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/script :: script}"></div>
+
+</body>
+
+</html>

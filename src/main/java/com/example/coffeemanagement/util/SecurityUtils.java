@@ -1,6 +1,6 @@
 package com.example.coffeemanagement.util;
 
-import com.example.coffeemanagement.dto.CustomUserDetail;
+import com.example.coffeemanagement.security.CustomUserDetail;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 

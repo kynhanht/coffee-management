@@ -1,8 +1,10 @@
 package com.example.coffeemanagement.service.impl;
 
-import com.example.coffeemanagement.dao.TaiKhoanDAO;
-import com.example.coffeemanagement.dto.CustomUserDetail;
-import com.example.coffeemanagement.model.TaiKhoanModel;
+import com.example.coffeemanagement.constant.ErrorMessageConstants;
+import com.example.coffeemanagement.dao.ITaiKhoanDAO;
+import com.example.coffeemanagement.exception.NotFoundException;
+import com.example.coffeemanagement.model.TaiKhoan;
+import com.example.coffeemanagement.security.CustomUserDetail;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,20 +18,19 @@ import java.util.HashSet;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final TaiKhoanDAO taiKhoanDao;
+    private final ITaiKhoanDAO ITaiKhoanDao;
 
-    public CustomUserDetailsService(TaiKhoanDAO taiKhoanDao) {
-        this.taiKhoanDao = taiKhoanDao;
+    public CustomUserDetailsService(ITaiKhoanDAO ITaiKhoanDao) {
+        this.ITaiKhoanDao = ITaiKhoanDao;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        TaiKhoanModel model = taiKhoanDao
-                .findByTenDangNhap(username);
-
+        TaiKhoan taiKhoan = ITaiKhoanDao.findByTenDangNhap(username)
+                .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.TAI_KHOAN_NOT_FOUND + ": " + username));
         Collection<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_"+model.getQuyenHan()));
-        CustomUserDetail customUserDetail = new CustomUserDetail(model, authorities);
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + taiKhoan.getQuyenHan()));
+        CustomUserDetail customUserDetail = new CustomUserDetail(taiKhoan, authorities);
         return customUserDetail;
     }
 }

@@ -1,6 +1,6 @@
-package com.example.coffeemanagement.dto;
+package com.example.coffeemanagement.security;
 
-import com.example.coffeemanagement.model.TaiKhoanModel;
+import com.example.coffeemanagement.model.TaiKhoan;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,11 +8,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 public class CustomUserDetail implements UserDetails {
-    private final TaiKhoanModel taiKhoanModel;
+    private final TaiKhoan taiKhoan;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetail(TaiKhoanModel taiKhoanModel, Collection<? extends GrantedAuthority> authorities) {
-        this.taiKhoanModel = taiKhoanModel;
+    public CustomUserDetail(TaiKhoan taiKhoan, Collection<? extends GrantedAuthority> authorities) {
+        this.taiKhoan = taiKhoan;
         this.authorities = authorities;
     }
 
@@ -23,12 +23,12 @@ public class CustomUserDetail implements UserDetails {
 
     @Override
     public @Nullable String getPassword() {
-        return taiKhoanModel.getMatKhau();
+        return taiKhoan.getMatKhau();
     }
 
     @Override
     public String getUsername() {
-        return taiKhoanModel.getTenDangNhap();
+        return taiKhoan.getTenDangNhap();
     }
 
     @Override

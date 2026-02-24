@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/head :: head}"></head>
+<div th:replace="~{fragments/head :: head}"></div>
 
 <body>
 <!-- Header -->
@@ -16,9 +16,7 @@
 
 <!-- Main Content -->
 <main class="main">
-    <div class="main-content">
-        <div th:replace="~{${content}}"></div>
-    </div>
+    <div th:replace="~{${content}}"></div>
     <!-- Footer -->
     <div th:replace="~{fragments/footer :: footer}"></div>
 </main>

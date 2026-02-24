@@ -1,7 +1,7 @@
 package com.example.coffeemanagement.converter;
 
-import com.example.coffeemanagement.dto.TaiKhoanDTO;
-import com.example.coffeemanagement.model.TaiKhoanModel;
+import com.example.coffeemanagement.dto.NhanVienDetailDTO;
+import com.example.coffeemanagement.model.TaiKhoan;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -14,15 +14,15 @@ public class TaiKhoanConverter {
         this.modelMapper = modelMapper;
     }
 
-    public TaiKhoanDTO converterToDTO(TaiKhoanModel model){
-        TaiKhoanDTO dto;
-        dto = modelMapper.map(model,TaiKhoanDTO.class);
+    public NhanVienDetailDTO converterToDTO(TaiKhoan model){
+        NhanVienDetailDTO dto;
+        dto = modelMapper.map(model, NhanVienDetailDTO.class);
         return dto;
     }
 
-    public TaiKhoanModel convertToModel(TaiKhoanDTO dto){
-        TaiKhoanModel model;
-        model = modelMapper.map(dto, TaiKhoanModel.class);
+    public TaiKhoan convertToModel(NhanVienDetailDTO dto){
+        TaiKhoan model;
+        model = modelMapper.map(dto, TaiKhoan.class);
         return model;
     }
 }

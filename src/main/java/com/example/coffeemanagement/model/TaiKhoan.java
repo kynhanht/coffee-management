@@ -1,7 +1,7 @@
 package com.example.coffeemanagement.model;
 
 
-public class TaiKhoanModel {
+public class TaiKhoan {
 
     private String maTaiKhoan;
 

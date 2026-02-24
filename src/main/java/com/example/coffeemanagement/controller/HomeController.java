@@ -1,27 +1,51 @@
 package com.example.coffeemanagement.controller;
 
+import com.example.coffeemanagement.dto.NhanVienDetailDTO;
+import com.example.coffeemanagement.service.INhanVienService;
+import com.example.coffeemanagement.util.SecurityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class HomeController {
+    private final INhanVienService nhanVienService;
+    public HomeController(INhanVienService nhanVienService) {
+        this.nhanVienService = nhanVienService;
+    }
+
     @GetMapping("/login")
     public String login(){
         return "login";
     }
-
-    @RequestMapping("/")
+    @GetMapping("/")
     public String index(Model model){
         model.addAttribute("title", "Trang chủ");
         model.addAttribute("content", "home");
         return "layout/main";
     }
 
-    @RequestMapping("/admin")
+    @GetMapping("/admin")
     public String admin (){
         return "redirect:/";
+    }
+
+    @GetMapping("/profile")
+    public String profile(Model model){
+        String tenDangNhap = SecurityUtils.getPrincipal().getUsername();
+        NhanVienDetailDTO detail = nhanVienService.getDetail(tenDangNhap);
+        model.addAttribute("employee", detail);
+        model.addAttribute("title", "Trang cá nhân");
+        model.addAttribute("content", "profile");
+        return "layout/main";
+
+    }
+    @PostMapping("/profile/update")
+    public String updateProfile(@ModelAttribute("employee") NhanVienDetailDTO dto){
+        nhanVienService.updateNhanVien(dto);
+        return "redirect:/profile";
     }
 
 

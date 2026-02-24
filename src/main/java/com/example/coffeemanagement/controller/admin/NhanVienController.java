@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("admin/employee")
-public class EmployeeController {
+public class NhanVienController {
 
-    @GetMapping
+    @GetMapping("/")
     public String index(){
         return "admin/employee/index";
     }

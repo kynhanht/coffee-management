@@ -9,17 +9,14 @@
 
         <div class="fx-error-card">
             <a th:href="@{/}" class="fx-error-logo"><img th:src="@{assets/img/logo.webp}" alt="FlexAdmin"></a>
-            <span class="fx-error-kicker">Error 500</span>
+            <span class="fx-error-kicker">Lỗi 500</span>
             <span class="fx-error-icon danger"><i class="bi bi-exclamation-octagon"></i></span>
-            <h2 class="fx-error-title">Internal server issue</h2>
-            <p class="fx-error-text">A temporary server error interrupted your request. Our monitoring system has already captured this incident.</p>
-            <div class="fx-error-status-row">
-                <span><i class="bi bi-activity"></i> Incident ID: SRV-9821</span>
-                <span><i class="bi bi-clock"></i> Status: Mitigating</span>
-            </div>
+            <h1 class="fx-error-code">500</h1>
+            <h2 class="fx-error-title">Lỗi hệ thống</h2>
+            <p class="fx-error-text">Hệ thống đang gặp sự cố ngoài ý muốn. Chúng tôi đang khắc phục vấn đề. Vui lòng thử lại sau.</p>
             <div class="fx-error-actions">
-                <button class="btn btn-primary" onclick="location.reload()"><i class="bi bi-arrow-clockwise me-1"></i> Try Again</button>
-                <a th:href="@{/}" class="btn btn-outline-secondary"><i class="bi bi-house me-1"></i> Dashboard</a>
+                <button class="btn btn-primary" onclick="location.reload()"><i class="bi bi-arrow-clockwise me-1"></i>Thử lại</button>
+                <a th:href="@{/}" class="btn btn-outline-secondary"><i class="bi bi-house me-1"></i> Trang chủ</a>
             </div>
         </div>
     </div>

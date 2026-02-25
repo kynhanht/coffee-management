@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class HomeController {
@@ -43,10 +44,11 @@ public class HomeController {
 
     }
     @PostMapping("/profile/update")
-    public String updateProfile(@ModelAttribute("employee") NhanVienDetailDTO dto){
+    public String updateProfile(@ModelAttribute("employee") NhanVienDetailDTO dto, RedirectAttributes redirectAttributes){
         nhanVienService.updateNhanVien(dto);
+        redirectAttributes.addFlashAttribute("success",
+                "Cập nhật thành công!");
         return "redirect:/profile";
     }
-
 
 } 

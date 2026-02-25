@@ -10,13 +10,14 @@
 
     <div class="fx-error-card">
         <a th:href="@{/}" class="fx-error-logo"><img th:src="@{assets/img/logo.webp}" alt="FlexAdmin"></a>
-        <span class="fx-error-kicker">Error 403</span>
+        <span class="fx-error-kicker">Lỗi 403</span>
         <span class="fx-error-icon warning"><i class="bi bi-shield-lock"></i></span>
-        <h2 class="fx-error-title">Access restricted</h2>
-        <p class="fx-error-text">Your account does not have permission to view this resource. Sign in with a different role or contact your administrator.</p>
+        <h1 class="fx-error-code">403</h1>
+        <h2 class="fx-error-title">Truy cập bị từ chối</h2>
+        <p class="fx-error-text">Bạn không có quyền truy cập vào tài nguyên này. Vui lòng đăng nhập bằng tài khoản phù hợp hoặc liên hệ quản trị viên.</p>
         <div class="fx-error-actions">
-            <a th:href="@{/login}" class="btn btn-primary"><i class="bi bi-box-arrow-in-right me-1"></i> Sign In</a>
-            <a th:href="@{/}" class="btn btn-outline-secondary"><i class="bi bi-house me-1"></i> Workspace</a>
+            <a th:href="@{/login}" class="btn btn-primary"><i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập</a>
+            <a th:href="@{/}" class="btn btn-outline-secondary"><i class="bi bi-house me-1"></i> Trang chủ</a>
         </div>
     </div>
 </div>

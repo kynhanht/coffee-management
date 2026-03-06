@@ -1,10 +1,15 @@
 <div class="main-content page-profile">
     <div class="page-profile">
+        <div class="page-header">
+            <div>
+                <h1 th:text="${title}" class="page-title"></h1>
+            </div>
+        </div>
         <div class="row">
-            <div class="col-12">
+            <div class="col-xl-8">
                 <div class="card mb-4">
                     <div class="card-header d-flex align-items-center justify-content-between">
-                        <h5 th:text="${title}" class="card-title mb-0"></h5>
+                        <h5 class="card-title mb-0">Thông tin cá nhân</h5>
                         <a th:href="@{/logout}" class="btn btn-outline-secondary btn">Đăng xuất</a>
                     </div>
                     <div class="card-body">
@@ -41,6 +46,21 @@
                     </div>
                 </div>
             </div>
+            <div class="col-xl-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">Ảnh đại diện</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="upload-avatar upload-avatar-square">
+                            <img th:src="${employee.anh != null}
+                            ? @{/uploads/{file}(file=${employee.anh})}
+                            : @{/assets/img/avatars/avatar-2.webp}" alt="Avatar"
+                                 class="upload-avatar-img">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -51,12 +71,9 @@
                     <h5 class="modal-title">Chỉnh sửa thông tin cá nhân</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form th:action="@{/profile/update}" th:object="${employee}" method="post">
+                <form th:action="@{/profile/{maNhanVien}(maNhanVien=${employee.maNhanVien})}" th:object="${employee}" method="post" enctype="multipart/form-data">
                     <div class="modal-body">
                         <div class="row g-3">
-                            <div class="col-12">
-                                <input type="hidden" th:field="*{tenDangNhap}">
-                            </div>
                             <div class="col-12">
                                 <label class="form-label" for="hoTen">Họ tên</label>
                                 <input type="text" id="hoTen" class="form-control" placeholder="Nhập họ tên"
@@ -72,6 +89,38 @@
                                 <input type="text" id="soDienThoai" class="form-control"
                                        th:field="*{soDienThoai}">
                             </div>
+                            <div class="col-md-6">
+                                <label for="chucVu" class="form-label required">Chức vụ</label>
+                                <select class="form-select" th:field="*{maChucVu}" id="chucVu" name="maChucVu"
+                                        required>
+                                    <option value="">Chọn chức vụ</option>
+                                    <option th:each="chucVu : ${dsChucVu}"
+                                            th:value="${chucVu.maChucVu}"
+                                            th:text="${chucVu.tenChucVu}"
+                                            th:data-luong="${#numbers.formatDecimal(chucVu.luong, 0, 'COMMA', 0, 'POINT')}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="luong" class="form-label required">Lương</label>
+                                <input type="text" class="form-control" id="luong" readonly>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="upload-avatar upload-avatar-square" id="avatar-edit">
+                                    <input type="file" name="file" accept="image/*" hidden>
+                                    <img th:src="${employee.anh != null}
+                                     ? @{/uploads/{file}(file=${employee.anh})}
+                                     : @{/assets/img/avatars/avatar-2.webp}" alt="Avatar" class="upload-avatar-img">
+                                    <div class="upload-avatar-overlay">
+                                        <i class="bi bi-camera"></i>
+                                    </div>
+                                </div>
+                                <p class="text-muted small mt-2 text-center">Ảnh dạng JPG, PNG or WEBP. tối đa 2MB.</p>
+                            </div>
+                            <div class="col-12">
+                                <input type="hidden" th:field="*{anh}">
+                                <input type="hidden" th:field="*{tenDangNhap}">
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -82,6 +131,7 @@
             </div>
         </div>
     </div>
+
 
     <div th:if="${success}"
          class="toast-container position-fixed bottom-0 end-0 p-3">
@@ -107,11 +157,41 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Update Lương theo chức vụ
+        const chucVuSelect = document.querySelector("#chucVu");
+        const luongInput = document.querySelector("#luong");
+
+        function updateLuong() {
+            const selectedOption = chucVuSelect.options[chucVuSelect.selectedIndex];
+            luongInput.value = selectedOption.getAttribute("data-luong") || "";
+        }
+        updateLuong();
+        chucVuSelect.addEventListener("change", updateLuong);
+
+        // Avatar uploads
+        const avatar = document.querySelector('#avatar-edit');
+        const avatarInput = avatar.querySelector('input[type="file"]');
+        const img = avatar.querySelector('.upload-avatar-img');
+        avatar.addEventListener('click', function () {
+            avatarInput.click();
+        });
+        avatarInput.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+        // Show Message
         const liveToast = document.getElementById('liveToast');
         if (liveToast) {
             const toast = new bootstrap.Toast(liveToast);
             toast.show();
         }
+
     });
 </script>
 

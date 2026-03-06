@@ -63,7 +63,7 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/login","/assets/**").permitAll()
+                .requestMatchers("/login","/assets/**", "/uploads/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated());
         // Configure remember me

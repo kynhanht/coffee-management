@@ -1,6 +1,6 @@
 package com.example.coffeemanagement.security;
 
-import com.example.coffeemanagement.model.TaiKhoan;
+import com.example.coffeemanagement.model.NhanVien;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,11 +8,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 public class CustomUserDetail implements UserDetails {
-    private final TaiKhoan taiKhoan;
+    private final NhanVien nhanVien;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetail(TaiKhoan taiKhoan, Collection<? extends GrantedAuthority> authorities) {
-        this.taiKhoan = taiKhoan;
+    public CustomUserDetail(NhanVien nhanVien, Collection<? extends GrantedAuthority> authorities) {
+        this.nhanVien = nhanVien;
         this.authorities = authorities;
     }
 
@@ -23,12 +23,12 @@ public class CustomUserDetail implements UserDetails {
 
     @Override
     public @Nullable String getPassword() {
-        return taiKhoan.getMatKhau();
+        return nhanVien.getMatKhau();
     }
 
     @Override
     public String getUsername() {
-        return taiKhoan.getTenDangNhap();
+        return nhanVien.getTenDangNhap();
     }
 
     @Override

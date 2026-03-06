@@ -14,21 +14,16 @@
                     <span class="nav-text">Trang cá nhân</span>
                 </a>
             </li>
-            <li class="nav-item has-submenu ">
+            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item has-submenu ">
                 <a class="nav-link" href="#" aria-expanded="false">
                     <span class="nav-icon"><i class="ph-light ph-users-three"></i></span>
                     <span class="nav-text">Quản lý nhân viên</span>
                     <span class="nav-arrow"><i class="bi bi-chevron-right"></i></span>
                 </a>
                 <ul class="nav-submenu ">
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xem danh sách nhân viên</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Thêm nhân viên</a>
-                    </li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Chỉnh sửa nhân viên</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xóa nhân viên</a>
-                    </li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Tìm kiếm</a>
-                    </li>
+                    <li><a class="nav-link " th:href="@{/admin/employees/list}"><span class="nav-dot"></span>Xem danh sách nhân viên</a></li>
+                    <li><a class="nav-link " th:href="@{/admin/employees/addOrEdit}"><span class="nav-dot"></span>Thêm nhân viên</a></li>
+                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Tìm kiếm</a></li>
                 </ul>
             </li>
 
@@ -53,7 +48,7 @@
                 </ul>
             </li>
 
-            <li class="nav-item has-submenu ">
+            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item has-submenu ">
                 <a class="nav-link" href="#" aria-expanded="false">
                     <span class="nav-icon"><i class="ph-light ph-devices"></i></span>
                     <span class="nav-text">Quản lý trang thiết bị</span>
@@ -67,7 +62,7 @@
                 </ul>
             </li>
 
-            <li class="nav-item has-submenu ">
+            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item has-submenu ">
                 <a class="nav-link" href="#" aria-expanded="false">
                     <span class="nav-icon"><i class="ph-light ph-storefront"></i></span>
                     <span class="nav-text">Xem danh sách hàng hóa</span>
@@ -83,7 +78,7 @@
                 </ul>
             </li>
 
-            <li class="nav-item has-submenu ">
+            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item has-submenu ">
                 <a class="nav-link" href="#" aria-expanded="false">
                     <span class="nav-icon"><i class="ph-light ph-hamburger"></i></span>
                     <span class="nav-text">Quản lý thực đơn</span>
@@ -98,7 +93,7 @@
                 </ul>
             </li>
 
-            <li class="nav-item has-submenu ">
+            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item has-submenu ">
                 <a class="nav-link" href="#" aria-expanded="false">
                     <span class="nav-icon"><i class="ph-light ph-seal-percent"></i></span>
                     <span class="nav-text">Quản lý Marketing</span>
@@ -112,7 +107,7 @@
                 </ul>
             </li>
 
-            <li class="nav-item has-submenu ">
+            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item has-submenu ">
                 <a class="nav-link" href="#" aria-expanded="false">
                     <span class="nav-icon"><i class="ph-light ph-money"></i></span>
                     <span class="nav-text">Quản lý ngân sách</span>
@@ -124,7 +119,7 @@
                 </ul>
             </li>
 
-            <li class="nav-item has-submenu ">
+            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item has-submenu ">
                 <a class="nav-link" href="#" aria-expanded="false">
                     <span class="nav-icon"><i class="ph-light ph-database"></i></span>
                     <span class="nav-text">Quản lý dữ liệu</span>
@@ -136,7 +131,7 @@
                 </ul>
             </li>
 
-            <li class="nav-item">
+            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
                 <a class="nav-link" th:href="@{/}">
                     <span class="nav-icon"><i class="ph-light ph-chart-bar"></i></span>
                     <span class="nav-text">Thống kê báo cáo</span>

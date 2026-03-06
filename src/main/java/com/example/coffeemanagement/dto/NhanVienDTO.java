@@ -2,22 +2,16 @@ package com.example.coffeemanagement.dto;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import java.math.BigDecimal;
-
-
-public class NhanVienDetailDTO {
+public class NhanVienDTO {
     private String maNhanVien;
     private String hoTen;
     private String diaChi;
-    private String soDienThoai;
     private String maChucVu;
-    private String tenChucVu;
-    private BigDecimal luong;
-    private String anh;
-    private MultipartFile file;
+    private String soDienThoai;
     private String tenDangNhap;
     private String matKhau;
-
+    private String anh;
+    private MultipartFile file;
 
     public String getMaNhanVien() {
         return maNhanVien;
@@ -43,14 +37,6 @@ public class NhanVienDetailDTO {
         this.diaChi = diaChi;
     }
 
-    public String getSoDienThoai() {
-        return soDienThoai;
-    }
-
-    public void setSoDienThoai(String soDienThoai) {
-        this.soDienThoai = soDienThoai;
-    }
-
     public String getMaChucVu() {
         return maChucVu;
     }
@@ -59,35 +45,20 @@ public class NhanVienDetailDTO {
         this.maChucVu = maChucVu;
     }
 
-    public String getTenChucVu() {
-        return tenChucVu;
+    public String getSoDienThoai() {
+        return soDienThoai;
     }
 
-    public void setTenChucVu(String chucVu) {
-        this.tenChucVu = chucVu;
-    }
-
-    public BigDecimal getLuong() {
-        return luong;
-    }
-
-    public void setLuong(BigDecimal luong) {
-        this.luong = luong;
+    public void setSoDienThoai(String soDienThoai) {
+        this.soDienThoai = soDienThoai;
     }
 
     public String getAnh() {
         return anh;
     }
+
     public void setAnh(String anh) {
         this.anh = anh;
-    }
-
-    public MultipartFile getFile() {
-        return file;
-    }
-
-    public void setFile(MultipartFile file) {
-        this.file = file;
     }
 
     public String getTenDangNhap() {
@@ -104,6 +75,14 @@ public class NhanVienDetailDTO {
 
     public void setMatKhau(String matKhau) {
         this.matKhau = matKhau;
+    }
+
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
     }
 
 }

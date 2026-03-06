@@ -11,6 +11,16 @@ public class TaiKhoan {
 
     private String quyenHan;
 
+    public TaiKhoan() {
+    }
+
+    public TaiKhoan(String maTaiKhoan, String tenDangNhap, String matKhau, String quyenHan) {
+        this.maTaiKhoan = maTaiKhoan;
+        this.tenDangNhap = tenDangNhap;
+        this.matKhau = matKhau;
+        this.quyenHan = quyenHan;
+    }
+
     public String getMaTaiKhoan() {
         return maTaiKhoan;
     }

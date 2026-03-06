@@ -1,5 +1,6 @@
 package com.example.coffeemanagement.exception.handler;
 
+import com.example.coffeemanagement.exception.FileStorageException;
 import com.example.coffeemanagement.exception.InternalException;
 import com.example.coffeemanagement.exception.NotFoundException;
 import org.slf4j.Logger;
@@ -16,16 +17,23 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(InternalException.class)
     public String handleInternal(InternalException ex, Model model) {
-        logger.error("Lỗi hệ thống", ex);
+        logger.error("Lỗi hệ thống", ex.getCause());
         model.addAttribute("errorMessage", ex.getMessage());
-        return "error/501";
+        return "error/500";
     }
 
     @ExceptionHandler(NotFoundException.class)
     public String handleNotFound(NotFoundException ex, Model model) {
-        logger.error("Lỗi hệ thống", ex);
+        logger.error("Lỗi không tìm thấy đối tượng", ex.getCause());
         model.addAttribute("errorMessage", ex.getMessage());
         return "error/404";
+    }
+
+    @ExceptionHandler(FileStorageException.class)
+    public String handleFile(NotFoundException ex, Model model) {
+        logger.error("Lỗi xử lý file", ex.getCause());
+        model.addAttribute("errorMessage", ex.getMessage());
+        return "error/500";
     }
 
     @ModelAttribute("currentUser")

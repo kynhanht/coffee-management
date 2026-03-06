@@ -1,9 +1,9 @@
 package com.example.coffeemanagement.service.impl;
 
 import com.example.coffeemanagement.constant.ErrorMessageConstants;
-import com.example.coffeemanagement.dao.ITaiKhoanDAO;
+import com.example.coffeemanagement.dao.INhanVienDAO;
 import com.example.coffeemanagement.exception.NotFoundException;
-import com.example.coffeemanagement.model.TaiKhoan;
+import com.example.coffeemanagement.model.NhanVien;
 import com.example.coffeemanagement.security.CustomUserDetail;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,19 +18,19 @@ import java.util.HashSet;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final ITaiKhoanDAO ITaiKhoanDao;
+    private final INhanVienDAO nhanVienDAO;
 
-    public CustomUserDetailsService(ITaiKhoanDAO ITaiKhoanDao) {
-        this.ITaiKhoanDao = ITaiKhoanDao;
+    public CustomUserDetailsService(INhanVienDAO nhanVienDAO) {
+        this.nhanVienDAO = nhanVienDAO;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        TaiKhoan taiKhoan = ITaiKhoanDao.findByTenDangNhap(username)
+        NhanVien nhanVien = nhanVienDAO.findByTenDangNhap(username)
                 .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.TAI_KHOAN_NOT_FOUND + ": " + username));
         Collection<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + taiKhoan.getQuyenHan()));
-        CustomUserDetail customUserDetail = new CustomUserDetail(taiKhoan, authorities);
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + nhanVien.getQuyenHan()));
+        CustomUserDetail customUserDetail = new CustomUserDetail(nhanVien, authorities);
         return customUserDetail;
     }
 }

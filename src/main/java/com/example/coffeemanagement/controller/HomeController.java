@@ -1,8 +1,8 @@
 package com.example.coffeemanagement.controller;
 
-import com.example.coffeemanagement.dto.NhanVienDetailDTO;
-import com.example.coffeemanagement.service.IChucVuService;
-import com.example.coffeemanagement.service.INhanVienService;
+import com.example.coffeemanagement.dto.EmployeeDetailDTO;
+import com.example.coffeemanagement.service.IEmployeeService;
+import com.example.coffeemanagement.service.IPositionService;
 import com.example.coffeemanagement.util.SecurityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,11 +14,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class HomeController {
-    private final INhanVienService nhanVienService;
-    private final IChucVuService chucVuService;
-    public HomeController(IChucVuService chucVuService, INhanVienService nhanVienService) {
-        this.chucVuService = chucVuService;
-        this.nhanVienService = nhanVienService;
+    private final IEmployeeService employeeService;
+    private final IPositionService positionService;
+
+    public HomeController(IEmployeeService employeeService, IPositionService positionService) {
+        this.employeeService = employeeService;
+        this.positionService = positionService;
     }
 
     @GetMapping("/login")
@@ -39,21 +40,21 @@ public class HomeController {
 
     @GetMapping("/profile")
     public String profile(Model model){
-        String tenDangNhap = SecurityUtils.getPrincipal().getUsername();
-        NhanVienDetailDTO detail = nhanVienService.getDetail(tenDangNhap);
-        model.addAttribute("dsChucVu", chucVuService.getAll());
+        String username = SecurityUtils.getPrincipal().getUsername();
+        EmployeeDetailDTO detail = employeeService.getDetail(username);
+        model.addAttribute("positionList", positionService.getAll());
         model.addAttribute("employee", detail);
         model.addAttribute("title", "Trang cá nhân");
         model.addAttribute("content", "profile");
         return "layout/main";
 
     }
-    @PostMapping("/profile/{tenDangNhap}")
-    public String updateProfile(@ModelAttribute("employee") NhanVienDetailDTO dto,
-                                @PathVariable("tenDangNhap") String tenDangNhap,
+    @PostMapping("/profile/{username}")
+    public String updateProfile(@ModelAttribute("employee") EmployeeDetailDTO dto,
+                                @PathVariable String username,
                                 RedirectAttributes redirectAttributes){
 
-        nhanVienService.updateProfile(tenDangNhap, dto);
+        employeeService.updateProfile(username, dto);
 
         redirectAttributes.addFlashAttribute("success",
                 "Cập nhật thành công!");

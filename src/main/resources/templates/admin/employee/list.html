@@ -78,19 +78,19 @@
                     </thead>
                     <tbody>
                     <tr th:each="employee : ${pageData.content}">
-                        <td th:text="${employee.hoTen}" class="users-meta"></td>
-                        <td th:text="${employee.tenChucVu}" class="users-meta">Just now</td>
-                        <td th:text="${#numbers.formatDecimal(employee.luong, 0, 'COMMA', 0, 'POINT')}"
+                        <td th:text="${employee.fullName}" class="users-meta"></td>
+                        <td th:text="${employee.positionName}" class="users-meta">Just now</td>
+                        <td th:text="${#numbers.formatDecimal(employee.salary, 0, 'COMMA', 0, 'POINT')}"
                             class="users-meta">Jan 15, 2024
                         </td>
                         <td>
                             <div class="users-actions">
                                 <a th:href="@{/admin/employees/addOrEdit}" class="users-action-btn" title="View"><i
                                         class="bi bi-plus"></i></a>
-                                <a th:href="@{/admin/employees/addOrEdit(maNhanVien=${employee.maNhanVien})}"
+                                <a th:href="@{/admin/employees/addOrEdit(employeeId=${employee.id})}"
                                    class="users-action-btn" title="Edit"><i class="bi bi-pencil"></i></a>
                                 <button type="button" class="btn btn-icon btn-sm btn-light"
-                                        th:data-id="${employee.maNhanVien}" data-bs-toggle="modal"
+                                        th:data-id="${employee.id}" data-bs-toggle="modal"
                                         data-bs-target="#deleteModal"><i class="bi bi-trash"></i></button>
                             </div>
                         </td>
@@ -158,7 +158,7 @@
                 </div>
                 <form th:action="@{/admin/employees/delete}" method="post">
                     <input type="hidden" name="_method" value="delete"/>
-                    <input type="hidden" name="maNhanVien" id="deleteId"/>
+                    <input type="hidden" name="employeeId" id="deleteId"/>
                     <div class="modal-footer justify-content-center border-0 pt-0">
                         <button type="submit" class="btn btn-danger">Có</button>
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Không</button>

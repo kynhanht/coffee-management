@@ -1,0 +1,754 @@
+<div class="main-content page-sale">
+    <div class="page-header">
+        <div>
+            <h1 th:text="${title}" class="page-title"></h1>
+        </div>
+    </div>
+    <div class="row g-2">
+        <div th:each="table : ${tables}" class="col-lg-3">
+            <div class="card table-card text-center" data-bs-toggle="modal" data-bs-target="#posModal" th:attr="
+                data-table-id=${table.id},
+                data-table-name=${table.name},
+                data-status-label=${table.status.label},
+                data-status-color=${table.status.color},
+                data-status-value=${table.status.name()}
+            ">
+                <div class="card-body">
+                    <h5 th:text="${table.name}" class="card-title mb-1"></h5>
+                    <p class="text-muted small mb-3"><span th:text="${table.status.label}"
+                                                           class="badge"
+                                                           th:classappend="'badge-soft-' + ${table.status.color}"
+                    ></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="posModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-0">
+                    <div class="sale-detail">
+                        <!-- Contact Header -->
+                        <div class="sale-detail-header">
+                            <div class="sale-detail-avatar">
+                                <img th:src="@{/assets/img/icons8-table-chairs-96.png}" alt="Table Coffee">
+                            </div>
+                            <div class="sale-detail-info">
+                                <h3 id="posTableName" class="sale-detail-name"></h3>
+                                <p class="sale-detail-role"><span class="badge" id="posTableStatus"></span></p>
+                            </div>
+                        </div>
+
+                        <!-- POS -->
+                        <div class="sale-detail-body">
+                            <div class="row g-4">
+                                <!-- Quick Actions & Notes -->
+                                <div class="col-md-12">
+                                    <div class="sale-detail-section">
+                                        <h6 class="sale-detail-section-title">Quản lý bàn</h6>
+                                        <div class="sale-detail-quick-actions">
+                                            <a class="sale-quick-action" id="btnView">
+                                                <i class="bi bi-eye"></i>
+                                                <span>Xem bàn</span>
+                                            </a>
+                                            <a class="sale-quick-action" id="btnMove">
+                                                <i class="bi bi-arrow-left-right"></i>
+                                                <span>Chuyển bàn</span>
+                                            </a>
+                                            <a class="sale-quick-action" id="btnSplit">
+                                                <i class="bi bi-layout-split"></i>
+                                                <span>Tách bàn</span>
+                                            </a>
+                                            <a class="sale-quick-action" id="btnMerge">
+                                                <i class="bi bi-arrows-collapse"></i>
+                                                <span>Gộp bàn</span>
+                                            </a>
+                                            <a class="sale-quick-action" id="btnCancel">
+                                                <i class="bi bi-x-circle"></i>
+                                                <span>Hủy bàn</span>
+                                            </a>
+                                            <a class="sale-quick-action" id="btnReserve">
+                                                <i class="bi bi-calendar-plus"></i>
+                                                <span>Đặt bàn</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="sale-detail-section">
+                                        <h6 class="sale-detail-section-title">Quản lý bán hàng</h6>
+                                        <div class="sale-detail-quick-actions">
+                                            <a class="sale-quick-action" id="btnOrder">
+                                                <i class="bi bi-list"></i>
+                                                <span>Chọn thực đơn</span>
+                                            </a>
+                                            <a class="sale-quick-action" id="btnPay">
+                                                <i class="bi bi-cash-coin"></i>
+                                                <span>Thanh toán</span>
+                                            </a>
+                                            <a class="sale-quick-action" id="btnPrint">
+                                                <i class="bi bi-printer"></i>
+                                                <span>In ấn</span>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${modal == 'viewTableModal'}" class="modal fade" id="viewTableModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body pt-0">
+                    <div class="sale-detail">
+                        <div class="sale-detail-header">
+                            <div class="sale-detail-info">
+                                <h3 class="sale-detail-name">Xem thông tin
+                                    [[${viewTableResponse.tableInfo.tableName}]]</h3>
+                            </div>
+                        </div>
+
+                        <div class="sale-detail-body">
+                            <div class="row g-4">
+                                <div class="col-md-12">
+                                    <div class="sale-detail-section">
+                                        <h6 class="sale-detail-section-title">Các món đã gọi</h6>
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th>Tên món</th>
+                                                    <th>Số lượng</th>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="menuItem : ${viewTableResponse.orderList}">
+                                                    <td th:text="${menuItem.name}"></td>
+                                                    <td th:text="${menuItem.quantity}"></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="sale-detail-section">
+                                        <h6 class="sale-detail-section-title">Ghi chú</h6>
+                                        <div class="sale-detail-notes">
+                                            <p>
+                                                [[${viewTableResponse.tableInfo.customerName != null ?
+                                                viewTableResponse.tableInfo.customerName : ''}]]
+                                                [[${viewTableResponse.tableInfo.reservationDate != null ? ', ' +
+                                                viewTableResponse.tableInfo.reservationDate : ''}]]
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${modal == 'moveTableModal'}" class="modal fade" id="moveTableModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">[[${moveTableResponse.sourceTable.name}]]</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form th:action="@{/pos/move}" th:object="${moveTableRequest}" method="post">
+                    <div class="modal-body">
+                        <div class="mx-auto">
+                            <input type="hidden" th:field="*{sourceTableId}">
+                            <label for="maBanMoi" class="form-label text-center mb-4">Chọn bàn cần chuyển đến: </label>
+                            <select class="form-select" id="maBanMoi" th:field="*{targetTableId}">
+                                <option th:each="table : ${moveTableResponse.tableList}"
+                                        th:value="${table.id}"
+                                        th:text="${table.name}"
+                                ></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Chuyển</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${modal == 'reserveTableModal'}" class="modal fade" id="reserveTableModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Đặt bàn</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form th:action="@{/pos/reserve}" th:object="${reserveTableRequest}" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="customerName" class="form-label">Tên khách hàng</label>
+                            <input type="text" class="form-control" id="customerName" th:field="*{customerName}"
+                                   placeholder="Nhập tên khách hàng">
+                        </div>
+                        <div class="mb-3">
+                            <label for="customerPhone" class="form-label">SĐT khách hàng</label>
+                            <input type="text" class="form-control" id="customerPhone" th:field="*{customerPhone}"
+                                   placeholder="Nhập số SĐT khách hàng">
+                        </div>
+                        <div class="mb-3">
+                            <label for="reservationDate" class="form-label">Ngày giờ đặt</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="reservationDate"
+                                       data-picker="datetime" th:field="*{reservationDate}"
+                                       placeholder="Nhập ngày giờ đặt">
+                                <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <input type="hidden" th:field="*{sourceTableId}">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Đặt bàn</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${modal == 'orderTableModal'}" class="modal fade" id="orderTableModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/pos/order}" th:object="${orderTableRequest}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Chọn món [[${orderTableResponse.sourceTable.name}]]</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" th:field="*{sourceTableId}"/>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Chọn</th>
+                                    <th>Tên món</th>
+                                    <th>Số lượng</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="menuItem, stat : *{orderList}">
+                                    <td>
+                                        <input type="checkbox"
+                                               th:field="*{orderList[__${stat.index}__].selected}"
+                                               class="form-check-input"/>
+                                    </td>
+
+                                    <td th:text="${menuItem.name}"></td>
+
+                                    <input type="hidden"
+                                           th:field="*{orderList[__${stat.index}__].id}"/>
+
+                                    <input type="hidden"
+                                           th:field="*{orderList[__${stat.index}__].name}"/>
+
+                                    <td>
+                                        <input type="number"
+                                               min="0"
+                                               class="form-control"
+                                               th:field="*{orderList[__${stat.index}__].quantity}"/>
+                                    </td>
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${modal == 'mergeTableModal'}" class="modal fade" id="mergeTableModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Gộp bàn [[${mergeTableResponse.sourceTable.name}]]</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form th:action="@{/pos/merge}" th:object="${mergeTableRequest}" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" th:field="*{sourceTableId}"/>
+                        <div class="row">
+                            <div class="col-5">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">Các bàn cần gộp</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-check mb-2"
+                                             th:each="table, stat : *{mergeableSourceTableList}">
+                                            <input class="form-check-input" type="checkbox"
+                                                   th:id="'checkbox' + ${stat.index + 1}"
+                                                   th:field="*{mergeableSourceTableList[__${stat.index}__].selected}">
+                                            <input type="hidden"
+                                                   th:field="*{mergeableSourceTableList[__${stat.index}__].id}"/>
+                                            <input type="hidden"
+                                                   th:field="*{mergeableSourceTableList[__${stat.index}__].name}"/>
+                                            <label class="form-check-label" th:for="'checkbox' + ${stat.index + 1}"
+                                                   th:text="${table.name}"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-2 d-flex justify-content-center align-items-center">
+                                <i class="bi bi-chevron-double-right fs-2"></i>
+                            </div>
+                            <div class="col-5">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">Các bàn gộp đến</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-check mb-2"
+                                             th:each="table, stat: ${mergeTableResponse.mergeableTargetTableList}">
+                                            <input class="form-check-input" type="radio"
+                                                   th:id="'radio' + ${stat.index + 1}" th:field="*{targetTableId}"
+                                                   th:value="${table.id}">
+                                            <label class="form-check-label" th:for="'radio' + ${stat.index + 1}"
+                                                   th:text="${table.name}"></label>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">Thông tin khách hàng</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="mergeCustomerName" class="form-label">Tên khách hàng</label>
+                                            <input type="text" class="form-control" id="mergeCustomerName"
+                                                   th:field="*{customerName}"
+                                                   placeholder="Nhập tên khách hàng">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="mergeCustomerPhone" class="form-label">SĐT khách hàng</label>
+                                            <input type="text" class="form-control" id="mergeCustomerPhone"
+                                                   th:field="*{customerPhone}"
+                                                   placeholder="Nhập số SĐT khách hàng">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Gộp bàn</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${modal == 'splitTableModal'}" class="modal fade" id="splitTableModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tách bàn</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form th:action="@{/pos/split}" th:object="${splitTableRequest}" method="post">
+                    <input type="hidden" th:field="*{sourceTableId}"/>
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <label class="col-3 col-form-label" for="targetTableId">Chọn bàn cần tách đến: </label>
+                            <div class="col-9">
+                                <select class="form-select"
+                                        id="targetTableId"
+                                        th:field="*{targetTableId}"
+                                        th:data-source-id="${splitTableRequest.sourceTableId}"
+                                        onchange="selectTable(this)">
+                                    <option value="">Chọn bàn</option>
+                                    <option th:each="table : ${splitTableResponse.selectableTableList}"
+                                            th:value="${table.id}"
+                                            th:text="${table.name}"
+                                    ></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-5">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">[[${splitTableResponse.sourceTable.name}]]</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>Chọn</th>
+                                                <th>Tên món</th>
+                                                <th>Số lượng</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="menuItem, stat : *{splitOrderList}">
+                                                <td>
+                                                    <input type="checkbox"
+                                                           th:field="*{splitOrderList[__${stat.index}__].selected}"
+                                                           class="form-check-input"/>
+                                                </td>
+
+                                                <td th:text="${menuItem.name}"></td>
+
+                                                <input type="hidden"
+                                                       th:field="*{splitOrderList[__${stat.index}__].id}"/>
+
+                                                <input type="hidden"
+                                                       th:field="*{splitOrderList[__${stat.index}__].name}"/>
+
+                                                <td>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <input type="number"
+                                                               min="0"
+                                                               th:max="${menuItem.quantity}"
+                                                               class="form-control"
+                                                               th:field="*{splitOrderList[__${stat.index}__].quantity}"/>
+                                                        <span class="text-muted"
+                                                              th:text="'/ '+ ${menuItem.quantity}"></span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-2 d-flex justify-content-center align-items-center">
+                                <i class="bi bi-chevron-double-left fs-2"></i>
+                                <i class="bi bi-chevron-double-right fs-2"></i>
+                            </div>
+                            <div class="col-5">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">[[${splitTableResponse.targetTable.name}]]</h5>
+                                </div>
+                                <div th:switch="${splitTableResponse.targetTable.status}" class="card-body">
+                                    <div th:case="${T(com.example.coffeemanagement.enums.TableStatus).AVAILABLE}"
+                                         class="form-group">
+                                        <div class="mb-3">
+                                            <label for="splitCustomerName" class="form-label">Tên khách hàng</label>
+                                            <input type="text" class="form-control" id="splitCustomerName"
+                                                   th:field="*{customerName}"
+                                                   placeholder="Nhập tên khách hàng">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="splitCustomerPhone" class="form-label">SĐT khách hàng</label>
+                                            <input type="text" class="form-control" id="splitCustomerPhone"
+                                                   th:field="*{customerPhone}"
+                                                   placeholder="Nhập số SĐT khách hàng">
+                                        </div>
+                                    </div>
+                                    <div th:case="${T(com.example.coffeemanagement.enums.TableStatus).OCCUPIED}"
+                                         class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>Tên món</th>
+                                                <th>Số lượng</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                            <tr th:each="menuItem: ${splitTableResponse.targetOrderMenuItemList}">
+                                                <td th:text="${menuItem.name}"></td>
+                                                <td>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <input type="number" min="0" class="form-control"
+                                                               th:value="${menuItem.quantity}" disabled/>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div th:case="*">
+                                        Hãy chọn bàn cần chuyển
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button th:if="${splitTableResponse.targetTable.status != null}" type="submit"
+                                class="btn btn-primary">Tách
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${modal == 'cancelTableModal'}" class="modal fade" id="cancelTableModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <div class="mb-3">
+                          <span class="bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center"
+                                style="width: 64px; height: 64px;">
+                            <i class="bi bi-exclamation-triangle fs-1"></i>
+                          </span>
+                    </div>
+                    <h5>Hủy bàn?</h5>
+                    <p class="text-muted mb-0">Bạn có chắc chắn muốn hủy đặt bàn này không? Hành động này không thể hoàn
+                        tác..</p>
+                </div>
+                <div class="modal-footer justify-content-center border-0 pt-0">
+                    <form th:action="@{/pos/cancel}" method="post">
+                        <input type="hidden" name="sourceTableId" th:value="${sourceTableId}"/>
+                        <button type="submit" class="btn btn-danger">Hủy bàn</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${modal == 'payOrderModal'}" class="modal fade" id="payOrderModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/pos/pay}" th:object="${payOrderRequest}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Thanh toán [[${payOrderResponse.sourceTable.name}]]</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" th:field="*{orderId}"/>
+                        <input type="hidden" th:field="*{sourceTableId}"/>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Tên món</th>
+                                    <th>Số lượng</th>
+                                    <th>Thành tiền</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="menuItem : ${payOrderResponse.orderList}">
+                                    <td th:text="${menuItem.name}"></td>
+                                    <td th:text="${menuItem.quantity}"></td>
+                                    <td th:text="${menuItem.currentPrice * menuItem.quantity}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="medium text-muted my-3">Tổng: [[${payOrderResponse.totalAmount}]]</div>
+                        <input type="hidden" th:field="*{totalAmount}"/>
+                        <div class="row mb-3">
+                            <label for="amountPaid" class="col-3 col-form-label">Khách đưa: </label>
+                            <div class="col-9">
+                                <input type="text"
+                                       class="form-control"
+                                       inputmode="numeric"
+                                       pattern="[0-9]*"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                       th:field="*{amountPaid}"
+                                       id="amountPaid"
+                                       placeholder="Khách đưa">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="changeAmount" class="col-3 col-form-label">Thối lại:</label>
+                            <div class="col-9">
+                                <input type="text"
+                                       class="form-control"
+                                       inputmode="numeric"
+                                       pattern="[0-9]*"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                       th:field="*{changeAmount}"
+                                       id="changeAmount" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Thanh toán</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${success}"
+         class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast"
+             class="toast fade"
+             role="alert"
+             data-bs-delay="5000"
+             data-bs-autohide="true">
+
+            <div class="toast-header">
+                <i class="bi bi-check-circle text-success me-2"></i>
+                <strong class="me-auto">Thành công</strong>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body"
+                 th:text="${success}">
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Handle posModal
+        const modal = document.getElementById('posModal');
+        modal.addEventListener('show.bs.modal', function (event) {
+
+            const card = event.relatedTarget;
+
+            const tableId = card.getAttribute("data-table-id");
+            const tableName = card.getAttribute("data-table-name");
+            const statusLabel = card.getAttribute("data-status-label");
+            const statusValue = card.getAttribute("data-status-value");
+            const statusColor = card.getAttribute("data-status-color");
+
+            document.getElementById("posTableName").innerText = tableName;
+            document.getElementById("posTableStatus").innerText = statusLabel;
+            document.getElementById("posTableStatus").className = "";
+            document.getElementById("posTableStatus").classList.add("badge", `badge-soft-${statusColor}`)
+
+            const btnView = document.getElementById("btnView");
+            const btnMove = document.getElementById("btnMove");
+            const btnSplit = document.getElementById("btnSplit");
+            const btnMerge = document.getElementById("btnMerge");
+            const btnCancel = document.getElementById("btnCancel");
+            const btnReserve = document.getElementById("btnReserve");
+            const btnOrder = document.getElementById("btnOrder");
+            const btnPay = document.getElementById("btnPay");
+            const btnPrint = document.getElementById("btnPrint");
+
+
+            btnView.href = `/pos/view?sourceTableId=${tableId}`;
+            btnMove.href = `/pos/move?sourceTableId=${tableId}`;
+            btnSplit.href = `/pos/split?sourceTableId=${tableId}`;
+            btnMerge.href = `/pos/merge?sourceTableId=${tableId}`;
+            btnCancel.href = `/pos/cancel?sourceTableId=${tableId}`;
+            btnReserve.href = `/pos/reserve?sourceTableId=${tableId}`;
+            btnOrder.href = `/pos/order?sourceTableId=${tableId}`;
+            btnPay.href = `/pos/pay?sourceTableId=${tableId}`;
+            btnPrint.href = `/pos/print?sourceTableId=${tableId}`;
+
+            btnView.style.display = "block";
+            btnMove.style.display = "block";
+            btnSplit.style.display = "block";
+            btnMerge.style.display = "block";
+            btnCancel.style.display = "block";
+            btnReserve.style.display = "block";
+            btnOrder.style.display = "block";
+            btnPay.style.display = "block";
+            btnPrint.style.display = "block";
+
+            if (statusValue === 'AVAILABLE') {
+                btnView.style.display = "none";
+                btnMove.style.display = "none";
+                btnSplit.style.display = "none";
+                btnMerge.style.display = "none";
+                btnCancel.style.display = "none";
+                btnPay.style.display = "none";
+                btnPrint.style.display = "none";
+            } else if (statusValue === 'OCCUPIED') {
+                btnReserve.style.display = "none";
+            } else if (statusValue === 'RESERVED') {
+                btnSplit.style.display = "none";
+                btnMerge.style.display = "none";
+                btnReserve.style.display = "none";
+                btnPay.style.display = "none";
+                btnPrint.style.display = "none";
+
+            }
+
+        });
+        // Xử lý cho chọn bàn trong chức năng tách bàn
+        window.selectTable = function (select) {
+            const targetId = select.value;
+            const sourceId = select.dataset.sourceId;
+            location.href = `/pos/split?sourceTableId=${sourceId}&targetTableId=${targetId}`;
+        }
+
+
+        // Hiển thị message thành công
+        const liveToast = document.getElementById('liveToast');
+        if (liveToast) {
+            const toast = new bootstrap.Toast(liveToast);
+            toast.show();
+        }
+    });
+    // Select table
+
+
+</script>
+
+
+<script th:inline="javascript">
+    // Nếu sử dụng thymeleaf trong JS thì server sẽ evaluate expression => có nghĩa là check code trước khi chạy => Nên có những dòng code chưa chạy đến vẫn có thể bị báo lỗi
+    document.addEventListener("DOMContentLoaded", function () {
+        const openModal = [[${modal}]];
+        if (openModal) {
+            const modalEl = document.getElementById(openModal);
+            const modal = new bootstrap.Modal(modalEl);
+            modalEl.addEventListener('shown.bs.modal', function () {
+                if (openModal === 'reserveTableModal') {
+                    flatpickr('#reservationDate', {
+                        enableTime: true,
+                        dateFormat: 'd-m-Y H:i',
+                        time_24hr: true,
+                        allowInput: true
+                    });
+                } else if (openModal === 'payOrderModal') {
+                    const amountPaidInput = document.getElementById("amountPaid");
+                    const changeAmountInput = document.getElementById("changeAmount");
+                    const totalAmount = [[${payOrderResponse?.totalAmount ?: 0}]];
+                    amountPaidInput.addEventListener("input", function () {
+                        let amountPaid = parseInt(this.value) || 0;
+                        let changeAmount = amountPaid - totalAmount;
+                        if (changeAmount < 0) changeAmount = 0;
+                        changeAmountInput.value = changeAmount;
+                    })
+                }
+            }, {once: true});
+            modal.show();
+        }
+
+    });
+</script>

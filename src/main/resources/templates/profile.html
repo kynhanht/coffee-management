@@ -15,25 +15,25 @@
                     <div class="card-body">
                         <div class="profile-info-grid">
                             <div class="profile-info-item"><span class="profile-info-label">Họ tên</span><span
-                                    th:text="${employee.hoTen}"
+                                    th:text="${employee.fullName}"
                                     class="profile-info-value"></span></div>
                             <div class="profile-info-item"><span class="profile-info-label">Chức vụ</span><span
-                                    th:text="${employee.tenChucVu}"
+                                    th:text="${employee.positionName}"
                                     class="profile-info-value"></span></div>
                             <div class="profile-info-item"><span class="profile-info-label">Địa chỉ</span><span
-                                    th:text="${employee.diaChi}"
-                                    class="profile-info-value">12 Ngô Quyền, TP Đà Nẵng</span></div>
+                                    th:text="${employee.address}"
+                                    class="profile-info-value"></span></div>
                             <div class="profile-info-item"><span class="profile-info-label">Lương</span><span
-                                    th:text="${#numbers.formatDecimal(employee.luong, 0, 'COMMA', 0, 'POINT')}"
+                                    th:text="${#numbers.formatDecimal(employee.salary, 0, 'COMMA', 0, 'POINT')}"
                                     class="profile-info-value"></span></div>
                             <div class="profile-info-item"><span class="profile-info-label">Số điện thoại</span><span
-                                    th:text="${employee.soDienThoai}"
+                                    th:text="${employee.phone}"
                                     class="profile-info-value"></span></div>
                         </div>
                         <hr class="border-secondary opacity-25">
                         <div class="profile-info-grid">
                             <div class="profile-info-item"><span class="profile-info-label">Tên đăng nhập</span><span
-                                    th:text="${employee.tenDangNhap}"
+                                    th:text="${employee.username}"
                                     class="profile-info-value"></span></div>
                             <div class="profile-info-item"><span class="profile-info-label">Mật khẩu</span><span
                                     class="profile-info-value">*********</span></div>
@@ -53,8 +53,8 @@
                     </div>
                     <div class="card-body">
                         <div class="upload-avatar upload-avatar-square">
-                            <img th:src="${employee.anh != null}
-                            ? @{/uploads/{file}(file=${employee.anh})}
+                            <img th:src="${employee.picture != null}
+                            ? @{/uploads/{file}(file=${employee.picture})}
                             : @{/assets/img/avatars/avatar-2.webp}" alt="Avatar"
                                  class="upload-avatar-img">
                         </div>
@@ -71,45 +71,45 @@
                     <h5 class="modal-title">Chỉnh sửa thông tin cá nhân</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form th:action="@{/profile/{maNhanVien}(maNhanVien=${employee.maNhanVien})}" th:object="${employee}" method="post" enctype="multipart/form-data">
+                <form th:action="@{/profile/{employeeId}(employeeId=${employee.id})}" th:object="${employee}" method="post" enctype="multipart/form-data">
                     <div class="modal-body">
                         <div class="row g-3">
                             <div class="col-12">
-                                <label class="form-label" for="hoTen">Họ tên</label>
-                                <input type="text" id="hoTen" class="form-control" placeholder="Nhập họ tên"
-                                       th:field="*{hoTen}">
+                                <label class="form-label" for="fullName">Họ tên</label>
+                                <input type="text" id="fullName" class="form-control" placeholder="Nhập họ tên"
+                                       th:field="*{fullName}">
                             </div>
                             <div class="col-12">
-                                <label class="form-label" for="diaChi">Địa chỉ</label>
-                                <input type="text" id="diaChi" class="form-control" placeholder="Nhập địa chỉ"
-                                       th:field="*{diaChi}">
+                                <label class="form-label" for="address">Địa chỉ</label>
+                                <input type="text" id="address" class="form-control" placeholder="Nhập địa chỉ"
+                                       th:field="*{address}">
                             </div>
                             <div class="col-12">
-                                <label class="form-label" for="soDienThoai">Số điện thoại</label>
-                                <input type="text" id="soDienThoai" class="form-control"
-                                       th:field="*{soDienThoai}">
+                                <label class="form-label" for="phone">Số điện thoại</label>
+                                <input type="text" id="phone" class="form-control"
+                                       th:field="*{phone}">
                             </div>
                             <div class="col-md-6">
-                                <label for="chucVu" class="form-label required">Chức vụ</label>
-                                <select class="form-select" th:field="*{maChucVu}" id="chucVu" name="maChucVu"
+                                <label for="position" class="form-label required">Chức vụ</label>
+                                <select class="form-select" th:field="*{positionId}" id="position"
                                         required>
                                     <option value="">Chọn chức vụ</option>
-                                    <option th:each="chucVu : ${dsChucVu}"
-                                            th:value="${chucVu.maChucVu}"
-                                            th:text="${chucVu.tenChucVu}"
-                                            th:data-luong="${#numbers.formatDecimal(chucVu.luong, 0, 'COMMA', 0, 'POINT')}">
+                                    <option th:each="position : ${positionList}"
+                                            th:value="${position.id}"
+                                            th:text="${position.name}"
+                                            th:data-salary="${#numbers.formatDecimal(position.salary, 0, 'COMMA', 0, 'POINT')}">
                                     </option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="luong" class="form-label required">Lương</label>
-                                <input type="text" class="form-control" id="luong" readonly>
+                                <label for="salary" class="form-label required">Lương</label>
+                                <input type="text" class="form-control" id="salary" readonly>
                             </div>
                             <div class="col-md-12">
                                 <div class="upload-avatar upload-avatar-square" id="avatar-edit">
                                     <input type="file" name="file" accept="image/*" hidden>
-                                    <img th:src="${employee.anh != null}
-                                     ? @{/uploads/{file}(file=${employee.anh})}
+                                    <img th:src="${employee.picture != null}
+                                     ? @{/uploads/{file}(file=${employee.picture})}
                                      : @{/assets/img/avatars/avatar-2.webp}" alt="Avatar" class="upload-avatar-img">
                                     <div class="upload-avatar-overlay">
                                         <i class="bi bi-camera"></i>
@@ -118,8 +118,8 @@
                                 <p class="text-muted small mt-2 text-center">Ảnh dạng JPG, PNG or WEBP. tối đa 2MB.</p>
                             </div>
                             <div class="col-12">
-                                <input type="hidden" th:field="*{anh}">
-                                <input type="hidden" th:field="*{tenDangNhap}">
+                                <input type="hidden" th:field="*{picture}">
+                                <input type="hidden" th:field="*{username}">
                             </div>
                         </div>
                     </div>
@@ -158,15 +158,15 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Update Lương theo chức vụ
-        const chucVuSelect = document.querySelector("#chucVu");
-        const luongInput = document.querySelector("#luong");
+        const positionSelect = document.querySelector("#position");
+        const salaryInput = document.querySelector("#salary");
 
-        function updateLuong() {
-            const selectedOption = chucVuSelect.options[chucVuSelect.selectedIndex];
-            luongInput.value = selectedOption.getAttribute("data-luong") || "";
+        function updateSalary() {
+            const selectedOption = positionSelect.options[positionSelect.selectedIndex];
+            salaryInput.value = selectedOption.getAttribute("data-salary") || "";
         }
-        updateLuong();
-        chucVuSelect.addEventListener("change", updateLuong);
+        updateSalary();
+        positionSelect.addEventListener("change", updateSalary);
 
         // Avatar uploads
         const avatar = document.querySelector('#avatar-edit');

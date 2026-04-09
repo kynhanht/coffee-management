@@ -1,9 +1,9 @@
 package com.example.coffeemanagement.service.impl;
 
 import com.example.coffeemanagement.constant.ErrorMessageConstants;
-import com.example.coffeemanagement.dao.INhanVienDAO;
+import com.example.coffeemanagement.dao.IEmployeeDAO;
 import com.example.coffeemanagement.exception.NotFoundException;
-import com.example.coffeemanagement.model.NhanVien;
+import com.example.coffeemanagement.model.Employee;
 import com.example.coffeemanagement.security.CustomUserDetail;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -18,19 +19,19 @@ import java.util.HashSet;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final INhanVienDAO nhanVienDAO;
+    private final IEmployeeDAO employeeDAO;
 
-    public CustomUserDetailsService(INhanVienDAO nhanVienDAO) {
-        this.nhanVienDAO = nhanVienDAO;
+    public CustomUserDetailsService(IEmployeeDAO employeeDAO) {
+        this.employeeDAO = employeeDAO;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        NhanVien nhanVien = nhanVienDAO.findByTenDangNhap(username)
-                .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.TAI_KHOAN_NOT_FOUND + ": " + username));
+        Employee employee = employeeDAO.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.ACCOUNT_NOT_FOUND + ": " + username));
         Collection<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + nhanVien.getQuyenHan()));
-        CustomUserDetail customUserDetail = new CustomUserDetail(nhanVien, authorities);
-        return customUserDetail;
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + employee.getRole()));
+        return new CustomUserDetail(employee, authorities);
     }
 }

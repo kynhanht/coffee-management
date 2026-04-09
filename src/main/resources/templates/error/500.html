@@ -3,24 +3,60 @@
 
 <div th:replace="~{fragments/head :: head}"></div>
 <body>
-    <div class="fx-error-page fx-error-500">
-        <div class="fx-error-bg-shape shape-a"></div>
-        <div class="fx-error-bg-shape shape-b"></div>
+<div class="fx-error-page fx-error-500">
+    <div class="fx-error-bg-shape shape-a"></div>
+    <div class="fx-error-bg-shape shape-b"></div>
 
-        <div class="fx-error-card">
-            <a th:href="@{/}" class="fx-error-logo"><img th:src="@{/assets/img/logo.webp}" alt="FlexAdmin"></a>
-            <span class="fx-error-kicker">Lỗi 500</span>
-            <span class="fx-error-icon danger"><i class="bi bi-exclamation-octagon"></i></span>
-            <h1 class="fx-error-code">500</h1>
-            <h2 class="fx-error-title">Lỗi hệ thống</h2>
-            <p class="fx-error-text">Hệ thống đang gặp sự cố ngoài ý muốn. Chúng tôi đang khắc phục vấn đề. Vui lòng thử lại sau.</p>
-            <div class="fx-error-actions">
-                <button class="btn btn-primary" onclick="location.reload()"><i class="bi bi-arrow-clockwise me-1"></i>Thử lại</button>
-                <a th:href="@{/}" class="btn btn-outline-secondary"><i class="bi bi-house me-1"></i> Trang chủ</a>
-            </div>
+    <div class="fx-error-card">
+        <a th:href="@{/}" class="fx-error-logo"><img th:src="@{/assets/img/logo.webp}" alt="FlexAdmin"></a>
+        <span class="fx-error-kicker">Lỗi 500</span>
+        <span class="fx-error-icon danger"><i class="bi bi-exclamation-octagon"></i></span>
+        <h1 class="fx-error-code">500</h1>
+        <h2 class="fx-error-title">Lỗi hệ thống</h2>
+        <p class="fx-error-text">Hệ thống đang gặp sự cố ngoài ý muốn. Chúng tôi đang khắc phục vấn đề. Vui lòng thử lại
+            sau.</p>
+        <div class="fx-error-actions">
+            <button class="btn btn-primary" onclick="location.reload()"><i class="bi bi-arrow-clockwise me-1"></i>Thử
+                lại
+            </button>
+            <a th:href="@{/}" class="btn btn-outline-secondary"><i class="bi bi-house me-1"></i> Trang chủ</a>
         </div>
     </div>
-    <div th:replace="~{fragments/script :: script}"></div>
+</div>
+
+<div th:if="${error}"
+     class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast"
+         class="toast fade"
+         role="alert"
+         data-bs-delay="5000"
+         data-bs-autohide="true">
+
+        <div class="toast-header">
+            <i class="bi bi-x-circle text-danger me-2"></i>
+            <strong class="me-auto">Lỗi</strong>
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body"
+             th:text="${error}">
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Show Message
+        const liveToast = document.getElementById('liveToast');
+        if (liveToast) {
+            const toast = new bootstrap.Toast(liveToast);
+            toast.show();
+        }
+    });
+</script>
+
+<div th:replace="~{fragments/script :: script}"></div>
 </body>
 
 </html>

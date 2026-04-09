@@ -22,6 +22,38 @@
     </div>
 </div>
 
+<div th:if="${error}"
+     class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast"
+         class="toast fade"
+         role="alert"
+         data-bs-delay="5000"
+         data-bs-autohide="true">
+
+        <div class="toast-header">
+            <i class="bi bi-x-circle text-danger me-2"></i>
+            <strong class="me-auto">Lỗi</strong>
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body"
+             th:text="${error}">
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Show Message
+        const liveToast = document.getElementById('liveToast');
+        if (liveToast) {
+            const toast = new bootstrap.Toast(liveToast);
+            toast.show();
+        }
+    });
+</script>
+
 <div th:replace="~{fragments/script :: script}"></div>
 
 </body>

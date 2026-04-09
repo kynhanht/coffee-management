@@ -23,29 +23,15 @@
                 <ul class="nav-submenu ">
                     <li><a class="nav-link " th:href="@{/admin/employees/list}"><span class="nav-dot"></span>Xem danh sách nhân viên</a></li>
                     <li><a class="nav-link " th:href="@{/admin/employees/addOrEdit}"><span class="nav-dot"></span>Thêm nhân viên</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Tìm kiếm</a></li>
                 </ul>
             </li>
 
-            <!-- Users -->
-            <li class="nav-item has-submenu ">
-                <a class="nav-link" href="#" aria-expanded="false">
+            <!-- Sale -->
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/pos}">
                     <span class="nav-icon"><i class="ph-light ph-shopping-bag"></i></span>
                     <span class="nav-text">Quản lý bán hàng</span>
-                    <span class="nav-arrow"><i class="bi bi-chevron-right"></i></span>
                 </a>
-                <ul class="nav-submenu ">
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xem danh sách bán hàng</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xem bàn</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Chuyển bàn</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Gộp bàn</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Tách bàn</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Hủy bàn</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Đặt bàn</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Chọn thực đơn</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Thanh toán</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>In ấn</a></li>
-                </ul>
             </li>
 
             <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item has-submenu ">

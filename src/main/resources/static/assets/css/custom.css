@@ -1,0 +1,105 @@
+.table-card:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-color), transparent 90%);
+    opacity: 1;
+}
+
+
+.sale-detail {
+    padding: 0;
+}
+
+.sale-detail-header{
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sale-detail-avatar {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.sale-detail-info{
+    flex: 1;
+    min-width: 0;
+}
+
+.sale-detail-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--heading-color);
+    margin: 0 0 0.25rem;
+}
+
+.sale-detail-role{
+    font-size: 0.9375rem;
+    color: var(--muted-color);
+    margin: 0 0 0.75rem;
+}
+
+.sale-detail-body {
+    padding: 1.5rem 0 0;
+}
+
+.sale-detail-section{
+    margin-bottom: 1.5rem;
+}
+
+.sale-detail-section-title{
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted-color);
+    margin-bottom: 1rem;
+}
+
+.sale-detail-quick-actions{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.sale-quick-action{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: var(--background-color);
+    border-radius: var(--bs-border-radius-lg);
+    color: var(--default-color);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.sale-quick-action i {
+    font-size: 1.25rem;
+    color: var(--accent-color);
+}
+
+.sale-quick-action span {
+    font-size: 0.8125rem;
+}
+
+.sale-quick-action:hover {
+    background: color-mix(in srgb, var(--accent-color), transparent 90%);
+    color: var(--accent-color);
+}
+
+.sale-detail-notes {
+    background: var(--background-color);
+    border-radius: var(--bs-border-radius-lg);
+    padding: 1rem;
+}
+
+.sale-detail-notes p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--default-color);
+    line-height: 1.6;
+}

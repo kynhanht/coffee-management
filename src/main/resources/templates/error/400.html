@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<div th:replace="~{fragments/head :: head}"></div>
+
+<body>
+<div class="fx-error-page fx-error-403">
+    <div class="fx-error-bg-shape shape-a"></div>
+    <div class="fx-error-bg-shape shape-b"></div>
+
+    <div class="fx-error-card">
+        <a th:href="@{/}" class="fx-error-logo"><img th:src="@{/assets/img/logo.webp}" alt="FlexAdmin"></a>
+        <span class="fx-error-kicker">Lỗi 400</span>
+        <span class="fx-error-icon warning"><i class="bi bi-shield-lock"></i></span>
+        <h1 class="fx-error-code">400</h1>
+        <h2 class="fx-error-title">Yêu cầu không hợp lệ</h2>
+        <p class="fx-error-text">Dữ liệu gửi lên không đúng định dạng hoặc thiếu tham số bắt buộc. Vui lòng kiểm tra lại hoặc liên hệ quản trị viên</p>
+        <div class="fx-error-actions">
+            <a th:href="@{/login}" class="btn btn-primary"><i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập</a>
+            <a th:href="@{/}" class="btn btn-outline-secondary"><i class="bi bi-house me-1"></i> Trang chủ</a>
+        </div>
+    </div>
+</div>
+
+<div th:if="${error}"
+     class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast"
+         class="toast fade"
+         role="alert"
+         data-bs-delay="5000"
+         data-bs-autohide="true">
+
+        <div class="toast-header">
+            <i class="bi bi-x-circle text-danger me-2"></i>
+            <strong class="me-auto">Lỗi</strong>
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body"
+             th:text="${error}">
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Show Message
+        const liveToast = document.getElementById('liveToast');
+        if (liveToast) {
+            const toast = new bootstrap.Toast(liveToast);
+            toast.show();
+        }
+    });
+</script>
+
+<div th:replace="~{fragments/script :: script}"></div>
+
+</body>
+
+</html>

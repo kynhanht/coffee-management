@@ -88,10 +88,6 @@
                                                 <i class="bi bi-cash-coin"></i>
                                                 <span>Thanh toán</span>
                                             </a>
-                                            <a class="sale-quick-action" id="btnPrint">
-                                                <i class="bi bi-printer"></i>
-                                                <span>In ấn</span>
-                                            </a>
                                         </div>
                                     </div>
 
@@ -130,11 +126,13 @@
                                                 <tr>
                                                     <th>Tên món</th>
                                                     <th>Số lượng</th>
+                                                    <th>Giá</th>
                                                 </thead>
                                                 <tbody>
-                                                <tr th:each="menuItem : ${viewTableResponse.orderList}">
-                                                    <td th:text="${menuItem.name}"></td>
-                                                    <td th:text="${menuItem.quantity}"></td>
+                                                <tr th:each="orderItem : ${viewTableResponse.orderItemList}">
+                                                    <td th:text="${orderItem.menuItemName}"></td>
+                                                    <td th:text="${orderItem.quantity}"></td>
+                                                    <td th:text="${orderItem.currentPrice}"></td>
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -232,7 +230,7 @@
     </div>
 
     <div th:if="${modal == 'orderTableModal'}" class="modal fade" id="orderTableModal" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form th:action="@{/pos/order}" th:object="${orderTableRequest}" method="post">
                     <div class="modal-header">
@@ -248,30 +246,34 @@
                                     <th>Chọn</th>
                                     <th>Tên món</th>
                                     <th>Số lượng</th>
+                                    <th>Giá</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="menuItem, stat : *{orderList}">
+                                <tr th:each="orderItem, stat : *{orderItemList}">
                                     <td>
                                         <input type="checkbox"
-                                               th:field="*{orderList[__${stat.index}__].selected}"
+                                               th:field="*{orderItemList[__${stat.index}__].selected}"
                                                class="form-check-input"/>
                                     </td>
 
-                                    <td th:text="${menuItem.name}"></td>
+                                    <td th:text="${orderItem.menuItemName}"></td>
 
                                     <input type="hidden"
-                                           th:field="*{orderList[__${stat.index}__].id}"/>
+                                           th:field="*{orderItemList[__${stat.index}__].menuItemId}"/>
 
                                     <input type="hidden"
-                                           th:field="*{orderList[__${stat.index}__].name}"/>
+                                           th:field="*{orderItemList[__${stat.index}__].menuItemName}"/>
 
                                     <td>
                                         <input type="number"
                                                min="0"
                                                class="form-control"
-                                               th:field="*{orderList[__${stat.index}__].quantity}"/>
+                                               th:field="*{orderItemList[__${stat.index}__].quantity}"/>
                                     </td>
+                                    <td th:text="${orderItem.currentPrice}"></td>
+                                    <input type="hidden"
+                                           th:field="*{orderItemList[__${stat.index}__].currentPrice}"/>
 
                                 </tr>
                                 </tbody>
@@ -416,20 +418,20 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr th:each="menuItem, stat : *{splitOrderList}">
+                                            <tr th:each="menuItem, stat : *{splitOrderItemList}">
                                                 <td>
                                                     <input type="checkbox"
-                                                           th:field="*{splitOrderList[__${stat.index}__].selected}"
+                                                           th:field="*{splitOrderItemList[__${stat.index}__].selected}"
                                                            class="form-check-input"/>
                                                 </td>
 
-                                                <td th:text="${menuItem.name}"></td>
+                                                <td th:text="${menuItem.menuItemName}"></td>
 
                                                 <input type="hidden"
-                                                       th:field="*{splitOrderList[__${stat.index}__].id}"/>
+                                                       th:field="*{splitOrderItemList[__${stat.index}__].menuItemId}"/>
 
                                                 <input type="hidden"
-                                                       th:field="*{splitOrderList[__${stat.index}__].name}"/>
+                                                       th:field="*{splitOrderItemList[__${stat.index}__].menuItemName}"/>
 
                                                 <td>
                                                     <div class="d-flex align-items-center gap-2">
@@ -437,7 +439,7 @@
                                                                min="0"
                                                                th:max="${menuItem.quantity}"
                                                                class="form-control"
-                                                               th:field="*{splitOrderList[__${stat.index}__].quantity}"/>
+                                                               th:field="*{splitOrderItemList[__${stat.index}__].quantity}"/>
                                                         <span class="text-muted"
                                                               th:text="'/ '+ ${menuItem.quantity}"></span>
                                                     </div>
@@ -483,12 +485,12 @@
                                             </thead>
                                             <tbody>
                                             <tr>
-                                            <tr th:each="menuItem: ${splitTableResponse.targetOrderMenuItemList}">
-                                                <td th:text="${menuItem.name}"></td>
+                                            <tr th:each="orderItem: ${splitTableResponse.targetOrderItemList}">
+                                                <td th:text="${orderItem.menuItemName}"></td>
                                                 <td>
                                                     <div class="d-flex align-items-center gap-2">
                                                         <input type="number" min="0" class="form-control"
-                                                               th:value="${menuItem.quantity}" disabled/>
+                                                               th:value="${orderItem.quantity}" disabled/>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -560,10 +562,10 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="menuItem : ${payOrderResponse.orderList}">
-                                    <td th:text="${menuItem.name}"></td>
-                                    <td th:text="${menuItem.quantity}"></td>
-                                    <td th:text="${menuItem.currentPrice * menuItem.quantity}"></td>
+                                <tr th:each="orderItem : ${payOrderResponse.orderItemList}">
+                                    <td th:text="${orderItem.menuItemName}"></td>
+                                    <td th:text="${orderItem.quantity}"></td>
+                                    <td th:text="${orderItem.lineTotal}"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -575,9 +577,7 @@
                             <div class="col-9">
                                 <input type="text"
                                        class="form-control"
-                                       inputmode="numeric"
-                                       pattern="[0-9]*"
-                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                       oninput="formatNumber(this)"
                                        th:field="*{amountPaid}"
                                        id="amountPaid"
                                        placeholder="Khách đưa">
@@ -588,9 +588,6 @@
                             <div class="col-9">
                                 <input type="text"
                                        class="form-control"
-                                       inputmode="numeric"
-                                       pattern="[0-9]*"
-                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                        th:field="*{changeAmount}"
                                        id="changeAmount" readonly>
                             </div>
@@ -656,7 +653,6 @@
             const btnReserve = document.getElementById("btnReserve");
             const btnOrder = document.getElementById("btnOrder");
             const btnPay = document.getElementById("btnPay");
-            const btnPrint = document.getElementById("btnPrint");
 
 
             btnView.href = `/pos/view?sourceTableId=${tableId}`;
@@ -667,7 +663,6 @@
             btnReserve.href = `/pos/reserve?sourceTableId=${tableId}`;
             btnOrder.href = `/pos/order?sourceTableId=${tableId}`;
             btnPay.href = `/pos/pay?sourceTableId=${tableId}`;
-            btnPrint.href = `/pos/print?sourceTableId=${tableId}`;
 
             btnView.style.display = "block";
             btnMove.style.display = "block";
@@ -677,7 +672,6 @@
             btnReserve.style.display = "block";
             btnOrder.style.display = "block";
             btnPay.style.display = "block";
-            btnPrint.style.display = "block";
 
             if (statusValue === 'AVAILABLE') {
                 btnView.style.display = "none";
@@ -686,7 +680,6 @@
                 btnMerge.style.display = "none";
                 btnCancel.style.display = "none";
                 btnPay.style.display = "none";
-                btnPrint.style.display = "none";
             } else if (statusValue === 'OCCUPIED') {
                 btnReserve.style.display = "none";
             } else if (statusValue === 'RESERVED') {
@@ -694,8 +687,6 @@
                 btnMerge.style.display = "none";
                 btnReserve.style.display = "none";
                 btnPay.style.display = "none";
-                btnPrint.style.display = "none";
-
             }
 
         });
@@ -704,6 +695,18 @@
             const targetId = select.value;
             const sourceId = select.dataset.sourceId;
             location.href = `/pos/split?sourceTableId=${sourceId}&targetTableId=${targetId}`;
+        }
+        // Xử lý format khi nhập số tiền khách đưa trong thanh toán
+        window.formatNumber = function(input) {
+            // Lấy giá trị và bỏ hết ký tự không phải số
+            let value = input.value.replace(/[^0-9]/g, '');
+
+            if (value === '') {
+                input.value = '';
+                return;
+            }
+            // Format kiểu US: 100000 -> 100,000
+            input.value = Number(value).toLocaleString('en-US');
         }
 
 
@@ -738,12 +741,13 @@
                 } else if (openModal === 'payOrderModal') {
                     const amountPaidInput = document.getElementById("amountPaid");
                     const changeAmountInput = document.getElementById("changeAmount");
-                    const totalAmount = [[${payOrderResponse?.totalAmount ?: 0}]];
+                    const totalAmountStr = [[${payOrderResponse?.totalAmount ?: 0}]];
+                    const totalAmount = Number(totalAmountStr.replace(/,/g, '')) || 0;
                     amountPaidInput.addEventListener("input", function () {
-                        let amountPaid = parseInt(this.value) || 0;
+                        let amountPaid = Number(this.value.replace(/,/g, '')) || 0;
                         let changeAmount = amountPaid - totalAmount;
                         if (changeAmount < 0) changeAmount = 0;
-                        changeAmountInput.value = changeAmount;
+                        changeAmountInput.value = Number(changeAmount).toLocaleString('en-US');
                     })
                 }
             }, {once: true});

@@ -1,4 +1,4 @@
-package com.example.coffeemanagement.model;
+package com.example.coffeemanagement.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,12 +9,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Table {
+public class PositionDTO {
 
     private String id;
 
     private String name;
 
-    private String status;
-
+    private String salary;
 }

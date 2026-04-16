@@ -2,15 +2,19 @@ package com.example.coffeemanagement.dao.impl;
 
 import com.example.coffeemanagement.constant.ErrorMessageConstants;
 import com.example.coffeemanagement.dao.IOrderDAO;
+import com.example.coffeemanagement.dto.OrderDTO;
+import com.example.coffeemanagement.entity.OrderEntity;
 import com.example.coffeemanagement.exception.InternalException;
-import com.example.coffeemanagement.model.Order;
 import com.example.coffeemanagement.util.DBUtils;
+import com.example.coffeemanagement.util.SystemUtils;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.Optional;
 @Repository
 public class OrderDAO implements IOrderDAO {
@@ -48,7 +52,110 @@ public class OrderDAO implements IOrderDAO {
     }
 
     @Override
-    public Optional<String> findUnpaidOrderByTableId(String tableId) {
+    public Optional<OrderEntity> findById(String id) {
+        Connection conn = DataSourceUtils.getConnection(dataSource);
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            String sql = """
+                SELECT *
+                FROM HoaDon
+                WHERE MaBan = ?
+                """;
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                OrderEntity orderEntity = new OrderEntity();
+                orderEntity.setId(rs.getString("MaHoaDon"));
+                orderEntity.setTableId(rs.getString("MaBan"));
+                orderEntity.setEmployeeId(rs.getString("MaNhanVien"));
+                orderEntity.setPromotionId(rs.getString("MaKhuyenMai"));
+                orderEntity.setCustomerName(rs.getString("TenKhachHang"));
+                orderEntity.setCustomerPhone(rs.getString("SdtKhachHang"));
+                orderEntity.setTotalAmount(rs.getBigDecimal("TongTien"));
+                orderEntity.setAmountPaid(rs.getBigDecimal("TienKhachDua"));
+                orderEntity.setChangeAmount(rs.getBigDecimal("TienThoi"));
+                Timestamp ts = rs.getTimestamp("createdDate");
+                LocalDateTime createdDate = ts != null ? ts.toLocalDateTime() : null;
+                orderEntity.setCreatedDate(createdDate);
+                orderEntity.setStatus(rs.getString("TrangThai"));
+            }
+
+        } catch (Exception e) {
+            throw new InternalException(ErrorMessageConstants.DATABASE_ERROR, e);
+        } finally {
+            DBUtils.close(ps, rs);
+            DataSourceUtils.releaseConnection(conn, dataSource);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<OrderDTO> findDetailById(String id) {
+        Connection conn = DataSourceUtils.getConnection(dataSource);
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = """
+            SELECT 
+                o.MaHoaDon,
+                t.TenBan AS TenBan,
+                e.HoTen AS TenNhanVien,
+                p.TenKhuyenMai AS TenKhuyenMai,
+                o.TenKhachHang,
+                o.SdtKhachHang,
+                o.TongTien,
+                o.TienKhachDua,
+                o.TienThoi,
+                o.NgayGioTao,
+                o.TrangThai
+            FROM HoaDon o
+            LEFT JOIN Ban t ON o.MaBan = t.MaBan
+            LEFT JOIN NhanVien e ON o.MaNhanVien = e.MaNhanVien
+            LEFT JOIN KhuyenMai p ON o.MaKhuyenMai = p.MaKhuyenMai
+            WHERE o.MaHoaDon = ?
+        """;
+
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, id);
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                OrderDTO dto = new OrderDTO();
+
+                dto.setId(rs.getString("MaHoaDon"));
+                dto.setTableName(rs.getString("TenBan"));
+                dto.setEmployeeName(rs.getString("TenNhanVien"));
+                dto.setPromotionName(rs.getString("TenKhuyenMai"));
+                dto.setCustomerName(rs.getString("TenKhachHang"));
+                dto.setCustomerPhone(rs.getString("SdtKhachHang"));
+                // Format tiền
+                dto.setTotalAmount(SystemUtils.bigDecimalToString(rs.getBigDecimal("TongTien"), Locale.US));
+                dto.setAmountPaid(SystemUtils.bigDecimalToString(rs.getBigDecimal("TienKhachDua"), Locale.US));
+                dto.setChangeAmount(SystemUtils.bigDecimalToString(rs.getBigDecimal("TienThoi"), Locale.US));
+                // Format ngày
+                Timestamp ts = rs.getTimestamp("NgayGioTao");
+                String createdDate = ts != null ? SystemUtils.dateToString(ts.toLocalDateTime(),"dd/MM/yyyy HH:mm") : null;
+                dto.setCreatedDate(createdDate);
+
+                dto.setStatus(rs.getString("TrangThai"));
+                return Optional.of(dto);
+            }
+
+        } catch (Exception e) {
+            throw new InternalException(ErrorMessageConstants.DATABASE_ERROR, e);
+        } finally {
+            DBUtils.close(ps, rs);
+            DataSourceUtils.releaseConnection(conn, dataSource);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<String> findOrderIdByTableIdAndStatus(String tableId, String status) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -56,10 +163,11 @@ public class OrderDAO implements IOrderDAO {
             String sql = """
                 SELECT MaHoaDon
                 FROM HoaDon
-                WHERE MaBan = ? AND TrangThai = 'UNPAID'
+                WHERE MaBan = ? AND TrangThai = ?
                 """;
             ps = conn.prepareStatement(sql);
             ps.setString(1, tableId);
+            ps.setString(2, status);
             rs = ps.executeQuery();
             if (rs.next()) {
                 return Optional.of(rs.getString("MaHoaDon"));
@@ -75,7 +183,34 @@ public class OrderDAO implements IOrderDAO {
     }
 
     @Override
-    public int insert(Order model) {
+    public Optional<String> findTotalAmountById(String id) {
+        Connection conn = DataSourceUtils.getConnection(dataSource);
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            String sql = """
+                SELECT TongTien
+                FROM HoaDon
+                WHERE MaHoaDon = ?
+                """;
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return Optional.of(SystemUtils.bigDecimalToString(rs.getBigDecimal("TongTien"), Locale.US));
+            }
+
+        } catch (Exception e) {
+            throw new InternalException(ErrorMessageConstants.DATABASE_ERROR, e);
+        } finally {
+            DBUtils.close(ps, rs);
+            DataSourceUtils.releaseConnection(conn, dataSource);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public int insert(OrderEntity entity) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         try  {
@@ -97,17 +232,17 @@ public class OrderDAO implements IOrderDAO {
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
             ps = conn.prepareStatement(sql);
-            ps.setString(1, model.getId());
-            ps.setString(2, model.getTableId());
-            ps.setString(3, model.getEmployeeId());
-            ps.setString(4, model.getPromotionId());
-            ps.setString(5, model.getCustomerName());
-            ps.setString(6, model.getCustomerPhone());
-            ps.setBigDecimal(7, model.getTotalAmount());
-            ps.setBigDecimal(8, model.getAmountPaid());
-            ps.setBigDecimal(9, model.getChangeAmount());
-            ps.setTimestamp(10, Timestamp.valueOf(model.getCreatedDate()));
-            ps.setString(11, model.getStatus());
+            ps.setString(1, entity.getId());
+            ps.setString(2, entity.getTableId());
+            ps.setString(3, entity.getEmployeeId());
+            ps.setString(4, entity.getPromotionId());
+            ps.setString(5, entity.getCustomerName());
+            ps.setString(6, entity.getCustomerPhone());
+            ps.setBigDecimal(7, entity.getTotalAmount());
+            ps.setBigDecimal(8, entity.getAmountPaid());
+            ps.setBigDecimal(9, entity.getChangeAmount());
+            ps.setTimestamp(10, Timestamp.valueOf(entity.getCreatedDate()));
+            ps.setString(11, entity.getStatus());
 
             return ps.executeUpdate();
         } catch (SQLException e) {
@@ -192,7 +327,7 @@ public class OrderDAO implements IOrderDAO {
     }
 
     @Override
-    public int payOrder(String orderId, BigDecimal amountPaid, BigDecimal changeAmount) {
+    public int payOrder(String orderId, BigDecimal amountPaid, BigDecimal changeAmount, String status) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         try {
@@ -200,13 +335,14 @@ public class OrderDAO implements IOrderDAO {
             UPDATE HoaDon
             SET TienKhachDua = ?, 
                 TienThoi = ?, 
-                TrangThai = 'PAID'
+                TrangThai = ?
             WHERE MaHoaDon = ?
         """;
             ps = conn.prepareStatement(sql);
             ps.setBigDecimal(1, amountPaid);
             ps.setBigDecimal(2, changeAmount);
-            ps.setString(3, orderId);
+            ps.setString(3, status);
+            ps.setString(4, orderId);
             return ps.executeUpdate();
 
         } catch (Exception e) {

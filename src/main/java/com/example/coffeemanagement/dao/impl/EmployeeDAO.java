@@ -2,13 +2,13 @@ package com.example.coffeemanagement.dao.impl;
 
 import com.example.coffeemanagement.constant.ErrorMessageConstants;
 import com.example.coffeemanagement.dao.IEmployeeDAO;
-import com.example.coffeemanagement.dto.EmployeeDTO;
-import com.example.coffeemanagement.dto.EmployeeDetailDTO;
 import com.example.coffeemanagement.dto.EmployeeListDTO;
 import com.example.coffeemanagement.dto.PageDTO;
+import com.example.coffeemanagement.dto.response.EmployeeProfileResponse;
+import com.example.coffeemanagement.entity.EmployeeEntity;
 import com.example.coffeemanagement.exception.InternalException;
-import com.example.coffeemanagement.model.Employee;
 import com.example.coffeemanagement.util.DBUtils;
+import com.example.coffeemanagement.util.SystemUtils;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
@@ -16,10 +16,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class EmployeeDAO implements IEmployeeDAO {
@@ -55,14 +52,13 @@ public class EmployeeDAO implements IEmployeeDAO {
     }
 
     @Override
-    public Optional<Employee> findByUsername(String username) {
+    public Optional<EmployeeEntity> findByUsername(String username) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             String sql = """
-                    SELECT NV.MaNhanVien, NV.HoTen, NV.DiaChi,
-                           NV.MaChucVu, NV.MatKhau, NV.Anh, NV.SoDienThoai, NV.TenDangNhap, NV.QuyenHan
+                    SELECT *
                     FROM NhanVien NV
                     WHERE NV.tenDangNhap = ?
                     """;
@@ -71,17 +67,18 @@ public class EmployeeDAO implements IEmployeeDAO {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                Employee model = new Employee();
-                model.setId(rs.getString("MaNhanVien"));
-                model.setFullName(rs.getString("HoTen"));
-                model.setAddress(rs.getString("DiaChi"));
-                model.setPositionId(rs.getString("MaChucVu"));
-                model.setPhone(rs.getString("SoDienThoai"));
-                model.setPicture(rs.getString("Anh"));
-                model.setUsername(rs.getString("TenDangNhap"));
-                model.setPassword(rs.getString("MatKhau"));
-                model.setRole(rs.getString("QuyenHan"));
-                return Optional.of(model);
+                EmployeeEntity entity = new EmployeeEntity();
+                entity.setId(rs.getString("MaNhanVien"));
+                entity.setPositionId(rs.getString("MaChucVu"));
+                entity.setFullName(rs.getString("HoTen"));
+                entity.setPhone(rs.getString("SoDienThoai"));
+                entity.setAddress(rs.getString("DiaChi"));
+                entity.setPicture(rs.getString("Anh"));
+                entity.setUsername(rs.getString("TenDangNhap"));
+                entity.setPassword(rs.getString("MatKhau"));
+                entity.setRole(rs.getString("QuyenHan"));
+                entity.setStatus(rs.getString("TrangThai"));
+                return Optional.of(entity);
             }
         } catch (Exception e) {
             throw new InternalException(ErrorMessageConstants.DATABASE_ERROR, e);
@@ -93,15 +90,14 @@ public class EmployeeDAO implements IEmployeeDAO {
     }
 
     @Override
-    public Optional<EmployeeDTO> findById(String id) {
+    public Optional<EmployeeEntity> findById(String id) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
             String sql = """
-                    SELECT MaNhanVien,MaChucVu, HoTen, SoDienThoai,
-                        DiaChi, Anh, TenDangNhap, MatKhau
+                    SELECT *
                     FROM NhanVien
                     WHERE MaNhanVien = ?
                     """;
@@ -110,16 +106,18 @@ public class EmployeeDAO implements IEmployeeDAO {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                EmployeeDTO dto = new EmployeeDTO();
-                dto.setId(rs.getString("MaNhanVien"));
-                dto.setPositionId(rs.getString("MaChucVu"));
-                dto.setFullName(rs.getString("HoTen"));
-                dto.setPhone(rs.getString("SoDienThoai"));
-                dto.setAddress(rs.getString("DiaChi"));
-                dto.setPicture(rs.getString("Anh"));
-                dto.setUsername(rs.getString("TenDangNhap"));
-                dto.setPassword(rs.getString("MatKhau"));
-                return Optional.of(dto);
+                EmployeeEntity entity = new EmployeeEntity();
+                entity.setId(rs.getString("MaNhanVien"));
+                entity.setPositionId(rs.getString("MaChucVu"));
+                entity.setFullName(rs.getString("HoTen"));
+                entity.setPhone(rs.getString("SoDienThoai"));
+                entity.setAddress(rs.getString("DiaChi"));
+                entity.setPicture(rs.getString("Anh"));
+                entity.setUsername(rs.getString("TenDangNhap"));
+                entity.setPassword(rs.getString("MatKhau"));
+                entity.setRole(rs.getString("QuyenHan"));
+                entity.setStatus(rs.getString("TrangThai"));
+                return Optional.of(entity);
             }
         } catch (Exception e) {
             throw new InternalException(ErrorMessageConstants.DATABASE_ERROR, e);
@@ -131,36 +129,40 @@ public class EmployeeDAO implements IEmployeeDAO {
     }
 
     @Override
-    public Optional<EmployeeDetailDTO> findDetailByUsername(String username) {
+    public Optional<EmployeeProfileResponse> findProfileById(String id) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             String sql = """
-                    SELECT NV.MaNhanVien, NV.HoTen, CV.MaChucVu, CV.TenChucVu,
-                           NV.DiaChi, NV.SoDienThoai, CV.Luong, NV.Anh,
-                           NV.TenDangNhap, NV.MatKhau
+                    SELECT
+                         NV.HoTen,
+                         NV.DiaChi,
+                         NV.SoDienThoai,
+                         CV.TenChucVu,
+                         CV.Luong,
+                         NV.TenDangNhap,
+                         NV.MatKhau,
+                         NV.Anh
                     FROM NhanVien NV
                     INNER JOIN ChucVu CV ON NV.MaChucVu = CV.MaChucVu
-                    WHERE NV.TenDangNhap = ?
+                    WHERE NV.MaNhanVien = ?
                     """;
             ps = conn.prepareStatement(sql);
-            ps.setString(1, username);
+            ps.setString(1, id);
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                EmployeeDetailDTO dto = new EmployeeDetailDTO();
-                dto.setId(rs.getString("MaNhanVien"));
-                dto.setFullName(rs.getString("HoTen"));
-                dto.setPositionId(rs.getString("MaChucVu"));
-                dto.setPositionName(rs.getString("TenChucVu"));
-                dto.setAddress(rs.getString("DiaChi"));
-                dto.setPhone(rs.getString("SoDienThoai"));
-                dto.setSalary(rs.getBigDecimal("Luong"));
-                dto.setPicture(rs.getString("Anh"));
-                dto.setUsername(rs.getString("TenDangNhap"));
-                dto.setPassword(rs.getString("MatKhau"));
-                return Optional.of(dto);
+                EmployeeProfileResponse response = new EmployeeProfileResponse();
+                response.setFullName(rs.getString("HoTen"));
+                response.setAddress(rs.getString("DiaChi"));
+                response.setPhone(rs.getString("SoDienThoai"));
+                response.setPositionName(rs.getString("TenChucVu"));
+                response.setSalary(SystemUtils.bigDecimalToString(rs.getBigDecimal("Luong"), Locale.US));
+                response.setUsername(rs.getString("TenDangNhap"));
+                response.setPassword(rs.getString("MatKhau"));
+                response.setPicture(rs.getString("Anh"));
+                return Optional.of(response);
             }
         } catch (Exception e) {
             throw new InternalException(ErrorMessageConstants.DATABASE_ERROR, e);
@@ -171,30 +173,28 @@ public class EmployeeDAO implements IEmployeeDAO {
         return Optional.empty();
     }
 
+
     @Override
-    public int updateProfile(String id, Employee model) {
+    public int updateProfileById(String id, EmployeeEntity entity) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         try {
             String sql = """
                     UPDATE NV
-                    SET NV.HoTen = ?,
-                        NV.DiaChi = ?,
+                    SET
+                        NV.HoTen = ?,
                         NV.SoDienThoai = ?,
-                        NV.MaChucVu = ?,
-                        NV.Anh = ?,
-                        NV.QuyenHan = ?
+                        NV.DiaChi = ?,
+                        NV.Anh = ?
                     FROM NhanVien NV
                     WHERE NV.MaNhanVien = ?
                     """;
             ps = conn.prepareStatement(sql);
-            ps.setString(1, model.getFullName());
-            ps.setString(2, model.getAddress());
-            ps.setString(3, model.getPhone());
-            ps.setString(4, model.getPositionId());
-            ps.setString(5, model.getPicture());
-            ps.setString(6, model.getRole());
-            ps.setString(7, id);
+            ps.setString(1, entity.getFullName());
+            ps.setString(2, entity.getPhone());
+            ps.setString(3, entity.getAddress());
+            ps.setString(4, entity.getPicture());
+            ps.setString(5, entity.getId());
             return ps.executeUpdate();
         } catch (Exception e) {
             throw new InternalException(ErrorMessageConstants.DATABASE_ERROR, e);
@@ -262,7 +262,7 @@ public class EmployeeDAO implements IEmployeeDAO {
                 dto.setId(rs2.getString("MaNhanVien"));
                 dto.setFullName(rs2.getString("HoTen"));
                 dto.setPositionName(rs2.getString("TenChucVu"));
-                dto.setSalary(rs2.getBigDecimal("Luong"));
+                dto.setSalary(SystemUtils.bigDecimalToString(rs2.getBigDecimal("Luong"), Locale.US));
                 list.add(dto);
             }
         } catch (Exception e) {
@@ -278,7 +278,7 @@ public class EmployeeDAO implements IEmployeeDAO {
     }
 
     @Override
-    public void insert(Employee model) {
+    public int insert(EmployeeEntity entity) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
 
@@ -289,17 +289,17 @@ public class EmployeeDAO implements IEmployeeDAO {
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """;
             ps = conn.prepareStatement(sql);
-            ps.setString(1, model.getId());
-            ps.setString(2, model.getPositionId());
-            ps.setString(3, model.getFullName());
-            ps.setString(4, model.getPhone());
-            ps.setString(5, model.getAddress());
-            ps.setString(6, model.getPicture());
-            ps.setString(7, model.getUsername());
-            ps.setString(8, model.getPassword());
-            ps.setString(9, model.getRole());
-            ps.setString(10, model.getStatus());
-            ps.executeUpdate();
+            ps.setString(1, entity.getId());
+            ps.setString(2, entity.getPositionId());
+            ps.setString(3, entity.getFullName());
+            ps.setString(4, entity.getPhone());
+            ps.setString(5, entity.getAddress());
+            ps.setString(6, entity.getPicture());
+            ps.setString(7, entity.getUsername());
+            ps.setString(8, entity.getPassword());
+            ps.setString(9, entity.getRole());
+            ps.setString(10, entity.getStatus());
+            return ps.executeUpdate();
         } catch (Exception e) {
             throw new InternalException(ErrorMessageConstants.DATABASE_ERROR, e);
         } finally {
@@ -309,7 +309,7 @@ public class EmployeeDAO implements IEmployeeDAO {
     }
 
     @Override
-    public void update(String id, Employee model) {
+    public int updateById(String id, EmployeeEntity entity) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         try {
@@ -318,16 +318,16 @@ public class EmployeeDAO implements IEmployeeDAO {
                     WHERE MaNhanVien = ?
                     """;
             ps = conn.prepareStatement(sql);
-            ps.setString(1, model.getFullName());
-            ps.setString(2, model.getAddress());
-            ps.setString(3, model.getPositionId());
-            ps.setString(4, model.getPhone());
-            ps.setString(5, model.getPicture());
-            ps.setString(6, model.getUsername());
-            ps.setString(7, model.getPassword());
-            ps.setString(8, model.getRole());
+            ps.setString(1, entity.getFullName());
+            ps.setString(2, entity.getAddress());
+            ps.setString(3, entity.getPositionId());
+            ps.setString(4, entity.getPhone());
+            ps.setString(5, entity.getPicture());
+            ps.setString(6, entity.getUsername());
+            ps.setString(7, entity.getPassword());
+            ps.setString(8, entity.getRole());
             ps.setString(9, id);
-            ps.executeUpdate();
+            return ps.executeUpdate();
         } catch (Exception e) {
             throw new InternalException(ErrorMessageConstants.DATABASE_ERROR, e);
         } finally {
@@ -337,7 +337,7 @@ public class EmployeeDAO implements IEmployeeDAO {
     }
 
     @Override
-    public void delete(String id) {
+    public int deleteById(String id) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         try {
@@ -347,7 +347,7 @@ public class EmployeeDAO implements IEmployeeDAO {
                     """;
             ps = conn.prepareStatement(sql);
             ps.setString(1, id);
-            ps.executeUpdate();
+            return ps.executeUpdate();
         } catch (Exception e) {
             throw new InternalException(ErrorMessageConstants.DATABASE_ERROR, e);
         } finally {

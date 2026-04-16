@@ -1,4 +1,4 @@
-package com.example.coffeemanagement.model;
+package com.example.coffeemanagement.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Employee {
+public class EmployeeEntity {
 
     private String id;
 

@@ -1,6 +1,6 @@
 package com.example.coffeemanagement.security;
 
-import com.example.coffeemanagement.model.Employee;
+import com.example.coffeemanagement.entity.EmployeeEntity;
 import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,11 +10,11 @@ import java.util.Collection;
 
 @Getter
 public class CustomUserDetail implements UserDetails {
-    private final Employee employee;
+    private final EmployeeEntity employeeEntity;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetail(Employee employee, Collection<? extends GrantedAuthority> authorities) {
-        this.employee = employee;
+    public CustomUserDetail(EmployeeEntity employeeEntity, Collection<? extends GrantedAuthority> authorities) {
+        this.employeeEntity = employeeEntity;
         this.authorities = authorities;
     }
 
@@ -25,12 +25,12 @@ public class CustomUserDetail implements UserDetails {
 
     @Override
     public @Nullable String getPassword() {
-        return employee.getPassword();
+        return employeeEntity.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return employee.getUsername();
+        return employeeEntity.getUsername();
     }
 
     @Override

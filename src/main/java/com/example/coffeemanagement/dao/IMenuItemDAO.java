@@ -1,14 +1,14 @@
 package com.example.coffeemanagement.dao;
 
-import com.example.coffeemanagement.dto.MenuItemDTO;
+import com.example.coffeemanagement.entity.MenuItemEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface IMenuItemDAO {
 
-    Optional<MenuItemDTO> findById(String id);
-    List<MenuItemDTO> findByStatus(String status);
+    Optional<MenuItemEntity> findById(String id);
+    List<MenuItemEntity> findByStatus(String status);
 
 
 }

@@ -1,20 +1,22 @@
 package com.example.coffeemanagement.dao;
 
 import com.example.coffeemanagement.dto.MergedItemDTO;
-import com.example.coffeemanagement.dto.OrderMenuItemDTO;
-import com.example.coffeemanagement.model.OrderItem;
+import com.example.coffeemanagement.dto.OrderItemDTO;
+import com.example.coffeemanagement.entity.OrderItemEntity;
 
 import java.util.List;
 
 public interface IOrderItemDAO {
 
-    int insert(OrderItem model);
+    List<OrderItemEntity> findByOrderId(String orderId);
+
+    int insert(OrderItemEntity entity);
 
     int deleteByOrderId(String orderId);
 
-    List<OrderMenuItemDTO> findOrderByTableId(String tableId);
+    List<OrderItemDTO> findByTableIdAndOrderStatus(String tableId, String status);
 
-    List<MergedItemDTO> findMergedItems(List<String> orderIds);
+    List<MergedItemDTO> findMergedItemsByOrderIds(List<String> orderIds);
 
     int updateQuantityById(String orderId, String menuItemId, int delta);
 }

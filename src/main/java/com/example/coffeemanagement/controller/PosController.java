@@ -1,6 +1,7 @@
 package com.example.coffeemanagement.controller;
 
-import com.example.coffeemanagement.dto.OrderMenuItemDTO;
+import com.example.coffeemanagement.dto.OrderDTO;
+import com.example.coffeemanagement.dto.OrderItemSelectDTO;
 import com.example.coffeemanagement.dto.TableDTO;
 import com.example.coffeemanagement.dto.TableOptionDTO;
 import com.example.coffeemanagement.dto.request.*;
@@ -36,7 +37,7 @@ public class PosController {
 
     @GetMapping
     public String pos(Model model) {
-        List<TableDTO> listTable = tableService.getAll();
+        List<TableDTO> listTable = tableService.getAllTables();
         model.addAttribute("tables", listTable);
         model.addAttribute("title", "Quản lý bán hàng");
         model.addAttribute("content", "pos");
@@ -47,7 +48,7 @@ public class PosController {
     public String displayViewTable(@RequestParam String sourceTableId, RedirectAttributes redirectAttributes) {
         ViewTableResponse viewTableResponse = new ViewTableResponse();
         viewTableResponse.setTableInfo(tableService.getTableInfo(sourceTableId));
-        viewTableResponse.setOrderList(orderItemService.getOrderByTableId(sourceTableId));
+        viewTableResponse.setOrderItemList(orderItemService.getOrderItemsForTable(sourceTableId));
 
         redirectAttributes.addFlashAttribute("viewTableResponse", viewTableResponse);
         redirectAttributes.addFlashAttribute("modal", "viewTableModal");
@@ -69,7 +70,7 @@ public class PosController {
             model.addAttribute("error", "Dữ liệu không hợp lệ");
             return "error/500";
         }
-        String employeeId = SecurityUtils.getPrincipal().getEmployee().getId();
+        String employeeId = SecurityUtils.getPrincipal().getEmployeeEntity().getId();
         request.setEmployeeId(employeeId);
 
         tableService.reserveTable(request);
@@ -80,16 +81,16 @@ public class PosController {
     @GetMapping("/order")
     public String displayOrderTable(@RequestParam String sourceTableId, RedirectAttributes redirectAttributes) {
         // Response
-        TableDTO sourceTable = tableService.getById(sourceTableId);
+        TableDTO sourceTable = tableService.getTable(sourceTableId);
         OrderTableResponse orderTableResponse = new OrderTableResponse();
-        List<OrderMenuItemDTO> orderList = orderItemService.getMenuWithOrderByTableId(sourceTableId);
+        List<OrderItemSelectDTO> orderItemList = orderItemService.getMenuWithOrderItemsForTable(sourceTableId);
         orderTableResponse.setSourceTable(sourceTable);
-        orderTableResponse.setOrderList(orderList);
+        orderTableResponse.setOrderItemList(orderItemList);
 
         // Request
         OrderTableRequest orderTableRequest = new OrderTableRequest();
         orderTableRequest.setSourceTableId(sourceTableId);
-        orderTableRequest.setOrderList(orderList);
+        orderTableRequest.setOrderItemList(orderItemList);
 
         redirectAttributes.addFlashAttribute("modal", "orderTableModal");
         redirectAttributes.addFlashAttribute("orderTableRequest", orderTableRequest);
@@ -103,7 +104,7 @@ public class PosController {
             model.addAttribute("error", "Dữ liệu không hợp lệ");
             return "error/500";
         }
-        String employeeId = SecurityUtils.getPrincipal().getEmployee().getId();
+        String employeeId = SecurityUtils.getPrincipal().getEmployeeEntity().getId();
         request.setEmployeeId(employeeId);
         orderService.saveOrder(request);
         redirectAttributes.addFlashAttribute("success", "Đặt đơn thành công");
@@ -112,7 +113,7 @@ public class PosController {
 
     @GetMapping("/move")
     public String displayMoveTable(@RequestParam String sourceTableId, RedirectAttributes redirectAttributes) {
-        TableDTO sourceTable = tableService.getById(sourceTableId);
+        TableDTO sourceTable = tableService.getTable(sourceTableId);
         List<TableOptionDTO> tableList = tableService.getSelectableTables(sourceTableId, List.of(TableStatus.AVAILABLE));
         MoveTableResponse moveTableResponse = new MoveTableResponse(sourceTable, tableList);
         MoveTableRequest moveTableRequest = new MoveTableRequest();
@@ -138,7 +139,7 @@ public class PosController {
     @GetMapping("/merge")
     public String displayMergeTable(@RequestParam String sourceTableId, RedirectAttributes redirectAttributes) {
 
-        TableDTO sourceTable = tableService.getById(sourceTableId);
+        TableDTO sourceTable = tableService.getTable(sourceTableId);
         List<TableOptionDTO> mergeableSourceTableList = tableService.getSelectableTables(sourceTableId, List.of(TableStatus.OCCUPIED));
         List<TableOptionDTO> mergeableTargetTableList = tableService.getSelectableTables(sourceTableId, List.of(TableStatus.AVAILABLE, TableStatus.OCCUPIED));
 
@@ -158,7 +159,7 @@ public class PosController {
             model.addAttribute("error", "Dữ liệu không hợp lệ");
             return "error/500";
         }
-        String employeeId = SecurityUtils.getPrincipal().getEmployee().getId();
+        String employeeId = SecurityUtils.getPrincipal().getEmployeeEntity().getId();
         request.setEmployeeId(employeeId);
         tableService.mergeTables(request);
         redirectAttributes.addFlashAttribute("success", "Gộp bàn thành công");
@@ -167,29 +168,29 @@ public class PosController {
 
     @GetMapping("/split")
     public String displaySplitTable(@RequestParam String sourceTableId, @RequestParam(required = false) String targetTableId, RedirectAttributes redirectAttributes) {
-        TableDTO sourceTable = tableService.getById(sourceTableId);
-        List<OrderMenuItemDTO> sourceOrderMenuItemList = orderItemService.getOrderByTableId(sourceTableId);
+        TableDTO sourceTable = tableService.getTable(sourceTableId);
+        List<OrderItemSelectDTO> sourceOrderMenuItemList = orderItemService.getOrderItemsForTable(sourceTableId);
         List<TableOptionDTO> selectableTableList = tableService.getSelectableTables(sourceTableId, List.of(TableStatus.AVAILABLE, TableStatus.OCCUPIED));
         TableDTO targetTable;
-        List<OrderMenuItemDTO> targetOrderMenuItemList;
+        List<OrderItemSelectDTO> targetOrderMenuItemList;
         if (targetTableId == null || targetTableId.isBlank()) {
             targetTable = new TableDTO();
             targetOrderMenuItemList = new ArrayList<>();
         } else {
-            targetTable = tableService.getById(targetTableId);
-            targetOrderMenuItemList = orderItemService.getOrderByTableId(targetTableId);
+            targetTable = tableService.getTable(targetTableId);
+            targetOrderMenuItemList = orderItemService.getOrderItemsForTable(targetTableId);
         }
         SplitTableResponse splitTableResponse = new SplitTableResponse();
         splitTableResponse.setSourceTable(sourceTable);
         splitTableResponse.setTargetTable(targetTable);
         splitTableResponse.setSelectableTableList(selectableTableList);
-        splitTableResponse.setSourceOrderMenuItemList(sourceOrderMenuItemList);
-        splitTableResponse.setTargetOrderMenuItemList(targetOrderMenuItemList);
+        splitTableResponse.setSourceOrderItemList(sourceOrderMenuItemList);
+        splitTableResponse.setTargetOrderItemList(targetOrderMenuItemList);
 
         SplitTableRequest splitTableRequest = new SplitTableRequest();
         splitTableRequest.setSourceTableId(sourceTableId);
         splitTableRequest.setTargetTableId(targetTableId);
-        splitTableRequest.setSplitOrderList(sourceOrderMenuItemList);
+        splitTableRequest.setSplitOrderItemList(sourceOrderMenuItemList);
 
 
         redirectAttributes.addFlashAttribute("modal", "splitTableModal");
@@ -204,7 +205,7 @@ public class PosController {
             model.addAttribute("error", "Dữ liệu không hợp lệ");
             return "error/500";
         }
-        String employeeId = SecurityUtils.getPrincipal().getEmployee().getId();
+        String employeeId = SecurityUtils.getPrincipal().getEmployeeEntity().getId();
         request.setEmployeeId(employeeId);
         tableService.splitTable(request);
         redirectAttributes.addFlashAttribute("success", "Tách bàn thành công");
@@ -227,16 +228,19 @@ public class PosController {
 
     @GetMapping("/pay")
     public String displayPayTable(@RequestParam String sourceTableId, RedirectAttributes redirectAttributes) {
-        TableDTO sourceTable = tableService.getById(sourceTableId);
+        TableDTO sourceTable = tableService.getTable(sourceTableId);
         PayOrderResponse payOrderResponse = new PayOrderResponse();
         payOrderResponse.setSourceTable(sourceTable);
-        payOrderResponse.setOrderList(orderItemService.getOrderByTableId(sourceTableId));
+        payOrderResponse.setOrderItemList(orderItemService.getOrderItemsForTable(sourceTableId));
+        String orderId = orderService.getUnpaidOrderId(sourceTableId);
+        String totalAmount = orderService.getTotalAmount(orderId);
+        payOrderResponse.setTotalAmount(totalAmount);
+
 
         PayOrderRequest payOrderRequest = new PayOrderRequest();
         payOrderRequest.setSourceTableId(sourceTable.getId());
-        String orderId = orderService.getUnpaidOrderByTableId(sourceTableId);
         payOrderRequest.setOrderId(orderId);
-        payOrderRequest.setTotalAmount(payOrderResponse.getTotalAmount());
+        payOrderRequest.setTotalAmount(totalAmount);
 
 
         redirectAttributes.addFlashAttribute("payOrderRequest", payOrderRequest);
@@ -252,8 +256,15 @@ public class PosController {
             return "error/500";
         }
         orderService.payOrder(request);
-        redirectAttributes.addFlashAttribute("success", "Thanh toán thành công");
-        return "redirect:/pos";
+        redirectAttributes.addAttribute("orderId", request.getOrderId());
+        return "redirect:/pos/invoice";
+    }
+
+    @GetMapping("/invoice")
+    public String printInvoice(@RequestParam String orderId, Model model){
+        OrderDTO order = orderService.getOrder(orderId);
+        model.addAttribute("order", order);
+        return "invoice";
     }
 
 

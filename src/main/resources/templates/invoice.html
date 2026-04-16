@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="~{fragments/head :: head}"></div>
+
+<body onload="window.print()">
+
+<div class="container invoice p-2">
+
+    <!-- HEADER -->
+    <div class="text-center">
+        <h5 class="fw-bold mb-1">QUÁN COFFEE</h5>
+        <small>HÓA ĐƠN THANH TOÁN</small>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- INFO -->
+    <div class="mb-2">
+        <div class="d-flex justify-content-between">
+            <span>Mã HĐ:</span>
+            <span th:text="${order.id}"></span>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span>Bàn:</span>
+            <span th:text="${order.tableName}"></span>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span>Nhân viên:</span>
+            <span th:text="${order.employeeName}"></span>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span>Ngày:</span>
+            <span th:text="${order.createdDate}"></span>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ORDER ITEMS -->
+    <div class="mb-2">
+        <div class="fw-bold mb-1">Danh sách món</div>
+
+        <table class="w-100">
+            <thead>
+            <tr>
+                <th class="text-start">Món</th>
+                <th class="text-center">Số lượng</th>
+                <th class="text-center">Giá</th>
+                <th class="text-end">Thành tiền</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="orderItem : ${order.orderItemList}">
+                <td class="text-start" th:text="${orderItem.menuItemName}"></td>
+                <td class="text-center" th:text="${orderItem.quantity}"></td>
+                <td class="text-center" th:text="${orderItem.currentPrice}"></td>
+                <td class="text-end" th:text="${orderItem.lineTotal}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- TOTAL -->
+    <div class="mb-2">
+        <div class="d-flex justify-content-between">
+            <span>Tổng tiền:</span>
+            <strong th:text="${order.totalAmount}"></strong>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span>Khách đưa:</span>
+            <span th:text="${order.amountPaid}"></span>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span>Thối lại:</span>
+            <strong th:text="${order.changeAmount}"></strong>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- FOOTER -->
+    <div class="text-center">
+        <small>Cảm ơn quý khách</small>
+    </div>
+
+    <!-- BUTTON (không in) -->
+    <div class="text-center mt-3 no-print">
+        <button class="btn btn-primary btn-sm" onclick="window.print()">In lại</button>
+    </div>
+
+</div>
+
+<div th:replace="~{fragments/script :: script}"></div>
+
+</body>
+</html>

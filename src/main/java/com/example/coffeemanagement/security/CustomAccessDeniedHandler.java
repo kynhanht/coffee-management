@@ -17,7 +17,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         try {
-            logger.info("Denied username: {}", SecurityUtils.getPrincipal().getUsername());
+            logger.error("Denied username: {}", SecurityUtils.getPrincipal().getUsername());
             response.sendRedirect("/login?accessDenied");
         } catch (Exception e) {
             logger.error(e.getMessage());

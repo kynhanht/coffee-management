@@ -1,10 +1,10 @@
 package com.example.coffeemanagement.dao;
 
-import com.example.coffeemanagement.model.Position;
+import com.example.coffeemanagement.entity.PositionEntity;
 
 import java.util.List;
 
 public interface IPositionDAO {
 
-    List<Position> findAll();
+    List<PositionEntity> findAll();
 }

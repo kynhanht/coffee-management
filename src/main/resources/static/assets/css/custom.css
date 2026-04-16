@@ -103,3 +103,35 @@
     color: var(--default-color);
     line-height: 1.6;
 }
+
+
+/* Invoice */
+
+.invoice {
+    width: 320px;
+    margin: 20px auto; /* căn giữa ngang */
+}
+
+.divider {
+    border-top: 1px dashed #000;
+    margin: 10px 0;
+}
+
+/* PRINT */
+@media print {
+    body {
+        margin: 0;
+        display: flex;
+        justify-content: center;   /* căn giữa ngang */
+        align-items: flex-start;   /* canh trên (giống hóa đơn thật) */
+    }
+
+    .invoice {
+        width: 320px;
+        margin: 0;
+    }
+
+    .no-print {
+        display: none; /* ẩn nút in */
+    }
+}

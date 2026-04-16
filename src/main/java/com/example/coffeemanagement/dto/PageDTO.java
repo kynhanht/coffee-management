@@ -16,8 +16,8 @@ public class PageDTO<T> {
     private List<T> content;
     private int currentPage;
     private int sizePage;
-    private int totalPages;
-    private long totalElements;
+    private int totalPages = 0;
+    private long totalElements = 0L;
     private String sort;
     private String dir;
     private String searchValue;

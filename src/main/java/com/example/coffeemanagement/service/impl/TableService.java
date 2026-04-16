@@ -3,14 +3,15 @@ package com.example.coffeemanagement.service.impl;
 import com.example.coffeemanagement.constant.ErrorMessageConstants;
 import com.example.coffeemanagement.dao.*;
 import com.example.coffeemanagement.dto.*;
-import com.example.coffeemanagement.dto.request.*;
+import com.example.coffeemanagement.dto.request.MergeTableRequest;
+import com.example.coffeemanagement.dto.request.MoveTableRequest;
+import com.example.coffeemanagement.dto.request.ReserveTableRequest;
+import com.example.coffeemanagement.dto.request.SplitTableRequest;
+import com.example.coffeemanagement.entity.*;
 import com.example.coffeemanagement.enums.OrderStatus;
 import com.example.coffeemanagement.enums.TableStatus;
 import com.example.coffeemanagement.exception.InternalException;
 import com.example.coffeemanagement.exception.NotFoundException;
-import com.example.coffeemanagement.model.Order;
-import com.example.coffeemanagement.model.OrderItem;
-import com.example.coffeemanagement.model.ReservationDetail;
 import com.example.coffeemanagement.service.ITableService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,21 +41,33 @@ public class TableService implements ITableService {
 
     @Transactional(readOnly = true)
     @Override
-    public TableDTO getById(String id) {
-        return tableDAO.findById(id)
+    public TableDTO getTable(String id) {
+        TableEntity entity = tableDAO.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.TABLE_NOT_FOUND + ": " + id));
+        TableDTO dto = new TableDTO();
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        dto.setStatus(entity.getStatus() != null ? TableStatus.valueOf(entity.getStatus()) : null);
+        return dto;
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<TableDTO> getAll() {
-        return tableDAO.findAll();
+    public List<TableDTO> getAllTables() {
+        List<TableEntity> tableList = tableDAO.findAll();
+        return  tableList.stream().map(table -> {
+            TableDTO dto = new TableDTO();
+            dto.setId(table.getId());
+            dto.setName(table.getName());
+            dto.setStatus(table.getStatus() != null ? TableStatus.valueOf(table.getStatus()) : null);
+            return dto;
+        }).toList();
     }
 
     @Transactional(readOnly = true)
     @Override
     public TableInfoDTO getTableInfo(String id) {
-        return tableDAO.findTableInfo(id).orElseThrow(
+        return tableDAO.findTableInfoById(id).orElseThrow(
                 () -> new NotFoundException(ErrorMessageConstants.TABLE_NOT_FOUND + ": " + id));
     }
 
@@ -65,7 +78,7 @@ public class TableService implements ITableService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.TABLE_NOT_FOUND + ": " + request.getSourceTableId()));
 
         // Tạo chi tiết đặt bàn mới
-        ReservationDetail model = new ReservationDetail(
+        ReservationDetailEntity model = new ReservationDetailEntity(
                 request.getSourceTableId(),
                 request.getEmployeeId(),
                 request.getCustomerName(),
@@ -74,7 +87,7 @@ public class TableService implements ITableService {
         reservationDetailDAO.insert(model);
 
         // Update bàn
-        tableDAO.updateStatus(request.getSourceTableId(), TableStatus.RESERVED.name());
+        tableDAO.updateStatusById(request.getSourceTableId(), TableStatus.RESERVED.name());
 
     }
 
@@ -90,15 +103,15 @@ public class TableService implements ITableService {
         // 2. Copy trạng thái bàn cũ sang bàn mới
         tableDAO.copyStatus(request.getSourceTableId(), request.getTargetTableId());
 
-        // 3. Lấy mã hóa đơn bàn nguồn
-        String orderId = orderDAO.findUnpaidOrderByTableId(request.getSourceTableId())
+        // 3. Lấy mã hóa đơn bàn nguồn(Trạng thái: Unpaid)
+        String orderId = orderDAO.findOrderIdByTableIdAndStatus(request.getSourceTableId(), OrderStatus.UNPAID.name())
                 .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.UNPAID_ORDER_NOT_FOUND + ": " + request.getSourceTableId()));
 
         // 4. Cập nhập Hóa đơn bàn nguồn sang bàn đích
         orderDAO.updateTableIdById(orderId, request.getTargetTableId());
 
         // 5. Cập nhập trạng thái bàn cũ -> trống
-        tableDAO.updateStatus(request.getSourceTableId(), TableStatus.AVAILABLE.name());
+        tableDAO.updateStatusById(request.getSourceTableId(), TableStatus.AVAILABLE.name());
 
     }
     @Transactional(readOnly = true)
@@ -128,18 +141,18 @@ public class TableService implements ITableService {
         }
 
         // Lấy thông tin bàn đích
-        TableDTO targetTable = tableDAO.findById(targetTableId)
+        TableEntity targetTable = tableDAO.findById(targetTableId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.TABLE_NOT_FOUND + ": " + targetTableId));
 
-        // Lấy mã hóa đơn của các bàn nguồn
+        // Lấy mã hóa đơn của các bàn nguồn(Trạng thái: Unpaid)
         List<String> sourceOrderIds =
                 sourceTableIds.stream()
-                        .map(tableId -> orderDAO.findUnpaidOrderByTableId(tableId)
+                        .map(tableId -> orderDAO.findOrderIdByTableIdAndStatus(tableId, OrderStatus.UNPAID.name())
                                 .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.TABLE_NOT_FOUND + ": " + tableId)))
                         .toList();
         String targetOrderId;
         List<MergedItemDTO> mergedItems;
-        ReservationDetail reservationDetail = new ReservationDetail(
+        ReservationDetailEntity reservationDetailEntity = new ReservationDetailEntity(
                 targetTableId,
                 request.getEmployeeId(),
                 request.getCustomerName(),
@@ -152,16 +165,16 @@ public class TableService implements ITableService {
                 .forEach(reservationDetailDAO::deleteByTableId);
 
         // TH1: BÀN ĐÍCH = AVAILABLE
-        if (targetTable.getStatus() == TableStatus.AVAILABLE) {
+        if (targetTable.getStatus().equals(TableStatus.AVAILABLE.name())) {
             // Tạo chi tiết đặt bàn đích
-            reservationDetailDAO.insert(reservationDetail);
+            reservationDetailDAO.insert(reservationDetailEntity);
             // Tạo hóa đơn cho bàn đích
             if (sourceTableIds.size() > 1) {
                 targetOrderId = String.join("_MERGE_", sourceOrderIds);
             } else {
                 targetOrderId = orderDAO.generateNextId();
             }
-            Order order = new Order(
+            OrderEntity orderEntity = new OrderEntity(
                     targetOrderId,
                     targetTableId,
                     request.getEmployeeId(),
@@ -174,18 +187,18 @@ public class TableService implements ITableService {
                     LocalDateTime.now(),
                     OrderStatus.UNPAID.name()
             );
-            orderDAO.insert(order);
-            // Lấy danh sách chi tiết hóa đơn của bàn nguồn
-            mergedItems = orderItemDAO.findMergedItems(sourceOrderIds);
+            orderDAO.insert(orderEntity);
+            // Lấy danh sách chi tiết hóa đơn của các bàn nguồn
+            mergedItems = orderItemDAO.findMergedItemsByOrderIds(sourceOrderIds);
         } else { // TH2: BÀN ĐÍCH = OCCUPIED
             // Cập nhập chi tiết đặt bàn đích
-            reservationDetailDAO.updateByTableId(targetTableId, reservationDetail);
-            // Lấy danh sách chi tiết hóa đơn mới
-            targetOrderId = orderDAO.findUnpaidOrderByTableId(targetTableId)
+            reservationDetailDAO.updateByTableId(targetTableId, reservationDetailEntity);
+            // Lấy mã hóa đơn của bàn đích(Trạng thái: Unpaid)
+            targetOrderId = orderDAO.findOrderIdByTableIdAndStatus(targetTableId, OrderStatus.UNPAID.name())
                     .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.TABLE_NOT_FOUND + ": " + targetTableId));
             List<String> newOrderIds = new ArrayList<>(sourceOrderIds);
             newOrderIds.add(0, targetOrderId);
-            mergedItems = orderItemDAO.findMergedItems(newOrderIds);
+            mergedItems = orderItemDAO.findMergedItemsByOrderIds(newOrderIds);
             // Xóa chi tiết hóa đơn của bàn đích
             orderItemDAO.deleteByOrderId(targetOrderId);
         }
@@ -195,19 +208,19 @@ public class TableService implements ITableService {
 
         // 3. INSERT lại chi tiết hóa đơn cho bàn đích
         for (MergedItemDTO item : mergedItems) {
-            OrderItem orderItem = new OrderItem(targetOrderId, item.getId(), item.getQuantity(), item.getCurrentPrice());
-            orderItemDAO.insert(orderItem);
+            OrderItemEntity orderItemEntity = new OrderItemEntity(targetOrderId, item.getId(), item.getQuantity(), item.getCurrentPrice());
+            orderItemDAO.insert(orderItemEntity);
         }
 
         // 4. Update tổng tiền
         orderDAO.updateTotalById(targetOrderId);
 
         // 5. Update trạng thái các bàn nguồn
-        sourceTableIds.forEach(tableId -> tableDAO.updateStatus(tableId, TableStatus.AVAILABLE.name()));
+        sourceTableIds.forEach(tableId -> tableDAO.updateStatusById(tableId, TableStatus.AVAILABLE.name()));
 
         // 6. Update bàn đích => OCCUPIED (nếu đang AVAILABLE)
-        if (targetTable.getStatus() == TableStatus.AVAILABLE) {
-            tableDAO.updateStatus(targetTableId, TableStatus.OCCUPIED.name());
+        if (targetTable.getStatus().equals(TableStatus.AVAILABLE.name())) {
+            tableDAO.updateStatusById(targetTableId, TableStatus.OCCUPIED.name());
         }
 
 
@@ -221,35 +234,35 @@ public class TableService implements ITableService {
         String sourceTableId = request.getSourceTableId();
         String targetTableId = request.getTargetTableId();
         // Lọc ra các món ăn cần tách
-        List<OrderMenuItemDTO> splitOrderList = request
-                .getSplitOrderList().stream()
-                .filter(OrderMenuItemDTO::getSelected)
+        List<OrderItemSelectDTO> splitOrderItemList = request
+                .getSplitOrderItemList().stream()
+                .filter(OrderItemSelectDTO::getSelected)
                 .toList();
-        if(splitOrderList.isEmpty()){
+        if(splitOrderItemList.isEmpty()){
             throw new InternalException("Không có món ăn nào được tách");
         }
-
-        String sourceOrderId = orderDAO.findUnpaidOrderByTableId(sourceTableId).orElseThrow(() -> new NotFoundException(ErrorMessageConstants.TABLE_NOT_FOUND + ": " + sourceTableId));
+        // Lấy ra mã hóa đơn của bàn nguồn(Trạng thái: Unpaid)
+        String sourceOrderId = orderDAO.findOrderIdByTableIdAndStatus(sourceTableId, OrderStatus.UNPAID.name()).orElseThrow(() -> new NotFoundException(ErrorMessageConstants.TABLE_NOT_FOUND + ": " + sourceTableId));
         String targetOrderId;
-        TableDTO targetTable = tableDAO.findById(targetTableId)
+        TableEntity targetTable = tableDAO.findById(targetTableId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.TABLE_NOT_FOUND + ": " + targetTableId));
 
         // TH1: Bàn đích -> AVAILABLE
-        if (targetTable.getStatus() == TableStatus.AVAILABLE) {
+        if (targetTable.getStatus().equals(TableStatus.AVAILABLE.name())) {
 
             // 1. Tạo mới chi tiết đặt bàn đích
-            ReservationDetail reservationDetail = new ReservationDetail(
+            ReservationDetailEntity reservationDetailEntity = new ReservationDetailEntity(
                     targetTableId,
                     request.getEmployeeId(),
                     request.getCustomerName(),
                     request.getCustomerPhone(),
                     LocalDateTime.now()
             );
-            reservationDetailDAO.insert(reservationDetail);
+            reservationDetailDAO.insert(reservationDetailEntity);
 
             // 2. Tạo mới hóa đơn bàn đích
             targetOrderId = orderDAO.generateNextId();
-            Order order = new Order(
+            OrderEntity orderEntity = new OrderEntity(
                     targetOrderId,
                     targetTableId,
                     request.getEmployeeId(),
@@ -262,18 +275,18 @@ public class TableService implements ITableService {
                     LocalDateTime.now(),
                     OrderStatus.UNPAID.name()
             );
-            orderDAO.insert(order);
+            orderDAO.insert(orderEntity);
             // 3. Tạo mới chi tiết hóa đơn bàn đích
-            splitOrderList
+            splitOrderItemList
                     .forEach(menuItem -> {
-                        MenuItemDTO menuItemDTO = menuItemDAO.findById(menuItem.getId())
-                                .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.MENU_ITEM_NOT_FOUND + ": " + menuItem.getId()));
-                        OrderItem orderItem = new OrderItem(targetOrderId, menuItem.getId(), menuItem.getQuantity(), menuItemDTO.getPrice());
-                        orderItemDAO.insert(orderItem);
+                        MenuItemEntity menuItemEntity = menuItemDAO.findById(menuItem.getMenuItemId())
+                                .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.MENU_ITEM_NOT_FOUND + ": " + menuItem.getMenuItemId()));
+                        OrderItemEntity orderItemEntity = new OrderItemEntity(targetOrderId, menuItem.getMenuItemId(), menuItem.getQuantity(), menuItemEntity.getPrice());
+                        orderItemDAO.insert(orderItemEntity);
                     });
             // 4. Cập nhập số lượng của chi tiết hóa đơn bàn nguồn
-            splitOrderList
-                    .forEach(menuItem -> orderItemDAO.updateQuantityById(sourceOrderId, menuItem.getId(), - menuItem.getQuantity()));
+            splitOrderItemList
+                    .forEach(menuItem -> orderItemDAO.updateQuantityById(sourceOrderId, menuItem.getMenuItemId(), - menuItem.getQuantity()));
             // 5. Cập nhập tổng tiền hóa đơn của bàn nguồn
             orderDAO.updateTotalById(sourceOrderId);
 
@@ -281,23 +294,24 @@ public class TableService implements ITableService {
             orderDAO.updateTotalById(targetOrderId);
 
             // 7. Cập nhập trạng thái bàn đích => OCCUPIED
-            tableDAO.updateStatus(targetTableId, TableStatus.OCCUPIED.name());
-        }else if(targetTable.getStatus() == TableStatus.OCCUPIED){
+            tableDAO.updateStatusById(targetTableId, TableStatus.OCCUPIED.name());
+        }else if(targetTable.getStatus().equals(TableStatus.OCCUPIED.name())){
             // Lấy các món ăn đã gọi của bàn đích
-            List<String> targetMenuItemIdList = orderItemDAO.findOrderByTableId(targetTableId).stream()
-                    .map(OrderMenuItemDTO::getId).toList();
-            // Lấy mã order của bàn đích
-            targetOrderId = orderDAO.findUnpaidOrderByTableId(targetTableId).orElseThrow(() -> new NotFoundException(ErrorMessageConstants.TABLE_NOT_FOUND + ": " + targetTableId));
+            List<String> targetMenuItemIdList = orderItemDAO.findByTableIdAndOrderStatus(targetTableId, OrderStatus.UNPAID.name())
+                    .stream()
+                    .map(OrderItemDTO::getMenuItemId).toList();
+            // Lấy mã order của bàn đích(đang sử dụng -> Trạng thái order: Unpaid)
+            targetOrderId = orderDAO.findOrderIdByTableIdAndStatus(targetTableId, OrderStatus.UNPAID.name()).orElseThrow(() -> new NotFoundException(ErrorMessageConstants.TABLE_NOT_FOUND + ": " + targetTableId));
             // 1. Chỉnh sửa chi tiết hóa đơn của bàn đích(nếu món ăn tách ra không trùng với bàn nguồn => INSERT, Ngược lại => UPDATE số lượng)
-            splitOrderList
+            splitOrderItemList
                     .forEach(menuItem -> {
-                        String menuItemId = menuItem.getId();
+                        String menuItemId = menuItem.getMenuItemId();
                         // nếu món ăn ở bàn đích không trùng với bàn nguồn => INSERT
                         if(!targetMenuItemIdList.contains(menuItemId)){
-                            MenuItemDTO menuItemDTO = menuItemDAO.findById(menuItem.getId())
-                                    .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.MENU_ITEM_NOT_FOUND + ": " + menuItem.getId()));
-                            OrderItem orderItem = new OrderItem(targetOrderId, menuItemId, menuItem.getQuantity(), menuItemDTO.getPrice());
-                            orderItemDAO.insert(orderItem);
+                            MenuItemEntity menuItemEntity = menuItemDAO.findById(menuItem.getMenuItemId())
+                                    .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.MENU_ITEM_NOT_FOUND + ": " + menuItem.getMenuItemId()));
+                            OrderItemEntity orderItemEntity = new OrderItemEntity(targetOrderId, menuItemId, menuItem.getQuantity(), menuItemEntity.getPrice());
+                            orderItemDAO.insert(orderItemEntity);
                         }else{ // Ngược lại => UPDATE số lượng
                             orderItemDAO.updateQuantityById(targetOrderId, menuItemId, menuItem.getQuantity());
                             // 2. Cập nhập số lượng của chi tiết hóa đơn bàn nguồn
@@ -324,7 +338,7 @@ public class TableService implements ITableService {
         // 2. Cập nhập trạng thái hóa đơn => CANCELLED
         orderDAO.updateStatusById(id, OrderStatus.CANCELLED.name());
         //3. Cập nhập trạng thái bàn => AVAILABLE
-        tableDAO.updateStatus(id, TableStatus.AVAILABLE.name());
+        tableDAO.updateStatusById(id, TableStatus.AVAILABLE.name());
     }
 
 }

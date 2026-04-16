@@ -1,23 +1,24 @@
 package com.example.coffeemanagement.service;
 
 import com.example.coffeemanagement.dto.EmployeeDTO;
-import com.example.coffeemanagement.dto.EmployeeDetailDTO;
 import com.example.coffeemanagement.dto.EmployeeListDTO;
 import com.example.coffeemanagement.dto.PageDTO;
+import com.example.coffeemanagement.dto.request.EmployeeProfileRequest;
+import com.example.coffeemanagement.dto.response.EmployeeProfileResponse;
 
 public interface IEmployeeService {
 
-    EmployeeDetailDTO getDetail(String username);
+    EmployeeDTO getEmployee(String id);
 
-    void updateProfile(String username, EmployeeDetailDTO dto);
+    EmployeeProfileResponse getProfile(String id);
 
-    PageDTO<EmployeeListDTO> getAll(int page, int size, String sort, String dir, String searchValue);
+    void updateProfile(String id, EmployeeProfileRequest request);
 
-    void create(EmployeeDTO dto);
+    PageDTO<EmployeeListDTO> getAllEmployees(int page, int size, String sort, String dir, String searchValue);
 
-    EmployeeDTO getById(String id);
+    void createEmployee(EmployeeDTO dto);
 
-    void update(String id, EmployeeDTO dto);
+    void updateEmployee(String id, EmployeeDTO dto);
 
-    void delete(String id);
+    void deleteEmployee(String id);
 }

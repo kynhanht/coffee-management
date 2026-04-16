@@ -15,25 +15,25 @@
                     <div class="card-body">
                         <div class="profile-info-grid">
                             <div class="profile-info-item"><span class="profile-info-label">Họ tên</span><span
-                                    th:text="${employee.fullName}"
+                                    th:text="${employeeProfileResponse.fullName}"
                                     class="profile-info-value"></span></div>
                             <div class="profile-info-item"><span class="profile-info-label">Chức vụ</span><span
-                                    th:text="${employee.positionName}"
+                                    th:text="${employeeProfileResponse.positionName}"
                                     class="profile-info-value"></span></div>
                             <div class="profile-info-item"><span class="profile-info-label">Địa chỉ</span><span
-                                    th:text="${employee.address}"
+                                    th:text="${employeeProfileResponse.address}"
                                     class="profile-info-value"></span></div>
                             <div class="profile-info-item"><span class="profile-info-label">Lương</span><span
-                                    th:text="${#numbers.formatDecimal(employee.salary, 0, 'COMMA', 0, 'POINT')}"
+                                    th:text="${employeeProfileResponse.salary}"
                                     class="profile-info-value"></span></div>
                             <div class="profile-info-item"><span class="profile-info-label">Số điện thoại</span><span
-                                    th:text="${employee.phone}"
+                                    th:text="${employeeProfileResponse.phone}"
                                     class="profile-info-value"></span></div>
                         </div>
                         <hr class="border-secondary opacity-25">
                         <div class="profile-info-grid">
                             <div class="profile-info-item"><span class="profile-info-label">Tên đăng nhập</span><span
-                                    th:text="${employee.username}"
+                                    th:text="${employeeProfileResponse.username}"
                                     class="profile-info-value"></span></div>
                             <div class="profile-info-item"><span class="profile-info-label">Mật khẩu</span><span
                                     class="profile-info-value">*********</span></div>
@@ -53,8 +53,8 @@
                     </div>
                     <div class="card-body">
                         <div class="upload-avatar upload-avatar-square">
-                            <img th:src="${employee.picture != null}
-                            ? @{/uploads/{file}(file=${employee.picture})}
+                            <img th:src="${employeeProfileResponse.picture != null}
+                            ? @{/uploads/{file}(file=${employeeProfileResponse.picture})}
                             : @{/assets/img/avatars/avatar-2.webp}" alt="Avatar"
                                  class="upload-avatar-img">
                         </div>
@@ -71,7 +71,7 @@
                     <h5 class="modal-title">Chỉnh sửa thông tin cá nhân</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form th:action="@{/profile/{employeeId}(employeeId=${employee.id})}" th:object="${employee}" method="post" enctype="multipart/form-data">
+                <form th:action="@{/profile}" th:object="${employeeProfileRequest}" method="post" enctype="multipart/form-data">
                     <div class="modal-body">
                         <div class="row g-3">
                             <div class="col-12">
@@ -89,27 +89,11 @@
                                 <input type="text" id="phone" class="form-control"
                                        th:field="*{phone}">
                             </div>
-                            <div class="col-md-6">
-                                <label for="position" class="form-label required">Chức vụ</label>
-                                <select class="form-select" th:field="*{positionId}" id="position"
-                                        required>
-                                    <option value="">Chọn chức vụ</option>
-                                    <option th:each="position : ${positionList}"
-                                            th:value="${position.id}"
-                                            th:text="${position.name}"
-                                            th:data-salary="${#numbers.formatDecimal(position.salary, 0, 'COMMA', 0, 'POINT')}">
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="salary" class="form-label required">Lương</label>
-                                <input type="text" class="form-control" id="salary" readonly>
-                            </div>
                             <div class="col-md-12">
                                 <div class="upload-avatar upload-avatar-square" id="avatar-edit">
-                                    <input type="file" name="file" accept="image/*" hidden>
-                                    <img th:src="${employee.picture != null}
-                                     ? @{/uploads/{file}(file=${employee.picture})}
+                                    <input type="file" name="pictureFile" accept="image/*" hidden>
+                                    <img th:src="${employeeProfileRequest.picture != null}
+                                     ? @{/uploads/{file}(file=${employeeProfileRequest.picture})}
                                      : @{/assets/img/avatars/avatar-2.webp}" alt="Avatar" class="upload-avatar-img">
                                     <div class="upload-avatar-overlay">
                                         <i class="bi bi-camera"></i>
@@ -118,8 +102,9 @@
                                 <p class="text-muted small mt-2 text-center">Ảnh dạng JPG, PNG or WEBP. tối đa 2MB.</p>
                             </div>
                             <div class="col-12">
+                                <input type="hidden" name="_method" value="put">
+                                <input type="hidden" th:field="*{employeeId}">
                                 <input type="hidden" th:field="*{picture}">
-                                <input type="hidden" th:field="*{username}">
                             </div>
                         </div>
                     </div>
@@ -157,17 +142,6 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Update Lương theo chức vụ
-        const positionSelect = document.querySelector("#position");
-        const salaryInput = document.querySelector("#salary");
-
-        function updateSalary() {
-            const selectedOption = positionSelect.options[positionSelect.selectedIndex];
-            salaryInput.value = selectedOption.getAttribute("data-salary") || "";
-        }
-        updateSalary();
-        positionSelect.addEventListener("change", updateSalary);
-
         // Avatar uploads
         const avatar = document.querySelector('#avatar-edit');
         const avatarInput = avatar.querySelector('input[type="file"]');

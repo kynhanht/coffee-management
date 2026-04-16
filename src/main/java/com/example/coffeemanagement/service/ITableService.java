@@ -10,8 +10,8 @@ import java.util.List;
 
 public interface ITableService {
 
-    TableDTO getById(String id);
-    List<TableDTO> getAll();
+    TableDTO getTable(String id);
+    List<TableDTO> getAllTables();
     TableInfoDTO getTableInfo(String id);
     void reserveTable(ReserveTableRequest request);
     void moveTable(MoveTableRequest request);

@@ -2,9 +2,9 @@ package com.example.coffeemanagement.dao.impl;
 
 import com.example.coffeemanagement.constant.ErrorMessageConstants;
 import com.example.coffeemanagement.dao.ITableDAO;
-import com.example.coffeemanagement.dto.TableDTO;
 import com.example.coffeemanagement.dto.TableInfoDTO;
 import com.example.coffeemanagement.dto.TableOptionDTO;
+import com.example.coffeemanagement.entity.TableEntity;
 import com.example.coffeemanagement.enums.TableStatus;
 import com.example.coffeemanagement.exception.InternalException;
 import com.example.coffeemanagement.util.DBUtils;
@@ -33,7 +33,7 @@ public class TableDAO implements ITableDAO {
     }
 
     @Override
-    public Optional<TableDTO> findById(String id) {
+    public Optional<TableEntity> findById(String id) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -49,15 +49,11 @@ public class TableDAO implements ITableDAO {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                TableDTO dto = new TableDTO();
-                dto.setId(rs.getString("MaBan"));
-                dto.setName(rs.getString("TenBan"));
-                String status = rs.getString("TrangThai");
-
-                if (status != null) {
-                    dto.setStatus(TableStatus.valueOf(status));
-                }
-                return Optional.of(dto);
+                TableEntity entity = new TableEntity();
+                entity.setId(rs.getString("MaBan"));
+                entity.setName(rs.getString("TenBan"));
+                entity.setStatus(rs.getString("TrangThai"));
+                return Optional.of(entity);
             }
 
         } catch (Exception e) {
@@ -71,7 +67,7 @@ public class TableDAO implements ITableDAO {
     }
 
     @Override
-    public List<TableDTO> findAll() {
+    public List<TableEntity> findAll() {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -80,22 +76,18 @@ public class TableDAO implements ITableDAO {
                 SELECT MaBan, TenBan, TrangThai
                 FROM Ban
                 """;
-        List<TableDTO> danhSach = new ArrayList<>();
+        List<TableEntity> tableList = new ArrayList<>();
 
         try {
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                TableDTO dto = new TableDTO();
-                dto.setId(rs.getString("MaBan"));
-                dto.setName(rs.getString("TenBan"));
-                String status = rs.getString("TrangThai");
-
-                if (status != null) {
-                    dto.setStatus(TableStatus.valueOf(status));
-                }
-                danhSach.add(dto);
+                TableEntity entity = new TableEntity();
+                entity.setId(rs.getString("MaBan"));
+                entity.setName(rs.getString("TenBan"));
+                entity.setStatus(rs.getString("TrangThai"));
+                tableList.add(entity);
             }
 
         } catch (Exception e) {
@@ -104,11 +96,11 @@ public class TableDAO implements ITableDAO {
             DBUtils.close(ps, rs);
             DataSourceUtils.releaseConnection(conn, dataSource);
         }
-        return danhSach;
+        return tableList;
     }
 
     @Override
-    public Optional<TableInfoDTO>  findTableInfo(String id) {
+    public Optional<TableInfoDTO> findTableInfoById(String id) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -152,7 +144,7 @@ public class TableDAO implements ITableDAO {
     }
 
     @Override
-    public int updateStatus(String id, String status) {
+    public int updateStatusById(String id, String status) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         try {

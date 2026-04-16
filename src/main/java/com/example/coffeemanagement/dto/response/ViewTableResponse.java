@@ -1,6 +1,6 @@
 package com.example.coffeemanagement.dto.response;
 
-import com.example.coffeemanagement.dto.OrderMenuItemDTO;
+import com.example.coffeemanagement.dto.OrderItemSelectDTO;
 import com.example.coffeemanagement.dto.TableInfoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,5 +15,5 @@ import java.util.List;
 public class ViewTableResponse {
 
     private TableInfoDTO tableInfo;
-    private List<OrderMenuItemDTO> orderList;
+    private List<OrderItemSelectDTO> orderItemList;
 }

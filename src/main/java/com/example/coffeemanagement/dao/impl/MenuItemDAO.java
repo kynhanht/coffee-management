@@ -2,7 +2,7 @@ package com.example.coffeemanagement.dao.impl;
 
 import com.example.coffeemanagement.constant.ErrorMessageConstants;
 import com.example.coffeemanagement.dao.IMenuItemDAO;
-import com.example.coffeemanagement.dto.MenuItemDTO;
+import com.example.coffeemanagement.entity.MenuItemEntity;
 import com.example.coffeemanagement.exception.InternalException;
 import com.example.coffeemanagement.util.DBUtils;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -26,18 +26,13 @@ public class MenuItemDAO implements IMenuItemDAO {
     }
 
     @Override
-    public Optional<MenuItemDTO> findById(String id) {
+    public Optional<MenuItemEntity> findById(String id) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             String sql = """
-                    SELECT
-                        MaMonAn,
-                        TenMonAn,
-                        GiaHienTai,
-                        LoaiMonAn,
-                        TrangThai
+                    SELECT *
                     FROM MonAn
                     WHERE MaMonAn = ?
                     """;
@@ -45,11 +40,13 @@ public class MenuItemDAO implements IMenuItemDAO {
             ps.setString(1, id);
             rs = ps.executeQuery();
             if (rs.next()) {
-                MenuItemDTO dto = new MenuItemDTO();
-                dto.setId(rs.getString("MaMonAn"));
-                dto.setName(rs.getString("TenMonAn"));
-                dto.setPrice(rs.getBigDecimal("GiaHienTai"));
-                return Optional.of(dto);
+                MenuItemEntity entity = new MenuItemEntity();
+                entity.setId(rs.getString("MaMonAn"));
+                entity.setName(rs.getString("TenMonAn"));
+                entity.setPrice(rs.getBigDecimal("GiaHienTai"));
+                entity.setType(rs.getString("LoaiMonAn"));
+                entity.setStatus(rs.getString("TrangThai"));
+                return Optional.of(entity);
             }
         } catch (Exception e) {
             throw new InternalException(ErrorMessageConstants.DATABASE_ERROR, e);
@@ -62,15 +59,15 @@ public class MenuItemDAO implements IMenuItemDAO {
     }
 
     @Override
-    public List<MenuItemDTO> findByStatus(String status) {
+    public List<MenuItemEntity> findByStatus(String status) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        List<MenuItemDTO> danhSach = new ArrayList<>();
+        List<MenuItemEntity> menuItemList = new ArrayList<>();
         try {
             String sql = """
-                    SELECT MaMonAn, TenMonAn, GiaHienTai
+                    SELECT *
                     FROM MonAn
                     WHERE TrangThai = ?
                     """;
@@ -78,11 +75,13 @@ public class MenuItemDAO implements IMenuItemDAO {
             ps.setString(1, status);
             rs = ps.executeQuery();
             while (rs.next()) {
-                MenuItemDTO dto = new MenuItemDTO();
-                dto.setId(rs.getString("MaMonAn"));
-                dto.setName(rs.getString("TenMonAn"));
-                dto.setPrice(rs.getBigDecimal("GiaHienTai"));
-                danhSach.add(dto);
+                MenuItemEntity entity = new MenuItemEntity();
+                entity.setId(rs.getString("MaMonAn"));
+                entity.setName(rs.getString("TenMonAn"));
+                entity.setPrice(rs.getBigDecimal("GiaHienTai"));
+                entity.setType(rs.getString("LoaiMonAn"));
+                entity.setStatus(rs.getString("TrangThai"));
+                menuItemList.add(entity);
             }
         } catch (Exception e) {
             throw new InternalException(ErrorMessageConstants.DATABASE_ERROR, e);
@@ -90,7 +89,7 @@ public class MenuItemDAO implements IMenuItemDAO {
             DBUtils.close(ps, rs);
             DataSourceUtils.releaseConnection(conn, dataSource);
         }
-        return danhSach;
+        return menuItemList;
     }
 
 }

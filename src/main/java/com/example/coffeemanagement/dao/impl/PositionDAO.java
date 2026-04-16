@@ -3,7 +3,7 @@ package com.example.coffeemanagement.dao.impl;
 import com.example.coffeemanagement.constant.ErrorMessageConstants;
 import com.example.coffeemanagement.dao.IPositionDAO;
 import com.example.coffeemanagement.exception.InternalException;
-import com.example.coffeemanagement.model.Position;
+import com.example.coffeemanagement.entity.PositionEntity;
 import com.example.coffeemanagement.util.DBUtils;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
@@ -25,11 +25,11 @@ public class PositionDAO implements IPositionDAO {
     }
 
     @Override
-    public List<Position> findAll() {
+    public List<PositionEntity> findAll() {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<Position> danhSach = new ArrayList<>();
+        List<PositionEntity> danhSach = new ArrayList<>();
 
         try {
             String sql = """
@@ -39,7 +39,7 @@ public class PositionDAO implements IPositionDAO {
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
-                Position model = new Position();
+                PositionEntity model = new PositionEntity();
                 model.setId(rs.getString("maChucVu"));
                 model.setName(rs.getString("tenChucVu"));
                 model.setSalary(rs.getBigDecimal("luong")); // giống cách bạn đang dùng

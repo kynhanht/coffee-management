@@ -3,7 +3,7 @@ package com.example.coffeemanagement.service.impl;
 import com.example.coffeemanagement.constant.ErrorMessageConstants;
 import com.example.coffeemanagement.dao.IEmployeeDAO;
 import com.example.coffeemanagement.exception.NotFoundException;
-import com.example.coffeemanagement.model.Employee;
+import com.example.coffeemanagement.entity.EmployeeEntity;
 import com.example.coffeemanagement.security.CustomUserDetail;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,10 +28,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Employee employee = employeeDAO.findByUsername(username)
+        EmployeeEntity employeeEntity = employeeDAO.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.ACCOUNT_NOT_FOUND + ": " + username));
         Collection<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + employee.getRole()));
-        return new CustomUserDetail(employee, authorities);
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + employeeEntity.getRole()));
+        return new CustomUserDetail(employeeEntity, authorities);
     }
 }

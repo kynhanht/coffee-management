@@ -1,4 +1,4 @@
-package com.example.coffeemanagement.model;
+package com.example.coffeemanagement.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MenuItem {
+public class MenuItemEntity {
 
     private String id;
 
@@ -20,5 +20,7 @@ public class MenuItem {
     private BigDecimal price;
 
     private String type;
+
+    private String status;
 
 }

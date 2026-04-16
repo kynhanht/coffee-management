@@ -3,20 +3,23 @@ package com.example.coffeemanagement.dao.impl;
 import com.example.coffeemanagement.constant.ErrorMessageConstants;
 import com.example.coffeemanagement.dao.IOrderItemDAO;
 import com.example.coffeemanagement.dto.MergedItemDTO;
-import com.example.coffeemanagement.dto.OrderMenuItemDTO;
+import com.example.coffeemanagement.dto.OrderItemDTO;
+import com.example.coffeemanagement.entity.OrderItemEntity;
 import com.example.coffeemanagement.exception.InternalException;
-import com.example.coffeemanagement.model.OrderItem;
 import com.example.coffeemanagement.util.DBUtils;
+import com.example.coffeemanagement.util.SystemUtils;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Repository
@@ -29,7 +32,44 @@ public class OrderItemDAO implements IOrderItemDAO {
     }
 
     @Override
-    public int insert(OrderItem model) {
+    public List<OrderItemEntity> findByOrderId(String orderId) {
+        Connection conn = DataSourceUtils.getConnection(dataSource);
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        String sql = """
+                SELECT 
+                MaMonAn, MaHoaDon, SoLuong, GiaTaiThoiDiemBan
+                FROM ChiTietHoaDon
+                WHERE MaHoaDon = ?
+                """;
+        List<OrderItemEntity> orderItemList = new ArrayList<>();
+
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, orderId);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                OrderItemEntity entity = new OrderItemEntity();
+                entity.setOrderId(rs.getString("MaHoaDon"));
+                entity.setMenuItemId(rs.getString("MaMonAn"));
+                entity.setQuantity(rs.getInt("SoLuong"));
+                entity.setCurrentPrice(rs.getBigDecimal("GiaTaiThoiDiemBan"));
+                orderItemList.add(entity);
+            }
+
+        } catch (Exception e) {
+            throw new InternalException(ErrorMessageConstants.DATABASE_ERROR, e);
+        } finally {
+            DBUtils.close(ps, rs);
+            DataSourceUtils.releaseConnection(conn, dataSource);
+        }
+        return orderItemList;
+    }
+
+    @Override
+    public int insert(OrderItemEntity entity) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         try {
@@ -43,10 +83,10 @@ public class OrderItemDAO implements IOrderItemDAO {
                     VALUES (?, ?, ?, ?)
                     """;
             ps = conn.prepareStatement(sql);
-            ps.setString(1, model.getOrderId());
-            ps.setString(2, model.getMenuItemId());
-            ps.setInt(3, model.getQuantity());
-            ps.setBigDecimal(4, model.getCurrentPrice());
+            ps.setString(1, entity.getOrderId());
+            ps.setString(2, entity.getMenuItemId());
+            ps.setInt(3, entity.getQuantity());
+            ps.setBigDecimal(4, entity.getCurrentPrice());
             return ps.executeUpdate();
         } catch (Exception e) {
             throw new InternalException(ErrorMessageConstants.DATABASE_ERROR, e);
@@ -77,12 +117,12 @@ public class OrderItemDAO implements IOrderItemDAO {
     }
 
     @Override
-    public List<OrderMenuItemDTO> findOrderByTableId(String tableId) {
+    public List<OrderItemDTO> findByTableIdAndOrderStatus(String tableId, String orderStatus) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        List<OrderMenuItemDTO> result = new ArrayList<>();
+        List<OrderItemDTO> result = new ArrayList<>();
         try {
             String sql = """
                     SELECT
@@ -96,18 +136,23 @@ public class OrderItemDAO implements IOrderItemDAO {
                     JOIN MonAn MA 
                         ON CTHD.MaMonAn = MA.MaMonAn
                     WHERE HD.MaBan = ?
-                      AND HD.TrangThai = 'UNPAID'
+                      AND HD.TrangThai = ?
                     """;
             ps = conn.prepareStatement(sql);
             ps.setString(1, tableId);
+            ps.setString(2, orderStatus);
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                OrderMenuItemDTO dto = new OrderMenuItemDTO();
-                dto.setId(rs.getString("MaMonAn"));
-                dto.setName(rs.getString("TenMonAn"));
-                dto.setQuantity(rs.getInt("SoLuong"));
-                dto.setCurrentPrice(rs.getBigDecimal("GiaTaiThoiDiemBan"));
+                OrderItemDTO dto = new OrderItemDTO();
+                dto.setMenuItemId(rs.getString("MaMonAn"));
+                dto.setMenuItemName(rs.getString("TenMonAn"));
+                int quantity = rs.getInt("SoLuong");
+                dto.setQuantity(quantity);
+                BigDecimal currentPrice = rs.getBigDecimal("GiaTaiThoiDiemBan");
+                dto.setCurrentPrice(SystemUtils.bigDecimalToString(currentPrice, Locale.US));
+                BigDecimal lineTotal = currentPrice.multiply(BigDecimal.valueOf(quantity));
+                dto.setLineTotal(SystemUtils.bigDecimalToString(lineTotal, Locale.US));
                 result.add(dto);
             }
         } catch (Exception e) {
@@ -120,7 +165,7 @@ public class OrderItemDAO implements IOrderItemDAO {
     }
 
     @Override
-    public List<MergedItemDTO> findMergedItems(List<String> orderIds) {
+    public List<MergedItemDTO> findMergedItemsByOrderIds(List<String> orderIds) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         ResultSet rs = null;

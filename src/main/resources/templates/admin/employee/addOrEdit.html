@@ -5,7 +5,7 @@
                 <h1 th:text="${title}" class="page-title"></h1>
             </div>
         </div>
-        <form th:action="${action == 'add'} ? @{/admin/employees/add} : @{/admin/employees/edit}"
+        <form th:action=" @{/admin/employees}"
               th:object="${employee}" method="post" enctype="multipart/form-data">
             <div class="row g-4">
                 <div class="col-xl-8">
@@ -30,25 +30,25 @@
                                         <option th:each="position : ${positionList}"
                                                 th:value="${position.id}"
                                                 th:text="${position.name}"
-                                                th:data-salary="${#numbers.formatDecimal(position.salary, 0, 'COMMA', 0, 'POINT')}">
+                                                th:data-salary="${position.salary}">
                                         </option>
                                     </select>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="salary" class="form-label required">Lương</label>
+                                    <label for="salary" class="form-label">Lương</label>
                                     <input type="text" class="form-control" id="salary" readonly>
                                 </div>
                                 <div class="col-md-12">
-                                    <label for="phone" class="form-label required">Số điện thoại</label>
-                                    <input type="text" class="form-control" th:field="*{phone}" id="phone" required>
+                                    <label for="phone" class="form-label">Số điện thoại</label>
+                                    <input type="text" class="form-control" th:field="*{phone}" id="phone">
                                 </div>
                                 <div class="col-md-12">
-                                    <label for="username" class="form-label">Tên đăng nhập</label>
-                                    <input type="text" class="form-control" th:field="*{username}" id="username">
+                                    <label for="username" class="form-label required">Tên đăng nhập</label>
+                                    <input type="text" class="form-control" th:field="*{username}" id="username" required>
                                 </div>
                                 <div class="col-md-12">
-                                    <label for="password" class="form-label">Mật khẩu</label>
-                                    <input type="password" class="form-control" th:field="*{password}" id="password">
+                                    <label for="password" class="form-label required">Mật khẩu</label>
+                                    <input type="password" class="form-control" th:field="*{password}" id="password" required>
                                 </div>
                                 <div class="col-md-12" th:if="${action == 'edit'}">
                                     <input type="hidden"

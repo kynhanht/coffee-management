@@ -1,4 +1,4 @@
-package com.example.coffeemanagement.dto;
+package com.example.coffeemanagement.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,11 +9,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TableMergeDTO {
+public class AccountEntity {
 
     private String id;
 
-    private String name;
+    private String userName;
 
-    private Boolean selected;
+    private String password;
+
+    private String role;
+
 }

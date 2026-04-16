@@ -17,21 +17,21 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(InternalException.class)
     public String handleInternal(InternalException ex, Model model) {
-        logger.error("Lỗi hệ thống", ex.getCause());
+        logger.error("Lỗi hệ thống", ex);
         model.addAttribute("error", ex.getMessage());
         return "error/500";
     }
 
     @ExceptionHandler(NotFoundException.class)
     public String handleNotFound(NotFoundException ex, Model model) {
-        logger.error("Lỗi không tìm thấy đối tượng", ex.getCause());
+        logger.error("Lỗi không tìm thấy đối tượng", ex);
         model.addAttribute("error", ex.getMessage());
         return "error/404";
     }
 
     @ExceptionHandler(FileStorageException.class)
     public String handleFile(NotFoundException ex, Model model) {
-        logger.error("Lỗi xử lý file", ex.getCause());
+        logger.error("Lỗi xử lý file", ex);
         model.addAttribute("error", ex.getMessage());
         return "error/500";
     }

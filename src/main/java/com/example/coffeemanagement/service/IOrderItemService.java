@@ -1,13 +1,13 @@
 package com.example.coffeemanagement.service;
 
 
-import com.example.coffeemanagement.dto.OrderMenuItemDTO;
+import com.example.coffeemanagement.dto.OrderItemSelectDTO;
 
 import java.util.List;
 
 public interface IOrderItemService {
 
-    List<OrderMenuItemDTO> getOrderByTableId(String tableId);
-    List<OrderMenuItemDTO> getMenuWithOrderByTableId(String tableId);
+    List<OrderItemSelectDTO> getOrderItemsForTable(String tableId);
+    List<OrderItemSelectDTO> getMenuWithOrderItemsForTable(String tableId);
 
 }

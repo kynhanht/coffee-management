@@ -1,14 +1,10 @@
 package com.example.coffeemanagement.dto.request;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -22,15 +18,12 @@ public class PayOrderRequest {
     @NotBlank(message = "Mã bàn nguồn không được để trống")
     private String sourceTableId;
 
-    @NotNull(message = "Tổng tiền hóa đơn không được để trống")
-    @Min(value = 0, message = "Tổng tiền hóa đơn phải lớn hơn 0")
-    private BigDecimal totalAmount;
+    @NotBlank(message = "Tổng tiền hóa đơn không được để trống")
+    private String totalAmount;
 
-    @NotNull(message = "Tiền khách trả không được để trống")
-    @Min(value = 0, message = "Tiền khách trả phải lớn hơn 0")
-    private BigDecimal amountPaid;
+    @NotBlank(message = "Tiền khách trả không được để trống")
+    private String amountPaid;
 
-    @NotNull(message = "Tiền thối không được để trống")
-    @Min(value = 0, message = "Tiền thối phải lớn hơn 0")
-    private BigDecimal changeAmount;
+    @NotBlank(message = "Tiền thối không được để trống")
+    private String changeAmount;
 }

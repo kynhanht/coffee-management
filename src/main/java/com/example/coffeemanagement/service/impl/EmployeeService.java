@@ -4,11 +4,12 @@ import com.example.coffeemanagement.constant.ErrorMessageConstants;
 import com.example.coffeemanagement.constant.SystemConstants;
 import com.example.coffeemanagement.dao.IEmployeeDAO;
 import com.example.coffeemanagement.dto.EmployeeDTO;
-import com.example.coffeemanagement.dto.EmployeeDetailDTO;
 import com.example.coffeemanagement.dto.EmployeeListDTO;
 import com.example.coffeemanagement.dto.PageDTO;
+import com.example.coffeemanagement.dto.request.EmployeeProfileRequest;
+import com.example.coffeemanagement.dto.response.EmployeeProfileResponse;
+import com.example.coffeemanagement.entity.EmployeeEntity;
 import com.example.coffeemanagement.exception.NotFoundException;
-import com.example.coffeemanagement.model.Employee;
 import com.example.coffeemanagement.service.IEmployeeService;
 import com.example.coffeemanagement.service.IFileStorageService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,7 @@ public class EmployeeService implements IEmployeeService {
     private final IFileStorageService fileStorageService;
     private final PasswordEncoder passwordEncoder;
 
+
     public EmployeeService(IEmployeeDAO employeeDAO, IFileStorageService fileStorageService, PasswordEncoder passwordEncoder) {
         this.employeeDAO = employeeDAO;
         this.fileStorageService = fileStorageService;
@@ -30,49 +32,40 @@ public class EmployeeService implements IEmployeeService {
 
     @Transactional(readOnly = true)
     @Override
-    public EmployeeDetailDTO getDetail(String username) {
-        return employeeDAO.findDetailByUsername(username)
-                .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.EMPLOYEE_NOT_FOUND + ": " + username));
+    public EmployeeProfileResponse getProfile(String id) {
+        return employeeDAO.findProfileById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.EMPLOYEE_NOT_FOUND + ": " + id));
     }
 
     @Transactional
     @Override
-    public void updateProfile(String username, EmployeeDetailDTO dto) {
+    public void updateProfile(String id, EmployeeProfileRequest request) {
 
-        Employee employee = new Employee();
-        // mã hóa mật khẩu
-        String encodedPassword = passwordEncoder.encode(dto.getPassword());
-        // Quyền hạn
-        String role = dto.getPositionId().equals(SystemConstants.CODE_ROLE_ADMIN) ? SystemConstants.ROLE_ADMIN : SystemConstants.ROLE_USER;
+        EmployeeEntity entity = new EmployeeEntity();
+
         // Lưu file
-        String fileName = fileStorageService.storeFile(dto.getFile());
+        String fileName = fileStorageService.storeFile(request.getPictureFile());
 
+        if(fileName != null) request.setPicture(fileName);
+        entity.setId(request.getEmployeeId());
+        entity.setFullName(request.getFullName());
+        entity.setPhone(request.getPhone());
+        entity.setAddress(request.getAddress());
+        entity.setPicture(request.getPicture());
 
-        if(fileName != null) dto.setPicture(fileName);
-
-        employee.setId(dto.getId());
-        employee.setPositionId(dto.getPositionId());
-        employee.setFullName(dto.getFullName());
-        employee.setPhone(dto.getPhone());
-        employee.setAddress(dto.getAddress());
-        employee.setPicture(dto.getPicture());
-        employee.setUsername(username);
-        employee.setPassword(encodedPassword);
-        employee.setRole(role);
-
-        int rows = employeeDAO.updateProfile(username, employee);
+        int rows = employeeDAO.updateProfileById(id, entity);
         if (rows == 0) {
-            throw new NotFoundException(ErrorMessageConstants.ACCOUNT_NOT_FOUND + " : " + dto.getUsername());
+            throw new NotFoundException(ErrorMessageConstants.EMPLOYEE_NOT_FOUND + " : " + id);
         }
     }
     @Transactional(readOnly = true)
     @Override
-    public PageDTO<EmployeeListDTO> getAll(int page, int size, String sort, String dir, String searchValue) {
+    public PageDTO<EmployeeListDTO> getAllEmployees(int page, int size, String sort, String dir, String searchValue) {
         return employeeDAO.findAll(page, size, sort, dir, searchValue);
     }
     @Transactional
     @Override
-    public void create(EmployeeDTO dto) {
+    public void createEmployee(EmployeeDTO dto) {
         // Sinh mã
         String id = employeeDAO.generateNextId();
 
@@ -88,7 +81,7 @@ public class EmployeeService implements IEmployeeService {
         String status = SystemConstants.ACTIVE_USER;
 
         // Insert nhân viên
-        Employee employee = new Employee(
+        EmployeeEntity employeeEntity = new EmployeeEntity(
                 id,
                 dto.getPositionId(),
                 dto.getFullName(),
@@ -100,19 +93,32 @@ public class EmployeeService implements IEmployeeService {
                 role,
                 status
                 );
-        employeeDAO.insert(employee);
+        int rows = employeeDAO.insert(employeeEntity);
+        if (rows == 0) {
+            throw new NotFoundException(ErrorMessageConstants.EMPLOYEE_NOT_FOUND + " : " + id);
+        }
 
     }
     @Transactional(readOnly = true)
     @Override
-    public EmployeeDTO getById(String id) {
-        return employeeDAO.findById(id)
+    public EmployeeDTO getEmployee(String id) {
+        EmployeeEntity entity=  employeeDAO.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.EMPLOYEE_NOT_FOUND + ": " + id));
+        EmployeeDTO dto = new EmployeeDTO();
+        dto.setId(entity.getId());
+        dto.setFullName(entity.getFullName());
+        dto.setAddress(entity.getAddress());
+        dto.setPositionId(entity.getPositionId());
+        dto.setPhone(entity.getPhone());
+        dto.setUsername(entity.getUsername());
+        dto.setPassword(entity.getPassword());
+        dto.setPicture(entity.getPicture());
+        return dto;
     }
 
     @Transactional
     @Override
-    public void update(String id, EmployeeDTO dto) {
+    public void updateEmployee(String id, EmployeeDTO dto) {
         // Lưu file
         String fileName = fileStorageService.storeFile(dto.getFile());
 
@@ -122,10 +128,11 @@ public class EmployeeService implements IEmployeeService {
         // Quyền hạn
         String role = dto.getPositionId().equals(SystemConstants.CODE_ROLE_ADMIN) ? SystemConstants.ROLE_ADMIN : SystemConstants.ROLE_USER;
         // mã hóa mật khẩu
+
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
 
         // Insert nhân viên
-        Employee nhanVien = new Employee();
+        EmployeeEntity nhanVien = new EmployeeEntity();
         nhanVien.setId(id);
         nhanVien.setPositionId(dto.getPositionId());
         nhanVien.setFullName(dto.getFullName());
@@ -135,15 +142,15 @@ public class EmployeeService implements IEmployeeService {
         nhanVien.setUsername(dto.getUsername());
         nhanVien.setPassword(encodedPassword);
         nhanVien.setRole(role);
-        employeeDAO.update(id, nhanVien);
+        employeeDAO.updateById(id, nhanVien);
 
     }
     @Transactional
     @Override
-    public void delete(String id) {
+    public void deleteEmployee(String id) {
         employeeDAO.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.EMPLOYEE_NOT_FOUND + ": " + id));
-        employeeDAO.delete(id);
+        employeeDAO.deleteById(id);
     }
 
 

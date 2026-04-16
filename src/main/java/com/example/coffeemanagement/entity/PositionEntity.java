@@ -1,22 +1,22 @@
-package com.example.coffeemanagement.model;
+package com.example.coffeemanagement.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Account {
+public class PositionEntity {
 
     private String id;
 
-    private String userName;
+    private String name;
 
-    private String password;
-
-    private String role;
+    private BigDecimal salary;
 
 }

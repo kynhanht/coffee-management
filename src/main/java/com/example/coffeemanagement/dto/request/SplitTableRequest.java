@@ -1,6 +1,6 @@
 package com.example.coffeemanagement.dto.request;
 
-import com.example.coffeemanagement.dto.OrderMenuItemDTO;
+import com.example.coffeemanagement.dto.OrderItemSelectDTO;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +21,7 @@ public class SplitTableRequest {
     @NotBlank(message = "Mã bàn đích không được trống")
     private String targetTableId;
 
-    private List<OrderMenuItemDTO> splitOrderList;
+    private List<OrderItemSelectDTO> splitOrderItemList;
 
     private String customerName;
 

@@ -4,24 +4,31 @@ import com.example.coffeemanagement.constant.ErrorMessageConstants;
 import com.example.coffeemanagement.dao.IMenuItemDAO;
 import com.example.coffeemanagement.dao.IOrderItemDAO;
 import com.example.coffeemanagement.dao.ITableDAO;
-import com.example.coffeemanagement.dto.MenuItemDTO;
-import com.example.coffeemanagement.dto.OrderMenuItemDTO;
-import com.example.coffeemanagement.dto.TableDTO;
+import com.example.coffeemanagement.dto.OrderItemDTO;
+import com.example.coffeemanagement.dto.OrderItemSelectDTO;
+import com.example.coffeemanagement.entity.MenuItemEntity;
+import com.example.coffeemanagement.entity.TableEntity;
+import com.example.coffeemanagement.enums.OrderStatus;
 import com.example.coffeemanagement.enums.RecordStatus;
 import com.example.coffeemanagement.enums.TableStatus;
 import com.example.coffeemanagement.exception.NotFoundException;
 import com.example.coffeemanagement.service.IOrderItemService;
+import com.example.coffeemanagement.util.SystemUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class OrderItemService implements IOrderItemService {
-    private final IMenuItemDAO menuItemDAO;
+
+
     private final IOrderItemDAO orderItemDAO;
+    private final IMenuItemDAO menuItemDAO;
     private final ITableDAO tableDAO;
 
     public OrderItemService(IMenuItemDAO menuItemDAO, IOrderItemDAO orderItemDAO, ITableDAO tableDAO) {
@@ -30,47 +37,57 @@ public class OrderItemService implements IOrderItemService {
         this.tableDAO = tableDAO;
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public List<OrderMenuItemDTO> getOrderByTableId(String tableId) {
-        return orderItemDAO.findOrderByTableId(tableId);
+    public List<OrderItemSelectDTO> getOrderItemsForTable(String tableId) {
+        return orderItemDAO.findByTableIdAndOrderStatus(tableId, OrderStatus.UNPAID.name()).stream()
+                .map(orderItem -> new OrderItemSelectDTO(orderItem.getMenuItemId(), orderItem.getMenuItemName(), orderItem.getQuantity(), orderItem.getCurrentPrice(), orderItem.getLineTotal(), false))
+                .toList();
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<OrderMenuItemDTO> getMenuWithOrderByTableId(String tableId) {
+    public List<OrderItemSelectDTO> getMenuWithOrderItemsForTable(String tableId) {
 
-        TableDTO tableDTO = tableDAO.findById(tableId)
+        TableEntity tableEntity = tableDAO.findById(tableId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.TABLE_NOT_FOUND + ": " + tableId));
 
-        // 1. Lấy toàn bộ danh sách món ăn có sẵn
-        List<MenuItemDTO> menuItemList = menuItemDAO.findByStatus(RecordStatus.ACTIVE.name());
 
-        List<OrderMenuItemDTO> result;
+        // 1. Lấy toàn bộ danh sách món ăn có sẵn
+        List<MenuItemEntity> menuItemList = menuItemDAO.findByStatus(RecordStatus.ACTIVE.name());
+
+        List<OrderItemSelectDTO> result;
 
         // Trạng thái [Đang phục vụ] => tức là có các món ăn đã gọi
-        if (tableDTO.getStatus().equals(TableStatus.OCCUPIED)) {
+        if (tableEntity.getStatus().equals(TableStatus.OCCUPIED.name())) {
             // 2. Lấy danh sách món ăn đã gọi(Lấy ra các món ăn của từng bàn => lấy theo id của từng mà bàn và trạng thái hóa đơn là chưa thanh toán)
-            List<OrderMenuItemDTO> menuItemOrderList = orderItemDAO.findOrderByTableId(tableId);
+            List<OrderItemDTO> menuItemOrderList = orderItemDAO.findByTableIdAndOrderStatus(tableId, OrderStatus.UNPAID.name());
             // 3. Gộp lại, nếu không có trong order thì soLuong = 0
-            Map<String, OrderMenuItemDTO> orderMap = menuItemOrderList.stream()
-                    .collect(Collectors.toMap(OrderMenuItemDTO::getId, o -> o));
+            Map<String, OrderItemDTO> orderMap = menuItemOrderList.stream()
+                    .collect(Collectors.toMap(OrderItemDTO::getMenuItemId, o -> o));
+
             result = menuItemList.stream()
                     .map(menuItem -> {
-                        OrderMenuItemDTO order = orderMap.get(menuItem.getId());
-                        return new OrderMenuItemDTO(
+                        OrderItemDTO orderItemDTO = orderMap.get(menuItem.getId());
+                        String currentPrice = SystemUtils.bigDecimalToString(menuItem.getPrice(), Locale.US);
+                        String totalLine =  orderItemDTO != null ? SystemUtils.bigDecimalToString(menuItem.getPrice().multiply(BigDecimal.valueOf(orderItemDTO.getQuantity())), Locale.US) : null;
+                        return new OrderItemSelectDTO(
                                 menuItem.getId(),
                                 menuItem.getName(),
-                                order != null ? order.getQuantity() : 0,
-                                menuItem.getPrice(),
-                                order != null
+                                orderItemDTO != null ? orderItemDTO.getQuantity() : 0,
+                                currentPrice,
+                                totalLine,
+                                orderItemDTO != null
                         );
                     })
                     .toList();
         } else { // Trạng thái còn lại [Đặt bàn] và [Đặt trước] => Không có món ăn nào được gọi
             // 2.  Không có trong order thì soLuong = 0
             result = menuItemList.stream()
-                    .map(menuItem ->
-                            new OrderMenuItemDTO(menuItem.getId(), menuItem.getName(), 0, menuItem.getPrice(), false)
+                    .map(menuItem -> {
+                        String currentPrice = SystemUtils.bigDecimalToString(menuItem.getPrice(), Locale.US);
+                        return new OrderItemSelectDTO(menuItem.getId(), menuItem.getName(), 0, currentPrice, null, false);
+                    }
                     )
                     .toList();
         }

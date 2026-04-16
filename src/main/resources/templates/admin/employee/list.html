@@ -79,10 +79,8 @@
                     <tbody>
                     <tr th:each="employee : ${pageData.content}">
                         <td th:text="${employee.fullName}" class="users-meta"></td>
-                        <td th:text="${employee.positionName}" class="users-meta">Just now</td>
-                        <td th:text="${#numbers.formatDecimal(employee.salary, 0, 'COMMA', 0, 'POINT')}"
-                            class="users-meta">Jan 15, 2024
-                        </td>
+                        <td th:text="${employee.positionName}" class="users-meta"></td>
+                        <td th:text="${employee.salary}" class="users-meta"></td>
                         <td>
                             <div class="users-actions">
                                 <a th:href="@{/admin/employees/addOrEdit}" class="users-action-btn" title="View"><i
@@ -156,9 +154,9 @@
                     <h5>Xóa nhân viên</h5>
                     <p class="text-muted mb-0">Bạn có muốn xóa bản ghi này hay không?</p>
                 </div>
-                <form th:action="@{/admin/employees/delete}" method="post">
+                <form th:action="@{/admin/employees}" method="post">
                     <input type="hidden" name="_method" value="delete"/>
-                    <input type="hidden" name="employeeId" id="deleteId"/>
+                    <input type="hidden" name="id" id="deleteId"/>
                     <div class="modal-footer justify-content-center border-0 pt-0">
                         <button type="submit" class="btn btn-danger">Có</button>
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Không</button>
@@ -193,7 +191,6 @@
     document.addEventListener("DOMContentLoaded", function () {
         // Delete
         const deleteButtons = document.querySelectorAll(".users-actions > button");
-        console.log(deleteButtons);
         const deleteInput = document.querySelector("#deleteId");
 
         deleteButtons.forEach(btn => {

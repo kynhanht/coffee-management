@@ -1,6 +1,6 @@
 package com.example.coffeemanagement.dto.request;
 
-import com.example.coffeemanagement.dto.OrderMenuItemDTO;
+import com.example.coffeemanagement.dto.OrderItemSelectDTO;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,5 +20,5 @@ public class OrderTableRequest {
 
     private String employeeId;
 
-    private List<OrderMenuItemDTO> orderList;
+    private List<OrderItemSelectDTO> orderItemList;
 }

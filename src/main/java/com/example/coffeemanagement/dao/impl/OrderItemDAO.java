@@ -7,7 +7,6 @@ import com.example.coffeemanagement.dto.OrderItemDTO;
 import com.example.coffeemanagement.entity.OrderItemEntity;
 import com.example.coffeemanagement.exception.InternalException;
 import com.example.coffeemanagement.util.DBUtils;
-import com.example.coffeemanagement.util.SystemUtils;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +18,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Repository

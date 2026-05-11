@@ -13,13 +13,11 @@ import com.example.coffeemanagement.enums.RecordStatus;
 import com.example.coffeemanagement.enums.TableStatus;
 import com.example.coffeemanagement.exception.NotFoundException;
 import com.example.coffeemanagement.service.IOrderItemService;
-import com.example.coffeemanagement.util.SystemUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 

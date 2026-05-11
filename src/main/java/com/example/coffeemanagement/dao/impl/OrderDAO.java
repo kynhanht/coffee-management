@@ -6,7 +6,6 @@ import com.example.coffeemanagement.dto.OrderDTO;
 import com.example.coffeemanagement.entity.OrderEntity;
 import com.example.coffeemanagement.exception.InternalException;
 import com.example.coffeemanagement.util.DBUtils;
-import com.example.coffeemanagement.util.SystemUtils;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +13,6 @@ import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.Locale;
 import java.util.Optional;
 @Repository
 public class OrderDAO implements IOrderDAO {

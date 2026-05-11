@@ -8,7 +8,6 @@ import com.example.coffeemanagement.dto.response.EmployeeProfileResponse;
 import com.example.coffeemanagement.entity.EmployeeEntity;
 import com.example.coffeemanagement.exception.InternalException;
 import com.example.coffeemanagement.util.DBUtils;
-import com.example.coffeemanagement.util.SystemUtils;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +15,10 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class EmployeeDAO implements IEmployeeDAO {

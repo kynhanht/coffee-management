@@ -1,143 +1,145 @@
 <div class="main-content page-users">
     <div class="page-users">
-        <div class="page-header users-page-header">
+        <div class="page-header">
             <div>
                 <h1 th:text="${title}" class="page-title"></h1>
             </div>
         </div>
-        <div class="card users-list-card">
-            <form th:action="@{/admin/employees/list(page=1,sort=${pageData.sort},dir=${pageData.dir})}" method="get">
-                <div class="users-toolbar">
-                    <div class="users-toolbar-left">
-                        <div class="users-search">
-                            <i class="bi bi-search"></i>
-                            <input type="text" name="searchValue" placeholder="Tìm kiếm theo tên" autocomplete="off">
-                        </div>
-                        <div>
-                            <button type="submit" class="btn btn-sm btn-primary">Tìm kiếm</button>
-                        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <form th:action="@{/admin/employees/list(page=1,sort=${pageData.sort},dir=${pageData.dir})}"
+                              method="get">
+                            <div class="input-group">
+                                <input type="text" name="searchValue" class="form-control" placeholder="Tìm kiếm..." autocomplete="off">
+                                <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+                            </div>
+                        </form>
                     </div>
-                </div>
-            </form>
-            <div class="table-responsive users-table-wrap">
-                <table class="table table-hover align-middle mb-0">
-                    <thead>
-                    <tr>
-                        <th>
-                            <a th:href="@{/admin/employees/list(
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <a th:href="@{/admin/employees/list(
                                                 page=${pageData.currentPage},
                                                 sort='HoTen',
                                                 dir=${pageData.sort == 'HoTen' and pageData.dir == 'asc' ? 'desc' : 'asc'}
                                             )}"
-                               class="text-decoration-none">
-                                Họ tên
-                                <span th:if="${pageData.sort == 'HoTen'}">
+                                           class="text-decoration-none">
+                                            Họ tên
+                                            <span th:if="${pageData.sort == 'HoTen'}">
                                                 <i th:class="${pageData.dir == 'asc'}
                                                     ? 'bi bi-arrow-up-short'
                                                     : 'bi bi-arrow-down-short'">
                                                 </i>
                                             </span>
-                            </a>
-                        </th>
-                        <th>
-                            <a th:href="@{/admin/employees/list(
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a th:href="@{/admin/employees/list(
                                                 page=${pageData.currentPage},
                                                 sort='ChucVu',
                                                 dir=${pageData.sort == 'ChucVu' and pageData.dir == 'asc' ? 'desc' : 'asc'}
                                             )}"
-                               class="text-decoration-none">
-                                Chức vụ
-                                <span th:if="${pageData.sort == 'ChucVu'}">
+                                           class="text-decoration-none">
+                                            Chức vụ
+                                            <span th:if="${pageData.sort == 'ChucVu'}">
                                                 <i th:class="${pageData.dir == 'asc'}
                                                     ? 'bi bi-arrow-up-short'
                                                     : 'bi bi-arrow-down-short'">
                                                 </i>
                                             </span>
-                            </a>
-                        </th>
-                        <th>
-                            <a th:href="@{/admin/employees/list(
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a th:href="@{/admin/employees/list(
                                                 page=${pageData.currentPage},
                                                 sort='Luong',
                                                 dir=${pageData.sort == 'Luong' and pageData.dir == 'asc' ? 'desc' : 'asc'}
                                             )}"
-                               class="text-decoration-none">
-                                Lương
-                                <span th:if="${pageData.sort == 'Luong'}">
+                                           class="text-decoration-none">
+                                            Lương
+                                            <span th:if="${pageData.sort == 'Luong'}">
                                                 <i th:class="${pageData.dir == 'asc'}
                                                     ? 'bi bi-arrow-up-short'
                                                     : 'bi bi-arrow-down-short'">
                                                 </i>
                                             </span>
-                            </a>
-                        </th>
-                        <th class="users-th-actions">
-                            Thao tác
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="employee : ${pageData.content}">
-                        <td th:text="${employee.fullName}" class="users-meta"></td>
-                        <td th:text="${employee.positionName}" class="users-meta"></td>
-                        <td th:text="${#numbers.formatDecimal(employee.salary, 0, 'COMMA', 0, 'POINT')}" class="users-meta"></td>
-                        <td>
-                            <div class="users-actions">
-                                <a th:href="@{/admin/employees/addOrEdit}" class="users-action-btn" title="View"><i
-                                        class="bi bi-plus"></i></a>
-                                <a th:href="@{/admin/employees/addOrEdit(employeeId=${employee.id})}"
-                                   class="users-action-btn" title="Edit"><i class="bi bi-pencil"></i></a>
-                                <button type="button" class="btn btn-icon btn-sm btn-light"
-                                        th:data-id="${employee.id}" data-bs-toggle="modal"
-                                        data-bs-target="#deleteModal"><i class="bi bi-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="users-pagination">
-                <div class="users-pagination-info">Có tổng số [[${pageData.totalElements}]] nhân viên</div>
-                <nav>
-                    <ul class="pagination pagination-sm mb-0">
-                        <li th:if="${pageData.currentPage > 1}" class="page-item">
-                            <a th:href="@{/admin/employees/list(
+                                        </a>
+                                    </th>
+                                    <th class="text-end">Thao tác</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="employee : ${pageData.content}">
+                                    <td th:text="${employee.fullName}"></td>
+                                    <td th:text="${employee.positionName}"></td>
+                                    <td th:text="${#numbers.formatDecimal(employee.salary, 0, 'COMMA', 0, 'POINT')}"></td>
+                                    <td>
+                                        <div class="table-actions justify-content-end">
+                                            <a th:href="@{/admin/employees/addOrEdit}"
+                                               class="btn btn-icon btn-sm btn-light" title="View"><i
+                                                    class="bi bi-plus"></i></a>
+                                            <a th:href="@{/admin/employees/addOrEdit(employeeId=${employee.id})}"
+                                               class="btn btn-icon btn-sm btn-light" title="Edit"><i
+                                                    class="bi bi-pencil"></i></a>
+                                            <button type="button" class="btn btn-icon btn-sm btn-light"
+                                                    th:data-id="${employee.id}" data-bs-toggle="modal"
+                                                    data-bs-target="#deleteModal"><i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                        <p class="text-muted small mb-0">Có tổng số [[${pageData.totalElements}]] nhân viên</p>
+                        <nav>
+                            <ul class="pagination pagination-sm mb-0">
+                                <li th:if="${pageData.currentPage > 1}" class="page-item">
+                                    <a th:href="@{/admin/employees/list(
                                     page=${pageData.currentPage - 1},
                                     sort=${pageData.sort},
                                     dir=${pageData.dir}
                                     )}"
-                               class="page-link"
-                               aria-label="Previous">
-                                <i class="bi bi-chevron-left"></i>
-                            </a>
-                        </li>
+                                       class="page-link"
+                                       aria-label="Previous">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </a>
+                                </li>
 
-                        <th:block th:each="i : ${#numbers.sequence(1, pageData.totalPages)}">
-                            <li th:class="'page-item ' + (${i == pageData.currentPage} ? 'disabled' : '')">
-                                <a class="page-link"
-                                   th:href="@{/admin/employees/list(
+                                <th:block th:each="i : ${#numbers.sequence(1, pageData.totalPages)}">
+                                    <li th:class="'page-item ' + (${i == pageData.currentPage} ? 'disabled' : '')">
+                                        <a class="page-link"
+                                           th:href="@{/admin/employees/list(
                                            page=${i},
                                            sort=${pageData.sort},
                                            dir=${pageData.dir}
                                            )}"
-                                   th:text="${i}">
-                                </a>
-                            </li>
-                        </th:block>
-                        <li th:if="${pageData.currentPage < pageData.totalPages}" class="page-item">
-                            <a th:href="@{/admin/employees/list(
+                                           th:text="${i}">
+                                        </a>
+                                    </li>
+                                </th:block>
+                                <li th:if="${pageData.currentPage < pageData.totalPages}" class="page-item">
+                                    <a th:href="@{/admin/employees/list(
                                     page=${pageData.currentPage + 1},
                                     sort=${pageData.sort},
                                     dir=${pageData.dir}
                                     )}"
-                               class="page-link"
-                               aria-label="Next">
-                                <i class="bi bi-chevron-right"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                                       class="page-link"
+                                       aria-label="Next">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -9,6 +9,7 @@ import com.example.coffeemanagement.dto.PageDTO;
 import com.example.coffeemanagement.dto.request.EmployeeProfileRequest;
 import com.example.coffeemanagement.dto.response.EmployeeProfileResponse;
 import com.example.coffeemanagement.entity.EmployeeEntity;
+import com.example.coffeemanagement.enums.RecordStatus;
 import com.example.coffeemanagement.exception.NotFoundException;
 import com.example.coffeemanagement.service.IEmployeeService;
 import com.example.coffeemanagement.service.IFileStorageService;
@@ -150,7 +151,7 @@ public class EmployeeService implements IEmployeeService {
     public void deleteEmployee(String id) {
         employeeDAO.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessageConstants.EMPLOYEE_NOT_FOUND + ": " + id));
-        employeeDAO.deleteById(id);
+        employeeDAO.updateStatusById(id, RecordStatus.INACTIVE.name());
     }
 
 

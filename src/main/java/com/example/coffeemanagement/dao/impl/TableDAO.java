@@ -166,35 +166,6 @@ public class TableDAO implements ITableDAO {
         }
     }
 
-    @Override
-    public int copyStatus(String currentId, String newId) {
-        Connection conn = DataSourceUtils.getConnection(dataSource);
-        PreparedStatement ps = null;
-
-        try {
-            String sql = """
-                    UPDATE Ban 
-                    SET TrangThai = (
-                        SELECT TrangThai 
-                        FROM Ban 
-                        WHERE MaBan = ?
-                    )
-                    WHERE MaBan = ?
-                """;
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, currentId);
-            ps.setString(2, newId);
-
-            return ps.executeUpdate();
-
-        } catch (Exception e) {
-            throw new InternalException(ErrorMessageConstants.DATABASE_ERROR, e);
-        } finally {
-            DBUtils.close(ps);
-            DataSourceUtils.releaseConnection(conn, dataSource);
-        }
-    }
-
 
     @Override
     public List<TableOptionDTO> findByStatuses(List<TableStatus> statuses) {

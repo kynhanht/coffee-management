@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 
 @Getter
 @Setter
@@ -16,7 +18,7 @@ public class EmployeeProfileResponse {
     private String positionName;
     private String phone;
     private String address;
-    private String salary;
+    private BigDecimal salary;
     private String username;
     private String password;
     private String picture;

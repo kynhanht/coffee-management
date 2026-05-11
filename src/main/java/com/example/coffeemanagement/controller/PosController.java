@@ -18,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -233,7 +234,7 @@ public class PosController {
         payOrderResponse.setSourceTable(sourceTable);
         payOrderResponse.setOrderItemList(orderItemService.getOrderItemsForTable(sourceTableId));
         String orderId = orderService.getUnpaidOrderId(sourceTableId);
-        String totalAmount = orderService.getTotalAmount(orderId);
+        BigDecimal totalAmount = orderService.getTotalAmount(orderId);
         payOrderResponse.setTotalAmount(totalAmount);
 
 

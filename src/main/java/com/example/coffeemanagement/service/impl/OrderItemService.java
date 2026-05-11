@@ -69,14 +69,13 @@ public class OrderItemService implements IOrderItemService {
             result = menuItemList.stream()
                     .map(menuItem -> {
                         OrderItemDTO orderItemDTO = orderMap.get(menuItem.getId());
-                        String currentPrice = SystemUtils.bigDecimalToString(menuItem.getPrice(), Locale.US);
-                        String totalLine =  orderItemDTO != null ? SystemUtils.bigDecimalToString(menuItem.getPrice().multiply(BigDecimal.valueOf(orderItemDTO.getQuantity())), Locale.US) : null;
+
                         return new OrderItemSelectDTO(
                                 menuItem.getId(),
                                 menuItem.getName(),
                                 orderItemDTO != null ? orderItemDTO.getQuantity() : 0,
-                                currentPrice,
-                                totalLine,
+                                menuItem.getPrice(),
+                                orderItemDTO != null ? menuItem.getPrice().multiply(BigDecimal.valueOf(orderItemDTO.getQuantity())) : null,
                                 orderItemDTO != null
                         );
                     })
@@ -84,11 +83,7 @@ public class OrderItemService implements IOrderItemService {
         } else { // Trạng thái còn lại [Đặt bàn] và [Đặt trước] => Không có món ăn nào được gọi
             // 2.  Không có trong order thì soLuong = 0
             result = menuItemList.stream()
-                    .map(menuItem -> {
-                        String currentPrice = SystemUtils.bigDecimalToString(menuItem.getPrice(), Locale.US);
-                        return new OrderItemSelectDTO(menuItem.getId(), menuItem.getName(), 0, currentPrice, null, false);
-                    }
-                    )
+                    .map(menuItem -> new OrderItemSelectDTO(menuItem.getId(), menuItem.getName(), 0, menuItem.getPrice(), null, false))
                     .toList();
         }
         return result;

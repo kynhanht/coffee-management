@@ -158,7 +158,7 @@ public class EmployeeDAO implements IEmployeeDAO {
                 response.setAddress(rs.getString("DiaChi"));
                 response.setPhone(rs.getString("SoDienThoai"));
                 response.setPositionName(rs.getString("TenChucVu"));
-                response.setSalary(SystemUtils.bigDecimalToString(rs.getBigDecimal("Luong"), Locale.US));
+                response.setSalary(rs.getBigDecimal("Luong"));
                 response.setUsername(rs.getString("TenDangNhap"));
                 response.setPassword(rs.getString("MatKhau"));
                 response.setPicture(rs.getString("Anh"));
@@ -262,7 +262,7 @@ public class EmployeeDAO implements IEmployeeDAO {
                 dto.setId(rs2.getString("MaNhanVien"));
                 dto.setFullName(rs2.getString("HoTen"));
                 dto.setPositionName(rs2.getString("TenChucVu"));
-                dto.setSalary(SystemUtils.bigDecimalToString(rs2.getBigDecimal("Luong"), Locale.US));
+                dto.setSalary(rs2.getBigDecimal("Luong"));
                 list.add(dto);
             }
         } catch (Exception e) {
@@ -337,12 +337,12 @@ public class EmployeeDAO implements IEmployeeDAO {
     }
 
     @Override
-    public int deleteById(String id) {
+    public int updateStatusById(String id, String status) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         try {
             String sql = """
-                    UPDATE NhanVien SET TrangThai = 'INACTIVE'
+                    UPDATE NhanVien SET TrangThai = ?
                     WHERE MaNhanVien = ?
                     """;
             ps = conn.prepareStatement(sql);

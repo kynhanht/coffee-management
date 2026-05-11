@@ -20,13 +20,4 @@ public class SystemUtils {
     }
 
     // "1,000,000" hoặc "1.000.000" -> BigDecimal
-    public static BigDecimal StringToBigDecimal(String input) {
-        if (input == null || input.trim().isEmpty()) {
-            return BigDecimal.ZERO;
-        }
-
-        // bỏ dấu , và .
-        String normalized = input.replaceAll("[,\\.]", "");
-        return new BigDecimal(normalized);
-    }
 }

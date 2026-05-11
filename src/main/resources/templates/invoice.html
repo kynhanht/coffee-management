@@ -31,7 +31,7 @@
         </div>
         <div class="d-flex justify-content-between">
             <span>Ngày:</span>
-            <span th:text="${order.createdDate}"></span>
+            <span th:text="${#temporals.format(order.createdDate, 'dd/MM/yyyy HH:mm:ss')}"></span>
         </div>
     </div>
 
@@ -54,8 +54,8 @@
             <tr th:each="orderItem : ${order.orderItemList}">
                 <td class="text-start" th:text="${orderItem.menuItemName}"></td>
                 <td class="text-center" th:text="${orderItem.quantity}"></td>
-                <td class="text-center" th:text="${orderItem.currentPrice}"></td>
-                <td class="text-end" th:text="${orderItem.lineTotal}"></td>
+                <td class="text-center" th:text="${#numbers.formatDecimal(orderItem.currentPrice, 0, 'COMMA', 0, 'POINT')}"></td>
+                <td class="text-end" th:text="${#numbers.formatDecimal(orderItem.lineTotal, 0, 'COMMA', 0, 'POINT')}"></td>
             </tr>
             </tbody>
         </table>
@@ -67,15 +67,15 @@
     <div class="mb-2">
         <div class="d-flex justify-content-between">
             <span>Tổng tiền:</span>
-            <strong th:text="${order.totalAmount}"></strong>
+            <strong th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')}"></strong>
         </div>
         <div class="d-flex justify-content-between">
             <span>Khách đưa:</span>
-            <span th:text="${order.amountPaid}"></span>
+            <span th:text="${#numbers.formatDecimal(order.amountPaid, 0, 'COMMA', 0, 'POINT')}"></span>
         </div>
         <div class="d-flex justify-content-between">
             <span>Thối lại:</span>
-            <strong th:text="${order.changeAmount}"></strong>
+            <strong th:text="${#numbers.formatDecimal(order.changeAmount, 0, 'COMMA', 0, 'POINT')}"></strong>
         </div>
     </div>
 

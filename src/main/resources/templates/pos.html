@@ -132,7 +132,7 @@
                                                 <tr th:each="orderItem : ${viewTableResponse.orderItemList}">
                                                     <td th:text="${orderItem.menuItemName}"></td>
                                                     <td th:text="${orderItem.quantity}"></td>
-                                                    <td th:text="${orderItem.currentPrice}"></td>
+                                                    <td th:text="${#numbers.formatDecimal(orderItem.currentPrice, 0, 'COMMA', 0, 'POINT')}"></td>
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -237,52 +237,95 @@
                         <h5 class="modal-title">Chọn món [[${orderTableResponse.sourceTable.name}]]</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
+
                     <div class="modal-body">
                         <input type="hidden" th:field="*{sourceTableId}"/>
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>Chọn</th>
-                                    <th>Tên món</th>
-                                    <th>Số lượng</th>
-                                    <th>Giá</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="orderItem, stat : *{orderItemList}">
-                                    <td>
-                                        <input type="checkbox"
-                                               th:field="*{orderItemList[__${stat.index}__].selected}"
-                                               class="form-check-input"/>
-                                    </td>
-
-                                    <td th:text="${orderItem.menuItemName}"></td>
-
-                                    <input type="hidden"
-                                           th:field="*{orderItemList[__${stat.index}__].menuItemId}"/>
-
-                                    <input type="hidden"
-                                           th:field="*{orderItemList[__${stat.index}__].menuItemName}"/>
-
-                                    <td>
-                                        <input type="number"
-                                               min="0"
-                                               class="form-control"
-                                               th:field="*{orderItemList[__${stat.index}__].quantity}"/>
-                                    </td>
-                                    <td th:text="${orderItem.currentPrice}"></td>
-                                    <input type="hidden"
-                                           th:field="*{orderItemList[__${stat.index}__].currentPrice}"/>
-
-                                </tr>
-                                </tbody>
-                            </table>
+                        <div th:if="${orderTableResponse.sourceTable.status == T(com.example.coffeemanagement.enums.TableStatus).AVAILABLE || orderTableResponse.sourceTable.status == T(com.example.coffeemanagement.enums.TableStatus).RESERVED}"
+                             class="row">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Thông tin đặt bàn</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="customerName" class="form-label">Tên khách hàng</label>
+                                        <input type="text" class="form-control" id="customerName"
+                                               th:field="*{customerName}"
+                                               placeholder="Nhập tên khách hàng">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="customerPhone" class="form-label">SĐT khách hàng</label>
+                                        <input type="text" class="form-control" id="customerPhone"
+                                               th:field="*{customerPhone}"
+                                               placeholder="Nhập số SĐT khách hàng">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="reservationDate" class="form-label">Ngày giờ đặt</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="reservationDate"
+                                                   data-picker="datetime" th:field="*{reservationDate}"
+                                                   placeholder="Nhập ngày giờ đặt">
+                                            <span class="input-group-text"><i
+                                                    class="bi bi-calendar-event"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Lưu</button>
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <div class="row mt-3">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Danh sách món ăn</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive" id="orderTable">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>Chọn</th>
+                                                <th>Tên món</th>
+                                                <th>Số lượng</th>
+                                                <th>Giá</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="orderItem, stat : *{orderItemList}">
+                                                <td>
+                                                    <input type="checkbox"
+                                                           th:field="*{orderItemList[__${stat.index}__].selected}"
+                                                           class="form-check-input"/>
+                                                </td>
+
+                                                <td th:text="${orderItem.menuItemName}"></td>
+
+                                                <input type="hidden"
+                                                       th:field="*{orderItemList[__${stat.index}__].menuItemId}"/>
+
+                                                <input type="hidden"
+                                                       th:field="*{orderItemList[__${stat.index}__].menuItemName}"/>
+
+                                                <td>
+                                                    <input type="number"
+                                                           min="0"
+                                                           class="form-control"
+                                                           th:field="*{orderItemList[__${stat.index}__].quantity}"/>
+                                                </td>
+                                                <td th:text="${#numbers.formatDecimal(orderItem.currentPrice, 0, 'COMMA', 0, 'POINT')}"></td>
+                                                <input type="hidden"
+                                                       th:field="*{orderItemList[__${stat.index}__].currentPrice}"/>
+
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Lưu</button>
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -408,7 +451,7 @@
                                     <h5 class="card-title mb-0">[[${splitTableResponse.sourceTable.name}]]</h5>
                                 </div>
                                 <div class="card-body">
-                                    <div class="table-responsive">
+                                    <div class="table-responsive" id="splitTable">
                                         <table class="table">
                                             <thead>
                                             <tr>
@@ -565,31 +608,34 @@
                                 <tr th:each="orderItem : ${payOrderResponse.orderItemList}">
                                     <td th:text="${orderItem.menuItemName}"></td>
                                     <td th:text="${orderItem.quantity}"></td>
-                                    <td th:text="${orderItem.lineTotal}"></td>
+                                    <td th:text="${#numbers.formatDecimal(orderItem.lineTotal, 0, 'COMMA', 0, 'POINT')}"></td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <div class="medium text-muted my-3">Tổng: [[${payOrderResponse.totalAmount}]]</div>
+                        <div class="medium text-muted my-3">Tổng: [[${#numbers.formatDecimal(payOrderResponse.totalAmount, 0, 'COMMA', 0, 'POINT')}]]</div>
                         <input type="hidden" th:field="*{totalAmount}"/>
                         <div class="row mb-3">
-                            <label for="amountPaid" class="col-3 col-form-label">Khách đưa: </label>
+                            <label for="amountPaidDisplay" class="col-3 col-form-label">Khách đưa: </label>
                             <div class="col-9">
                                 <input type="text"
                                        class="form-control"
+                                       inputmode="numeric"
                                        oninput="formatNumber(this)"
-                                       th:field="*{amountPaid}"
-                                       id="amountPaid"
+                                       id="amountPaidDisplay"
                                        placeholder="Khách đưa">
+                                <input type="hidden" th:field="*{amountPaid}" />
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="changeAmount" class="col-3 col-form-label">Thối lại:</label>
+                            <label for="changeAmountDisplay" class="col-3 col-form-label">Thối lại:</label>
                             <div class="col-9">
                                 <input type="text"
                                        class="form-control"
-                                       th:field="*{changeAmount}"
-                                       id="changeAmount" readonly>
+                                       id="changeAmountDisplay" readonly>
+                                <input type="hidden"
+                                       class="form-control"
+                                       th:field="*{changeAmount}">
                             </div>
                         </div>
                     </div>
@@ -697,7 +743,7 @@
             location.href = `/pos/split?sourceTableId=${sourceId}&targetTableId=${targetId}`;
         }
         // Xử lý format khi nhập số tiền khách đưa trong thanh toán
-        window.formatNumber = function(input) {
+        window.formatNumber = function (input) {
             // Lấy giá trị và bỏ hết ký tự không phải số
             let value = input.value.replace(/[^0-9]/g, '');
 
@@ -738,16 +784,56 @@
                         time_24hr: true,
                         allowInput: true
                     });
+                } else if(openModal === 'splitTableModal'){
+                    const rows = document.querySelectorAll("#splitTable tbody tr");
+                    rows.forEach(row => {
+                        const checkbox = row.querySelector('input[type="checkbox"]');
+                        const numberInput = row.querySelector('input[type="number"]');
+                        if (checkbox && numberInput) {
+                            numberInput.disabled = !checkbox.checked;
+                            checkbox.addEventListener("change", function() {
+                                numberInput.disabled = !this.checked;
+                                if (!this.checked) {
+                                    numberInput.value = 0;
+                                }
+                            });
+                        }
+                    });
+                }
+                else if (openModal === 'orderTableModal') {
+                    flatpickr('#reservationDate', {
+                        enableTime: true,
+                        dateFormat: 'd-m-Y H:i',
+                        time_24hr: true,
+                        allowInput: true
+                    });
+                    const rows = document.querySelectorAll("#orderTable tbody tr");
+                    rows.forEach(row => {
+                        const checkbox = row.querySelector('input[type="checkbox"]');
+                        const numberInput = row.querySelector('input[type="number"]');
+                        if (checkbox && numberInput) {
+                            numberInput.disabled = !checkbox.checked;
+                            checkbox.addEventListener("change", function() {
+                                numberInput.disabled = !this.checked;
+                                if (!this.checked) {
+                                    numberInput.value = 0;
+                                }
+                            });
+                        }
+                    });
                 } else if (openModal === 'payOrderModal') {
+                    const amountPaidDisplayInput = document.getElementById("amountPaidDisplay");
                     const amountPaidInput = document.getElementById("amountPaid");
+                    const changeAmountDisplayInput = document.getElementById("changeAmountDisplay");
                     const changeAmountInput = document.getElementById("changeAmount");
-                    const totalAmountStr = [[${payOrderResponse?.totalAmount ?: 0}]];
-                    const totalAmount = Number(totalAmountStr.replace(/,/g, '')) || 0;
-                    amountPaidInput.addEventListener("input", function () {
+                    const totalAmount = [[${payOrderResponse?.totalAmount ?: 0}]];
+                    amountPaidDisplayInput.addEventListener("input", function () {
                         let amountPaid = Number(this.value.replace(/,/g, '')) || 0;
+                        amountPaidInput.value = amountPaid;
                         let changeAmount = amountPaid - totalAmount;
                         if (changeAmount < 0) changeAmount = 0;
-                        changeAmountInput.value = Number(changeAmount).toLocaleString('en-US');
+                        changeAmountInput.value = changeAmount;
+                        changeAmountDisplayInput.value = Number(changeAmount).toLocaleString('en-US');
                     })
                 }
             }, {once: true});

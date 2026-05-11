@@ -24,7 +24,7 @@
                                     th:text="${employeeProfileResponse.address}"
                                     class="profile-info-value"></span></div>
                             <div class="profile-info-item"><span class="profile-info-label">Lương</span><span
-                                    th:text="${employeeProfileResponse.salary}"
+                                    th:text="${#numbers.formatDecimal(employeeProfileResponse.salary, 0, 'COMMA', 0, 'POINT')}"
                                     class="profile-info-value"></span></div>
                             <div class="profile-info-item"><span class="profile-info-label">Số điện thoại</span><span
                                     th:text="${employeeProfileResponse.phone}"

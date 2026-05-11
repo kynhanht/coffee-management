@@ -18,8 +18,6 @@ public interface ITableDAO {
 
     int updateStatusById(String id, String status);
 
-    int copyStatus(String currentId, String newId);
-
     List<TableOptionDTO> findByStatuses(List<TableStatus> statuses);
 
 

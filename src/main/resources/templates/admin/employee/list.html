@@ -80,7 +80,7 @@
                     <tr th:each="employee : ${pageData.content}">
                         <td th:text="${employee.fullName}" class="users-meta"></td>
                         <td th:text="${employee.positionName}" class="users-meta"></td>
-                        <td th:text="${employee.salary}" class="users-meta"></td>
+                        <td th:text="${#numbers.formatDecimal(employee.salary, 0, 'COMMA', 0, 'POINT')}" class="users-meta"></td>
                         <td>
                             <div class="users-actions">
                                 <a th:href="@{/admin/employees/addOrEdit}" class="users-action-btn" title="View"><i

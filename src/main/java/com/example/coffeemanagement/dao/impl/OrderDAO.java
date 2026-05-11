@@ -132,15 +132,11 @@ public class OrderDAO implements IOrderDAO {
                 dto.setPromotionName(rs.getString("TenKhuyenMai"));
                 dto.setCustomerName(rs.getString("TenKhachHang"));
                 dto.setCustomerPhone(rs.getString("SdtKhachHang"));
-                // Format tiền
-                dto.setTotalAmount(SystemUtils.bigDecimalToString(rs.getBigDecimal("TongTien"), Locale.US));
-                dto.setAmountPaid(SystemUtils.bigDecimalToString(rs.getBigDecimal("TienKhachDua"), Locale.US));
-                dto.setChangeAmount(SystemUtils.bigDecimalToString(rs.getBigDecimal("TienThoi"), Locale.US));
-                // Format ngày
-                Timestamp ts = rs.getTimestamp("NgayGioTao");
-                String createdDate = ts != null ? SystemUtils.dateToString(ts.toLocalDateTime(),"dd/MM/yyyy HH:mm") : null;
-                dto.setCreatedDate(createdDate);
-
+                dto.setTotalAmount(rs.getBigDecimal("TongTien"));
+                dto.setAmountPaid(rs.getBigDecimal("TienKhachDua"));
+                dto.setChangeAmount(rs.getBigDecimal("TienThoi"));
+                Timestamp createdDate = rs.getTimestamp("NgayGioTao");
+                dto.setCreatedDate(createdDate != null ? createdDate.toLocalDateTime() : null);
                 dto.setStatus(rs.getString("TrangThai"));
                 return Optional.of(dto);
             }
@@ -183,7 +179,7 @@ public class OrderDAO implements IOrderDAO {
     }
 
     @Override
-    public Optional<String> findTotalAmountById(String id) {
+    public Optional<BigDecimal> findTotalAmountById(String id) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -197,7 +193,7 @@ public class OrderDAO implements IOrderDAO {
             ps.setString(1, id);
             rs = ps.executeQuery();
             if (rs.next()) {
-                return Optional.of(SystemUtils.bigDecimalToString(rs.getBigDecimal("TongTien"), Locale.US));
+                return Optional.of(rs.getBigDecimal("TongTien"));
             }
 
         } catch (Exception e) {
@@ -229,7 +225,7 @@ public class OrderDAO implements IOrderDAO {
                     TrangThai
                     
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
             ps = conn.prepareStatement(sql);
             ps.setString(1, entity.getId());
@@ -264,8 +260,7 @@ public class OrderDAO implements IOrderDAO {
                     SELECT SUM(SoLuong * GiaTaiThoiDiemBan)
                     FROM ChiTietHoaDon
                     WHERE MaHoaDon = ?
-                ),
-                NgayGioTao = GETDATE()
+                )
                 WHERE MaHoaDon = ?
                 """;
             ps = conn.prepareStatement(sql);

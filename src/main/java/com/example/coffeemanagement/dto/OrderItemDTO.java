@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,7 +20,7 @@ public class OrderItemDTO {
 
     private int quantity;
 
-    private String currentPrice;
+    private BigDecimal currentPrice;
 
-    private String lineTotal;
+    private BigDecimal lineTotal;
 }

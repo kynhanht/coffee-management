@@ -17,6 +17,6 @@ public interface IEmployeeDAO {
     PageDTO<EmployeeListDTO> findAll(int page, int size, String sort, String dir, String searchValue);
     int insert(EmployeeEntity entity);
     int updateById(String id, EmployeeEntity entity);
-    int deleteById(String id);
+    int updateStatusById(String id, String status);
 
 }

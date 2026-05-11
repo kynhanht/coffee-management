@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -19,10 +21,10 @@ public class OrderDTO {
     private String promotionName;
     private String customerName;
     private String customerPhone;
-    private String totalAmount;
-    private String amountPaid;
-    private String changeAmount;
-    private String createdDate;
+    private BigDecimal totalAmount;
+    private BigDecimal amountPaid;
+    private BigDecimal changeAmount;
+    private LocalDateTime createdDate;
     private String status;
     private List<OrderItemDTO> orderItemList;
 }

@@ -131,9 +131,9 @@ public class OrderItemDAO implements IOrderItemDAO {
                         CTHD.SoLuong,
                         CTHD.GiaTaiThoiDiemBan
                     FROM HoaDon HD
-                    JOIN ChiTietHoaDon CTHD 
+                    INNER JOIN ChiTietHoaDon CTHD 
                         ON HD.MaHoaDon = CTHD.MaHoaDon
-                    JOIN MonAn MA 
+                    INNER JOIN MonAn MA 
                         ON CTHD.MaMonAn = MA.MaMonAn
                     WHERE HD.MaBan = ?
                       AND HD.TrangThai = ?
@@ -150,9 +150,9 @@ public class OrderItemDAO implements IOrderItemDAO {
                 int quantity = rs.getInt("SoLuong");
                 dto.setQuantity(quantity);
                 BigDecimal currentPrice = rs.getBigDecimal("GiaTaiThoiDiemBan");
-                dto.setCurrentPrice(SystemUtils.bigDecimalToString(currentPrice, Locale.US));
+                dto.setCurrentPrice(currentPrice);
                 BigDecimal lineTotal = currentPrice.multiply(BigDecimal.valueOf(quantity));
-                dto.setLineTotal(SystemUtils.bigDecimalToString(lineTotal, Locale.US));
+                dto.setLineTotal(lineTotal);
                 result.add(dto);
             }
         } catch (Exception e) {
@@ -217,14 +217,13 @@ public class OrderItemDAO implements IOrderItemDAO {
         PreparedStatement ps = null;
         try {
             String sql = """
-                    UPDATE ChiTietHoaDon SET SoLuong = CASE WHEN (SoLuong + ?) < 0 THEN 0 ELSE SoLuong + ? END
+                    UPDATE ChiTietHoaDon SET SoLuong = SoLuong + ?
                     WHERE MaHoaDon = ? AND MaMonAn= ?;
                     """;
             ps = conn.prepareStatement(sql);
             ps.setInt(1, delta);
-            ps.setInt(2, delta);
-            ps.setString(3, orderId);
-            ps.setString(4, menuItemId);
+            ps.setString(2, orderId);
+            ps.setString(3, menuItemId);
             return ps.executeUpdate();
         } catch (Exception e) {
             throw new InternalException(ErrorMessageConstants.DATABASE_ERROR, e);

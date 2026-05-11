@@ -11,7 +11,7 @@ public interface IOrderDAO {
     Optional<OrderEntity> findById(String id);
     Optional<OrderDTO> findDetailById(String id);
     Optional<String> findOrderIdByTableIdAndStatus(String tableId, String status);
-    Optional<String> findTotalAmountById(String id);
+    Optional<BigDecimal> findTotalAmountById(String id);
     int insert(OrderEntity entity);
     int updateTotalById(String id);
     int updateStatusById(String id, String status);

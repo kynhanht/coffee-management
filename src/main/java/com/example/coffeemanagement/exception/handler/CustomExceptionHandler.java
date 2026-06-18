@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 @ControllerAdvice
 public class CustomExceptionHandler {
@@ -17,27 +16,31 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(InternalException.class)
     public String handleInternal(InternalException ex, Model model) {
-        logger.error("Lỗi hệ thống", ex);
-        model.addAttribute("error", ex.getMessage());
+        logger.error("Internal error", ex);
+        model.addAttribute(
+                "error",
+                "System error occurred"
+        );
         return "error/500";
     }
 
     @ExceptionHandler(NotFoundException.class)
     public String handleNotFound(NotFoundException ex, Model model) {
-        logger.error("Lỗi không tìm thấy đối tượng", ex);
-        model.addAttribute("error", ex.getMessage());
+        logger.error("Not found error", ex);
+        model.addAttribute(
+                "error",
+                "Not found occurred"
+        );
         return "error/404";
     }
 
     @ExceptionHandler(FileStorageException.class)
     public String handleFile(NotFoundException ex, Model model) {
-        logger.error("Lỗi xử lý file", ex);
-        model.addAttribute("error", ex.getMessage());
+        logger.error("File error", ex);
+        model.addAttribute(
+                "error",
+                "File occurred"
+        );
         return "error/500";
-    }
-
-    @ModelAttribute("currentUser")
-    public String currentUser() {
-        return "Nguyễn Văn A";
     }
 }

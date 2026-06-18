@@ -67,7 +67,7 @@ public class EmployeeService implements IEmployeeService {
     @Transactional
     @Override
     public void createEmployee(EmployeeDTO dto) {
-        // Sinh mã
+        // Sinh
         String id = employeeDAO.generateNextId();
 
         // Lưu file
@@ -77,9 +77,6 @@ public class EmployeeService implements IEmployeeService {
 
         // Quyền hạn
         String role = dto.getPositionId().equals(SystemConstants.CODE_ROLE_ADMIN) ? SystemConstants.ROLE_ADMIN : SystemConstants.ROLE_USER;
-
-        // Trạng thái
-        String status = SystemConstants.ACTIVE_USER;
 
         // Insert nhân viên
         EmployeeEntity employeeEntity = new EmployeeEntity(
@@ -92,7 +89,7 @@ public class EmployeeService implements IEmployeeService {
                 dto.getUsername(),
                 encodedPassword,
                 role,
-                status
+                RecordStatus.ACTIVE.name()
                 );
         int rows = employeeDAO.insert(employeeEntity);
         if (rows == 0) {

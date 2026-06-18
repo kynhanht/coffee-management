@@ -6,6 +6,8 @@ public class ErrorMessageConstants {
     public static final String TABLE_NOT_FOUND = "Không tìm thấy bàn";
     public static final String MENU_ITEM_NOT_FOUND = "Không tìm thấy món ăn";
     public static final String ORDER_NOT_FOUND = "Không tìm thấy hóa đơn";
+    public static final String DEVICE_NOT_FOUND = "Không tìm thấy thiết bị";
+    public static final String GOOD_NOT_FOUND = "Không tìm thấy hàng hóa";
     public static final String UNPAID_ORDER_NOT_FOUND = "Hóa đơn đã thanh toán hoặc bàn không tồn tại";
 
 

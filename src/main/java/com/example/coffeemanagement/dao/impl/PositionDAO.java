@@ -29,7 +29,7 @@ public class PositionDAO implements IPositionDAO {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<PositionEntity> danhSach = new ArrayList<>();
+        List<PositionEntity> positionList = new ArrayList<>();
 
         try {
             String sql = """
@@ -43,7 +43,7 @@ public class PositionDAO implements IPositionDAO {
                 model.setId(rs.getString("maChucVu"));
                 model.setName(rs.getString("tenChucVu"));
                 model.setSalary(rs.getBigDecimal("luong")); // giống cách bạn đang dùng
-                danhSach.add(model);
+                positionList.add(model);
             }
         } catch (Exception e) {
             throw new InternalException(ErrorMessageConstants.DATABASE_ERROR, e);
@@ -52,6 +52,6 @@ public class PositionDAO implements IPositionDAO {
             DataSourceUtils.releaseConnection(conn, dataSource);
         }
 
-        return danhSach;
+        return positionList;
     }
 }

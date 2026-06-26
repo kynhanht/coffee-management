@@ -1,0 +1,282 @@
+<div class="main-content page-devices">
+    <div class="page-devices">
+        <div class="page-header">
+            <div>
+                <h1 th:text="${title}" class="page-title"></h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <form th:action="@{/admin/goods/list(page=1,sort=${pageData.sort},dir=${pageData.dir})}"
+                              method="get">
+                            <div class="input-group">
+                                <input type="text" name="searchValue" class="form-control" placeholder="Tìm kiếm..." autocomplete="off">
+                                <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <a th:href="@{/admin/goods/list(
+                                                page=${pageData.currentPage},
+                                                sort='TenHangHoa',
+                                                dir=${pageData.sort == 'TenHangHoa' and pageData.dir == 'asc' ? 'desc' : 'asc'}
+                                            )}"
+                                           class="text-decoration-none">
+                                            Tên hàng hóa
+                                            <span th:if="${pageData.sort == 'TenHangHoa'}">
+                                                <i th:class="${pageData.dir == 'asc'}
+                                                    ? 'bi bi-arrow-up-short'
+                                                    : 'bi bi-arrow-down-short'">
+                                                </i>
+                                            </span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a th:href="@{/admin/goods/list(
+                                                page=${pageData.currentPage},
+                                                sort='NgayNhap',
+                                                dir=${pageData.sort == 'NgayNhap' and pageData.dir == 'asc' ? 'desc' : 'asc'}
+                                            )}"
+                                           class="text-decoration-none">
+                                            Ngày nhập
+                                            <span th:if="${pageData.sort == 'NgayNhap'}">
+                                                <i th:class="${pageData.dir == 'asc'}
+                                                    ? 'bi bi-arrow-up-short'
+                                                    : 'bi bi-arrow-down-short'">
+                                                </i>
+                                            </span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a th:href="@{/admin/goods/list(
+                                                page=${pageData.currentPage},
+                                                sort='NgayXuat',
+                                                dir=${pageData.sort == 'NgayXuat' and pageData.dir == 'asc' ? 'desc' : 'asc'}
+                                            )}"
+                                           class="text-decoration-none">
+                                            Ngày xuất
+                                            <span th:if="${pageData.sort == 'NgayXuat'}">
+                                                <i th:class="${pageData.dir == 'asc'}
+                                                    ? 'bi bi-arrow-up-short'
+                                                    : 'bi bi-arrow-down-short'">
+                                                </i>
+                                            </span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a th:href="@{/admin/goods/list(
+                                                page=${pageData.currentPage},
+                                                sort='SoLuong',
+                                                dir=${pageData.sort == 'SoLuong' and pageData.dir == 'asc' ? 'desc' : 'asc'}
+                                            )}"
+                                           class="text-decoration-none">
+                                            Số lượng
+                                            <span th:if="${pageData.sort == 'SoLuong'}">
+                                                <i th:class="${pageData.dir == 'asc'}
+                                                    ? 'bi bi-arrow-up-short'
+                                                    : 'bi bi-arrow-down-short'">
+                                                </i>
+                                            </span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a th:href="@{/admin/goods/list(
+                                                page=${pageData.currentPage},
+                                                sort='DonVi',
+                                                dir=${pageData.sort == 'DonVi' and pageData.dir == 'asc' ? 'desc' : 'asc'}
+                                            )}"
+                                           class="text-decoration-none">
+                                            Đơn vị
+                                            <span th:if="${pageData.sort == 'DonVi'}">
+                                                <i th:class="${pageData.dir == 'asc'}
+                                                    ? 'bi bi-arrow-up-short'
+                                                    : 'bi bi-arrow-down-short'">
+                                                </i>
+                                            </span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a th:href="@{/admin/goods/list(
+                                                page=${pageData.currentPage},
+                                                sort='DonGia',
+                                                dir=${pageData.sort == 'DonVi' and pageData.dir == 'asc' ? 'desc' : 'asc'}
+                                            )}"
+                                           class="text-decoration-none">
+                                            Đơn giá
+                                            <span th:if="${pageData.sort == 'DonVi'}">
+                                                <i th:class="${pageData.dir == 'asc'}
+                                                    ? 'bi bi-arrow-up-short'
+                                                    : 'bi bi-arrow-down-short'">
+                                                </i>
+                                            </span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a th:href="@{/admin/goods/list(
+                                                page=${pageData.currentPage},
+                                                sort='TongTien',
+                                                dir=${pageData.sort == 'TongTien' and pageData.dir == 'asc' ? 'desc' : 'asc'}
+                                            )}"
+                                           class="text-decoration-none">
+                                            Đơn giá
+                                            <span th:if="${pageData.sort == 'TongTien'}">
+                                                <i th:class="${pageData.dir == 'asc'}
+                                                    ? 'bi bi-arrow-up-short'
+                                                    : 'bi bi-arrow-down-short'">
+                                                </i>
+                                            </span>
+                                        </a>
+                                    </th>
+                                    <th class="text-end">Thao tác</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="good : ${pageData.content}">
+                                    <td th:text="${good.name}"></td>
+                                    <td th:text="${#temporals.format(good.importDate, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${#temporals.format(good.exportDate, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${good.quantity}"></td>
+                                    <td th:text="${good.unitName}"></td>
+                                    <td th:text="${#numbers.formatDecimal(good.price, 0, 'COMMA', 0, 'POINT')}"></td>
+                                    <td th:text="${#numbers.formatDecimal(good.totalAmount, 0, 'COMMA', 0, 'POINT')}"></td>
+                                    <td>
+                                        <div class="table-actions justify-content-end">
+                                            <a th:href="@{/admin/goods/addOrEdit}"
+                                               class="btn btn-icon btn-sm btn-light" title="View"><i
+                                                    class="bi bi-plus"></i></a>
+                                            <a th:href="@{/admin/goods/addOrEdit(goodId=${good.id})}"
+                                               class="btn btn-icon btn-sm btn-light" title="Edit"><i
+                                                    class="bi bi-pencil"></i></a>
+                                            <button type="button" class="btn btn-icon btn-sm btn-light"
+                                                    th:data-id="${good.id}" data-bs-toggle="modal"
+                                                    data-bs-target="#deleteModal"><i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                        <p class="text-muted small mb-0">Có tổng số [[${pageData.totalElements}]] thiết bị</p>
+                        <nav>
+                            <ul class="pagination pagination-sm mb-0">
+                                <li th:if="${pageData.currentPage > 1}" class="page-item">
+                                    <a th:href="@{/admin/goods/list(
+                                    page=${pageData.currentPage - 1},
+                                    sort=${pageData.sort},
+                                    dir=${pageData.dir}
+                                    )}"
+                                       class="page-link"
+                                       aria-label="Previous">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </a>
+                                </li>
+
+                                <th:block th:each="i : ${#numbers.sequence(1, pageData.totalPages)}">
+                                    <li th:class="'page-item ' + (${i == pageData.currentPage} ? 'disabled' : '')">
+                                        <a class="page-link"
+                                           th:href="@{/admin/goods/list(
+                                           page=${i},
+                                           sort=${pageData.sort},
+                                           dir=${pageData.dir}
+                                           )}"
+                                           th:text="${i}">
+                                        </a>
+                                    </li>
+                                </th:block>
+                                <li th:if="${pageData.currentPage < pageData.totalPages}" class="page-item">
+                                    <a th:href="@{/admin/goods/list(
+                                    page=${pageData.currentPage + 1},
+                                    sort=${pageData.sort},
+                                    dir=${pageData.dir}
+                                    )}"
+                                       class="page-link"
+                                       aria-label="Next">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <div class="mb-3">
+                          <span class="bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center"
+                                style="width: 64px; height: 64px;">
+                            <i class="bi bi-exclamation-triangle fs-1"></i>
+                          </span>
+                    </div>
+                    <h5>Xóa hàng hóa</h5>
+                    <p class="text-muted mb-0">Bạn có muốn xóa bản ghi này hay không?</p>
+                </div>
+                <form th:action="@{/admin/goods}" method="post">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <input type="hidden" name="id" id="deleteId"/>
+                    <div class="modal-footer justify-content-center border-0 pt-0">
+                        <button type="submit" class="btn btn-danger">Có</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Không</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${success}"
+         class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast"
+             class="toast fade"
+             role="alert"
+             data-bs-delay="5000"
+             data-bs-autohide="true">
+
+            <div class="toast-header">
+                <i class="bi bi-check-circle text-success me-2"></i>
+                <strong class="me-auto">Thành công</strong>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body"
+                 th:text="${success}">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Delete
+        const deleteButtons = document.querySelectorAll(".table-actions > button");
+        const deleteInput = document.querySelector("#deleteId");
+
+        deleteButtons.forEach(btn => {
+            btn.addEventListener("click", function () {
+                deleteInput.value = this.getAttribute("data-id");
+            });
+        });
+
+
+        // Show Message
+        const liveToast = document.getElementById('liveToast');
+        if (liveToast) {
+            const toast = new bootstrap.Toast(liveToast);
+            toast.show();
+        }
+    });
+
+
+</script>

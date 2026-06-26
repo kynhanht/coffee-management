@@ -1,0 +1,82 @@
+<div class="main-content page-users-edit">
+    <div class="page-users-edit">
+        <div class="page-header">
+            <div>
+                <h1 th:text="${title}" class="page-title"></h1>
+            </div>
+        </div>
+        <form th:action=" @{/admin/goods/importOrExport}"
+              th:object="${importExportGood}" method="post">
+            <div class="row g-4">
+                <div class="col-xl-12">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title">Thông tin hàng hóa</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label for="goodId" class="form-label required">Tên hàng hóa</label>
+                                    <select class="form-select" th:field="*{goodId}" id="goodId" required>
+                                        <option value="">Chọn hàng hóa</option>
+                                        <option th:each="good : ${goodList}"
+                                                th:value="${good.id}"
+                                                th:text="${good.name}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="quantity" class="form-label required">Số lượng</label>
+                                    <input type="number" class="form-control" th:field="*{quantity}" id="quantity" required>
+                                </div>
+                                <div class="col-md-12" th:if="${action == 'import'}">
+                                    <label for="importDate" class="form-label required">Ngày nhập</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="importDate" placeholder="Nhập ngày nhập" data-picker="date" th:field="*{importDate}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-12" th:if="${action == 'export'}">
+                                    <label for="importDate" class="form-label required">Ngày xuất</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="exportDate" placeholder="Nhập ngày xuất" data-picker="date" th:field="*{exportDate}" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden"
+                   name="_method"
+                   value="put">
+            <div class="ue-form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg me-1"></i> [[${action == 'import'} ? 'Nhập hàng hóa' : 'Xuất hàng hóa']]
+                </button>
+                <a th:href="@{/admin/devices/list}" class="btn btn-secondary">Hủy</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        flatpickr('#importDate', {
+            dateFormat: 'd-m-Y',
+            allowInput: true
+        });
+
+        flatpickr('#exportDate', {
+            dateFormat: 'd-m-Y',
+            allowInput: true
+        });
+
+        const priceDisplayInput = document.getElementById("priceDisplay");
+        const priceInput = document.getElementById("price");
+        priceDisplayInput.addEventListener("input", function () {
+            let price = Number(this.value.replace(/,/g, '')) || 0;
+            priceInput.value = price;
+            priceDisplayInput.value = Number(price).toLocaleString('en-US');
+        })
+    });
+</script>

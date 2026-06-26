@@ -41,26 +41,22 @@
                     <span class="nav-arrow"><i class="bi bi-chevron-right"></i></span>
                 </a>
                 <ul class="nav-submenu ">
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xem danh sách thiết bị</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Thêm thiết</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Chỉnh sửa thiết bị</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xóa thiết bị</a></li>
+                    <li><a class="nav-link " th:href="@{/admin/devices/list}"><span class="nav-dot"></span>Xem danh sách thiết bị</a></li>
+                    <li><a class="nav-link " th:href="@{/admin/devices/addOrEdit}"><span class="nav-dot"></span>Thêm thiết bị</a></li>
                 </ul>
             </li>
 
             <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item has-submenu ">
                 <a class="nav-link" href="#" aria-expanded="false">
                     <span class="nav-icon"><i class="ph-light ph-storefront"></i></span>
-                    <span class="nav-text">Xem danh sách hàng hóa</span>
+                    <span class="nav-text">Quản lý kho hàng</span>
                     <span class="nav-arrow"><i class="bi bi-chevron-right"></i></span>
                 </a>
                 <ul class="nav-submenu ">
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Nhập danh sách hàng hóa</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Nhập hàng hóa</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xuất hàng hóa</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Chỉnh sửa hàng hóa</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Xóa hàng hóa</a></li>
-                    <li><a class="nav-link " th:href="@{/}"><span class="nav-dot"></span>Tìm kiếm hàng hóa</a></li>
+                    <li><a class="nav-link " th:href="@{/admin/goods/list}"><span class="nav-dot"></span>Xem danh sách hàng hóa</a>
+                    <li><a class="nav-link " th:href="@{/admin/goods/addOrEdit}"><span class="nav-dot"></span>Thêm hàng hóa</a></li>
+                    <li><a class="nav-link " th:href="@{/admin/goods/import}"><span class="nav-dot"></span>Nhập hàng hóa</a></li>
+                    <li><a class="nav-link " th:href="@{/admin/goods/export}"><span class="nav-dot"></span>Xuất hàng hóa</a></li>
                 </ul>
             </li>
 
